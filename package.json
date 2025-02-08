@@ -1,0 +1,34 @@
+{
+  "name": "api-mega-stock",
+  "version": "1.0.0",
+  "description": "Project backend for Mega Stock Ecommerce",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicolasCorredor02/back-mega-stock.git"
+  },
+  "keywords": [
+    "backend",
+    "ExpressJs",
+    "NodeJS",
+    "JavaScript",
+    "Ecommerce",
+    "APIs",
+    "Restful"
+  ],
+  "author": "NicolasCorredor02",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NicolasCorredor02/back-mega-stock/issues"
+  },
+  "homepage": "https://github.com/NicolasCorredor02/back-mega-stock#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "morgan": "^1.10.0"
+  }
+}
