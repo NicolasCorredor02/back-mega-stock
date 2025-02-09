@@ -1,4 +1,3 @@
-import express from "express";
 import { Router } from "express";
 import { ProductsManager } from "../controller/product.controller.js";
 
@@ -14,17 +13,17 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/product/:id", async (req, res) => {
+router.get("/:pid", async (req, res) => {
   try {
-    const { id } = req.params;
-    const product = await productsManager.getProductById(id);
+    const { pid } = req.params;
+    const product = await productsManager.getProductById(pid);
     res.status(200).json(product);
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
 
-router.post("/product", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const productBody = req.body;
     const resultAddProduct = await productsManager.addProduct(productBody);
@@ -34,21 +33,21 @@ router.post("/product", async (req, res) => {
   }
 });
 
-router.put("/product/update", async (req, res) => {
+router.put("/", async (req, res) => {
   try {
-    const { id } = req.query;
+    const { pid } = req.query;
     const productBody = req.body;
-    const resultUpdatedProduct = await productsManager.updateProduct(id, productBody)
+    const resultUpdatedProduct = await productsManager.updateProduct(pid, productBody)
     res.status(200).json(resultUpdatedProduct)
   } catch (error) {
     res.status(500).send(error.message)
   }
 });
 
-router.delete("/product/delete", async (req, res) => {
+router.delete("/", async (req, res) => {
   try {
-    const { id } = req.query;
-    const newProducts = await productsManager.deleteProduct(id);
+    const { pid } = req.query;
+    const newProducts = await productsManager.deleteProduct(pid);
     res.status(200).send(newProducts);
   } catch (error) {
     res.status(500).send(error.message);

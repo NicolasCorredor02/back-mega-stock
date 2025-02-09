@@ -2,17 +2,16 @@ import fs from "fs/promises";
 import path from "path";
 import { getAllProducts } from "../managers/product.manager.js";
 
-/**
- * TODO Revisar consigna para arreglar detalles de los datos solicitados y almacenados y restante
- */
 export class ProductsManager {
   #requiredFields = [
     "title",
     "description",
-    "price",
     "code",
+    "price",
+    "status",
     "stock",
-    "thumbnail",
+    "category",
+    "thumbnails",
   ];
 
   constructor() {
@@ -31,7 +30,7 @@ export class ProductsManager {
 
       return true;
     } catch (error) {
-      throw new Error("Error al guardar o actualizar el/los producto(s):");
+      throw new Error("Error al guardar o actualizar el/los producto(s)");
     }
   }
 
@@ -54,7 +53,7 @@ export class ProductsManager {
         throw new Error("No se encontraron productos");
       }
 
-      const product = allProducts.find((p) => p.id === id);
+      const product = allProducts.find((p) => p.id === parseInt(id));
 
       if (!product) {
         throw new Error(
@@ -85,13 +84,12 @@ export class ProductsManager {
       }
 
       // Validacion de que el codigo no este repetido
-      if (allProducts.some((p) => p.code === parseInt(product.code))) {
+      if (allProducts.some((p) => p.code === product.code)) {
         throw new Error(`El código ${product.code} ya esta registrado.`);
       }
 
       const newProduct = {
         id: allProducts.length + 1,
-        state: true,
         ...product,
       };
 
@@ -118,7 +116,6 @@ export class ProductsManager {
         throw new Error("No se encontraron productos");
       }
 
-      // TODO probar condicional
       //Validacion si el producto viene con id para actualizar
       if (product?.id) {
         throw new Error("Error, no se puede actualizar el ID de un producto");
@@ -127,7 +124,7 @@ export class ProductsManager {
       // Validacion si la peticion viene con codigo para actualizar
       if (product?.code) {
         // Validacion de que el codigo no este repetido
-        if (allProducts.some((p) => p.code === parseInt(product.code))) {
+        if (allProducts.some((p) => p.code === product.code)) {
           throw new Error(
             "No se logro actualizar el producto, código ya existente"
           );
@@ -135,7 +132,7 @@ export class ProductsManager {
 
         const indice = allProducts.findIndex((p) => p.id === parseInt(id));
 
-        // Si no se encuentra el objeto, retornar el array original
+        // Si no se encuentra el objeto, retornar un msj de error
         if (indice === -1) {
           throw new Error("No se encontro el producto a actualizar");
         }
@@ -208,7 +205,7 @@ export class ProductsManager {
 
       newAllProducts[indice] = {
         ...newAllProducts[indice],
-        state: false,
+        status: false,
       };
 
       const resultDeleteProduct = await this.updateProducts(newAllProducts);
