@@ -10,6 +10,7 @@ router.get("/:category?", async (req, res) => {
     const { category } = req.params;
 
     let products;
+
     if (category) {
       products = await productsManager.getProducts(category);
     } else {
@@ -17,7 +18,11 @@ router.get("/:category?", async (req, res) => {
     }
     res.status(200).json(products);
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Error in endpoint:", error);
+    res.status(500).json({
+      error: "Internal Server Error",
+      details: error.message,
+    });
   }
 });
 
@@ -25,10 +30,22 @@ router.get("/:category?", async (req, res) => {
 router.get("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
+
+    if (!pid) {
+      return res.status(400).json({
+        error: "Id is required",
+        details: "El id no puede ser vacio",
+      });
+    }
+
     const product = await productsManager.getProductById(pid);
+
     res.status(200).json(product);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).json({
+      error: "Internal Server Error",
+      details: error.message,
+    });
   }
 });
 
@@ -37,6 +54,13 @@ router.get("/:category?/limited/:limit", async (req, res) => {
   try {
     const { category } = req.params;
     const { limit } = req.params;
+
+    if (!limit) {
+      return res.status(400).json({
+        error: "Limit is required",
+        details: "El limite de productos no puede ser vacio",
+      });
+    }
 
     let productsLimited;
     if (category) {
@@ -47,7 +71,10 @@ router.get("/:category?/limited/:limit", async (req, res) => {
 
     res.status(200).json(productsLimited);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).json({
+      error: "Internal Server Error",
+      details: error.message,
+    });
   }
 });
 
@@ -68,10 +95,20 @@ router.get("/:category?/limited/:limit", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const productBody = req.body;
+
+    if (!productBody) {
+      return res.status(400).json({
+        error: "Product is required",
+        details: "El producto y sus detalles no puede ser vacio",
+      });
+    }
     const resultAddProduct = await productsManager.addProduct(productBody);
     res.status(200).json(resultAddProduct);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).json({
+      error: "Internal Server Error",
+      details: error.message,
+    });
   }
 });
 
@@ -79,23 +116,45 @@ router.put("/", async (req, res) => {
   try {
     const { pid } = req.query;
     const productBody = req.body;
+
+    if (!pid || !productBody) {
+      return res.status(400).json({
+        error: "Product id & details are required",
+        details: "El id y los detalles no pueden ser vacios",
+      });
+    }
+
     const resultUpdatedProduct = await productsManager.updateProduct(
       pid,
       productBody
     );
     res.status(200).json(resultUpdatedProduct);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).json({
+      error: "Internal Server Error",
+      details: error.message,
+    });
   }
 });
 
 router.delete("/", async (req, res) => {
   try {
     const { pid } = req.query;
+
+    if (!pid) {
+      return res.status(400).json({
+        error: "Product id is required",
+        details: "El id no puede ser vacio",
+      });
+    }
+
     const newProducts = await productsManager.deleteProduct(pid);
     res.status(200).send(newProducts);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).json({
+      error: "Internal Server Error",
+      details: error.message,
+    });
   }
 });
 
