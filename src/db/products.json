@@ -1,0 +1,422 @@
+[
+  {
+    "id": 1,
+    "title": "Apple Airpods Pro (2nd Gen)",
+    "description": "Active noise cancellation, adaptive transparency, and personalized spatial audio.",
+    "code": "TEC-AP01",
+    "price": 249.99,
+    "status": true,
+    "stock": 150,
+    "category": "technology",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Samsung 55 QLED 4K Smart TV",
+    "description": "Quantum dot technology with HDR10+ for stunning picture quality.",
+    "code": "TEC-SS01",
+    "price": 899.99,
+    "status": true,
+    "stock": 75,
+    "category": "technology",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Sony WH-1000XM5 Wireless Headphones",
+    "description": "Industry-leading noise cancellation with 30-hour battery life.",
+    "code": "TEC-SN01",
+    "price": 399.99,
+    "status": true,
+    "stock": 200,
+    "category": "technology",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Logitech MX Master 3S Wireless Mouse",
+    "description": "Ergonomic design with ultra-fast scrolling and customizable buttons.",
+    "code": "TEC-LG01",
+    "price": 99.99,
+    "status": true,
+    "stock": 300,
+    "category": "technology",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Apple iPad Air (5th Gen)",
+    "description": "Powerful M1 chip, 10.9-inch Liquid Retina display, and 5G connectivity.",
+    "code": "TEC-AP02",
+    "price": 599.99,
+    "status": true,
+    "stock": 120,
+    "category": "technology",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 6,
+    "title": "DJI Mini 3 Pro Drone",
+    "description": "Compact drone with 4K video, 48MP photos, and 34-minute flight time.",
+    "code": "TEC-DJ01",
+    "price": 759.99,
+    "status": true,
+    "stock": 50,
+    "category": "technology",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 7,
+    "title": "Amazon Echo Dot (5th Gen)",
+    "description": "Smart speaker with Alexa, improved sound quality, and motion detection.",
+    "code": "TEC-AM01",
+    "price": 49.99,
+    "status": true,
+    "stock": 500,
+    "category": "technology",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 8,
+    "title": "Women's Classic Trench Coat",
+    "description": "Waterproof, knee-length trench coat in beige.",
+    "code": "WCL-WC01",
+    "price": 129.99,
+    "status": true,
+    "stock": 80,
+    "category": "women's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 9,
+    "title": "Floral Print Maxi Dress",
+    "description": "Lightweight, flowy dress with a vibrant floral pattern.",
+    "code": "WCL-FD01",
+    "price": 59.99,
+    "status": true,
+    "stock": 120,
+    "category": "women's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 10,
+    "title": "High-Waist Skinny Jeans",
+    "description": "Stretch denim jeans with a high-waist fit.",
+    "code": "WCL-SJ01",
+    "price": 49.99,
+    "status": true,
+    "stock": 200,
+    "category": "women's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 11,
+    "title": "Cashmere Sweater",
+    "description": "Soft, luxurious cashmere sweater in various colors.",
+    "code": "WCL-CS01",
+    "price": 89.99,
+    "status": true,
+    "stock": 90,
+    "category": "women's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 12,
+    "title": "Leather Crossbody Bag",
+    "description": "Genuine leather bag with adjustable strap and multiple compartments.",
+    "code": "WCL-BC01",
+    "price": 79.99,
+    "status": true,
+    "stock": 150,
+    "category": "women's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 13,
+    "title": "Women's Running Leggings",
+    "description": "High-performance leggings with moisture-wicking fabric.",
+    "code": "WCL-RL01",
+    "price": 39.99,
+    "status": true,
+    "stock": 300,
+    "category": "women's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 14,
+    "title": "Silk Blouse",
+    "description": "Elegant silk blouse with a button-down front.",
+    "code": "WCL-SB01",
+    "price": 69.99,
+    "status": true,
+    "stock": 100,
+    "category": "women's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 15,
+    "title": "Men's Slim-Fit Suit",
+    "description": "Two-piece suit in charcoal gray, perfect for formal occasions.",
+    "code": "MCL-SS01",
+    "price": 199.99,
+    "status": true,
+    "stock": 60,
+    "category": "men's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 16,
+    "title": "Cotton Polo Shirt",
+    "description": "Breathable polo shirt in assorted colors.",
+    "code": "MCL-PS01",
+    "price": 29.99,
+    "status": true,
+    "stock": 250,
+    "category": "men's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 17,
+    "title": "Denim Jacket",
+    "description": "Classic blue denim jacket with a relaxed fit.",
+    "code": "MCL-DJ01",
+    "price": 79.99,
+    "status": true,
+    "stock": 100,
+    "category": "men's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 18,
+    "title": "Men's Jogger Pants",
+    "description": "Comfortable joggers with an elastic waistband and cuffs.",
+    "code": "MCL-JP01",
+    "price": 44.99,
+    "status": true,
+    "stock": 180,
+    "category": "men's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 19,
+    "title": "Leather Belt",
+    "description": "Genuine leather belt with a polished silver buckle.",
+    "code": "MCL-LB01",
+    "price": 34.99,
+    "status": true,
+    "stock": 200,
+    "category": "men's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 20,
+    "title": "Men's Winter Parka",
+    "description": "Heavy-duty parka with faux fur trim and multiple pockets.",
+    "code": "MCL-WP01",
+    "price": 149.99,
+    "status": true,
+    "stock": 70,
+    "category": "men's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 21,
+    "title": "Graphic T-Shirt",
+    "description": "Casual t-shirt with a unique graphic print.",
+    "code": "MCL-GT01",
+    "price": 19.99,
+    "status": true,
+    "stock": 400,
+    "category": "men's clothing",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 22,
+    "title": "Women's White Sneakers",
+    "description": "Comfortable and stylish sneakers for everyday wear.",
+    "code": "FWT-WS01",
+    "price": 59.99,
+    "status": true,
+    "stock": 200,
+    "category": "footwear",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 23,
+    "title": "Men's Leather Boots",
+    "description": "Durable leather boots with a rugged sole",
+    "code": "FWT-MB01",
+    "price": 129.99,
+    "status": true,
+    "stock": 90,
+    "category": "footwear",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 24,
+    "title": "Women's Ankle Boots",
+    "description": "Chic ankle boots with a low heel.",
+    "code": "FWT-WA01",
+    "price": 89.99,
+    "status": true,
+    "stock": 120,
+    "category": "footwear",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 25,
+    "title": "Men's Running Shoes",
+    "description": "Lightweight running shoes with excellent arch support.",
+    "code": "FWT-MR01",
+    "price": 79.99,
+    "status": true,
+    "stock": 150,
+    "category": "footwear",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 26,
+    "title": "Women's Ballet Flats",
+    "description": "Comfortable and elegant flats in various colors.",
+    "code": "FWT-WF01",
+    "price": 49.99,
+    "status": true,
+    "stock": 180,
+    "category": "footwear",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 27,
+    "title": "Men's Loafers",
+    "description": "Classic leather loafers for a polished look.",
+    "code": "FWT-ML01",
+    "price": 99.99,
+    "status": true,
+    "stock": 100,
+    "category": "footwear",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 28,
+    "title": "Women's Hiking Boots",
+    "description": "Waterproof hiking boots with superior grip.",
+    "code": "FWT-WH01",
+    "price": 119.99,
+    "status": true,
+    "stock": 80,
+    "category": "footwear",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 29,
+    "title": "Men's Sandals",
+    "description": "Comfortable sandals with adjustable straps.",
+    "code": "FWT-MS01",
+    "price": 39.99,
+    "status": true,
+    "stock": 250,
+    "category": "footwear",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  },
+  {
+    "id": 30,
+    "title": "Women's High Heels",
+    "description": "Elegant high heels for formal occasions.",
+    "code": "FWT-WH02",
+    "price": 69.99,
+    "status": true,
+    "stock": 120,
+    "category": "footwear",
+    "thumbnails": [
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
+      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+    ]
+  }
+]

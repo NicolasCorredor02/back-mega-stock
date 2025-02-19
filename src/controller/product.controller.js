@@ -15,13 +15,12 @@ export class ProductsManager {
   ];
 
   constructor() {
-    this.rute = path.resolve('./server/db/');
+    this.rute = path.resolve("./src/db/");
     this.ruteComplete = path.join(this.rute, "products.json");
   }
 
   async updateProducts(products) {
     try {
-      
       if (!products) {
         return false;
       }
@@ -34,12 +33,26 @@ export class ProductsManager {
     }
   }
 
-  async getProducts() {
+  async getProducts(category) {
     try {
       const allProducts = await getAllProducts();
       if (!allProducts) {
         throw new Error("No se encontraron productos");
       }
+
+      if (category) {
+        const categoryFormated = category.toLowerCase();
+        const productsByCategory = allProducts.filter(
+          (p) => p.category === categoryFormated
+        );
+
+        if (!productsByCategory) {
+          throw new Error("No se encontraron productos por esa categoria");
+        }
+
+        return productsByCategory;
+      }
+
       return allProducts;
     } catch (error) {
       throw error;
@@ -66,6 +79,93 @@ export class ProductsManager {
       throw error;
     }
   }
+
+  async getLimitProducts(limit, category) {
+    try {
+      const allProducts = await getAllProducts();
+      if (!allProducts) {
+        throw new Error("No se encontraron productos");
+      }
+
+      if (!limit) {
+        throw new Error("Error, el limite de busqueda es necesario");
+      }
+
+      const limitFormated = parseInt(limit);
+
+      if (limitFormated > allProducts.length) {
+        throw new Error(
+          "La cantidad de datos solicitados es mayor a la cantidad de productos."
+        );
+      }
+
+      // Si se agrega una categoria se retornan un limite de productos de esa categoria
+      if (category) {
+        const productsCategory = await this.getProducts(category);
+
+        if (limitFormated > productsCategory.length) {
+          throw new Error(
+            "La cantidad de datos solicitados es mayor a la cantidad de productos."
+          );
+        }
+
+        const productsCategoryLimited = productsCategory.slice(
+          0,
+          limitFormated
+        );
+
+        return productsCategoryLimited;
+      }
+
+      // Se limita el array de acuerdo a la cantidad solicitada
+      const allProductsLimited = allProducts.slice(0, limitFormated);
+      return allProductsLimited;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // async getCategories() {
+  //   console.log("Metodo getCategories iniciado");
+
+  //   try {
+  //     const allProducts = await getAllProducts();
+  //     console.log("All products", allProducts);
+
+  //     if (!allProducts) {
+  //       throw new Error("No se encontraron productos");
+  //     }
+  //     // Se sacan todas las categorias de todos los objetos en un nuevo array
+  //     const categories = allProducts.map((p) => p.category);
+  //     console.log("All categories", categories);
+
+  //     if (!categories || categories.length === 0) {
+  //       throw new Error("Error al obtener las categorias general");
+  //     }
+
+  //     /**
+  //      * Se aplica un new Set(array) para eliminar valores duplicados
+  //      * Se usa spread operator ... para transformar cada propiedad del objeto SET en un espacio del array
+  //      */
+  //     const categorySingle = [...new Set(categories)];
+  //     // const categoryMap = {};
+  //     // categories.forEach((category) => {
+  //     //   categoryMap[category] = true;
+  //     // });
+
+  //     // const categorySingle = Object.keys(categoryMap);
+
+  //     console.log("Single category", categorySingle);
+
+  //     if (!categorySingle || categorySingle.length === 0) {
+  //       throw new Error("Error al obtener las categorias.");
+  //     }
+
+  //     return categorySingle;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   async addProduct(product) {
     try {

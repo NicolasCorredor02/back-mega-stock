@@ -5,12 +5,12 @@ import logger from 'morgan'
 const createServer = () => {
   const app = express();
 
-  // Middlewares
+  //* Middlewares
   app.use(express.json()) // Ingreso de data por el body de HTTP
-  app.use(express.urlencoded({extended: true})) // Ingreso de data de forms
+  app.use(express.urlencoded({extended: true})) // Ingreso de data de forms que sean extensos y requieran una inspeccion profunda
   app.use(logger("dev"))
 
-  // Cors
+  //* CORS
   // Config de los dominios que pueden acceder a la API
   app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*") // Publica
@@ -19,7 +19,7 @@ const createServer = () => {
     next() // Middleware para no frenar la ejecucion de la API y en cambio se siguen ejecutando los demas middlewares 
   })
 
-  // Routes o endpoints
+  //* Routes o endpoints
   app.use('/', routes)
 
   // todo Route not found
@@ -29,4 +29,3 @@ const createServer = () => {
 
 
 export default createServer
-

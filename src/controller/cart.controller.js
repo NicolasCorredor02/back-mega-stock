@@ -7,7 +7,7 @@ export class CartManager {
   #requiredFields = ["quantity"];
 
   constructor() {
-    this.rute = path.resolve("./server/db/");
+    this.rute = path.resolve("./src/db/");
     this.ruteComplete = path.join(this.rute, "carts.json");
     this.productManager = new ProductsManager();
   }
