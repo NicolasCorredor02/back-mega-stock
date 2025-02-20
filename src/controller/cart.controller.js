@@ -17,10 +17,19 @@ export class CartsController {
     try {
       const { cid } = req.params;
 
-      if (!cid) {
+      if (!cid || cid.trim() === "") {
         return req.status(400).json({
           error: "Id cart is required",
           details: "El id del cart no puede ser vacio",
+        });
+      }
+
+      // Verificar que sea un número válido
+      const numCid = parseInt(cid);
+      if (isNaN(numCid) || numCid <= 0) {
+        return res.status(400).json({
+          error: "Invalid limit",
+          details: "El límite debe ser un número positivo",
         });
       }
 
@@ -39,10 +48,19 @@ export class CartsController {
       const { cid } = req.params;
       const product = req.body;
 
-      if (!cid || !product) {
+      if (!cid || cid.trim() === "" || !product) {
         return res.status(400).json({
           error: "Cart id & product are required",
           details: "El id del cart y el producto no pueden ser vacios",
+        });
+      }
+
+      // Verificar que sea un número válido
+      const numCid = parseInt(cid);
+      if (isNaN(numCid) || numCid <= 0) {
+        return res.status(400).json({
+          error: "Invalid limit",
+          details: "El límite debe ser un número positivo",
         });
       }
 

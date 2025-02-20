@@ -26,13 +26,19 @@ export class ProductsController {
     try {
       const { id } = req.params;
 
-      console.log("id", id);
-      
-
-      if (!id) {
+      if (!id || id.trim() === "") {
         return res.status(400).json({
           error: "Id is required",
           details: "El id no puede ser vacio",
+        });
+      }
+
+      // Verificar que sea un número válido
+      const numId = parseInt(id);
+      if (isNaN(numId) || numId <= 0) {
+        return res.status(400).json({
+          error: "Invalid limit",
+          details: "El id debe ser un número positivo",
         });
       }
 
@@ -52,10 +58,19 @@ export class ProductsController {
       const { category } = req.params;
       const { limit } = req.params;
 
-      if (!limit) {
+      if (!limit || limit.trim() === "") {
         return res.status(400).json({
           error: "Limit is required",
           details: "El limite de productos no puede ser vacio",
+        });
+      }
+
+      // Verificar que sea un número válido
+      const numLimit = parseInt(limit);
+      if (isNaN(numLimit) || numLimit <= 0) {
+        return res.status(400).json({
+          error: "Invalid limit",
+          details: "El límite debe ser un número positivo",
         });
       }
 
@@ -114,10 +129,19 @@ export class ProductsController {
       const { pid } = req.query;
       const productBody = req.body;
 
-      if (!pid || !productBody) {
+      if (!pid || pid.trim() === "" || !productBody) {
         return res.status(400).json({
           error: "Product id & details are required",
           details: "El id y los detalles no pueden ser vacios",
+        });
+      }
+
+      // Verificar que sea un número válido
+      const numPid = parseInt(pid);
+      if (isNaN(numPid) || numPid <= 0) {
+        return res.status(400).json({
+          error: "Invalid limit",
+          details: "El id debe ser un número positivo",
         });
       }
 
@@ -138,17 +162,26 @@ export class ProductsController {
     try {
       const { pid } = req.query;
 
-      if (!pid) {
+      if (!pid || pid.trim() === "") {
         return res.status(400).json({
           error: "Product id is required",
           details: "El id no puede ser vacio",
         });
       }
 
+      // Verificar que sea un número válido
+      const numPid = parseInt(pid);
+      if (isNaN(numPid) || numPid <= 0) {
+        return res.status(400).json({
+          error: "Invalid limit",
+          details: "El límite debe ser un número positivo",
+        });
+      }
+
       const newProducts = await ProductsManager.deleteProduct(pid);
       res.status(200).json({
-        success:true,
-        message: newProducts
+        success: true,
+        message: newProducts,
       });
     } catch (error) {
       res.status(500).json({
