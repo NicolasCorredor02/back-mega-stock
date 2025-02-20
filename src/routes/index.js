@@ -1,7 +1,6 @@
-import express from 'express';
 import { Router } from "express";
-import products from "./product.route.js";
-import carts from "./cart.route.js"
+import products from "@/routes/product.route.js";
+import carts from "@/routes/cart.route.js"
 
 
 const router = Router()

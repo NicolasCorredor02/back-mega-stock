@@ -6,7 +6,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./src/index.js"
+    "start": "nodemon ./src/index.js",
+    "postinstall": "link-module-alias"
+  },
+  "_moduleAliases":{
+    "@": "./src"
   },
   "repository": {
     "type": "git",
@@ -29,6 +33,7 @@
   "homepage": "https://github.com/NicolasCorredor02/back-mega-stock#readme",
   "dependencies": {
     "express": "^4.21.2",
+    "link-module-alias": "^1.2.0",
     "morgan": "^1.10.0"
   }
 }

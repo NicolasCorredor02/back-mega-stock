@@ -1,322 +1,160 @@
-import fs from "fs/promises";
-import path from "path";
-import { getAllProducts } from "../managers/product.manager.js";
+import { ProductsManager } from "@/managers/product.manager.js";
 
-export class ProductsManager {
-  #requiredFields = [
-    "title",
-    "description",
-    "code",
-    "price",
-    "status",
-    "stock",
-    "category",
-    "thumbnails",
-  ];
-
-  constructor() {
-    this.rute = path.resolve("./src/db/");
-    this.ruteComplete = path.join(this.rute, "products.json");
-  }
-
-  async updateProducts(products) {
+export class ProductsController {
+  static async getProducts(req, res) {
     try {
-      if (!products) {
-        return false;
-      }
+      const { category } = req.params;
 
-      await fs.writeFile(this.ruteComplete, JSON.stringify(products, null, 2));
-
-      return true;
-    } catch (error) {
-      throw new Error("Error al guardar o actualizar el/los producto(s)");
-    }
-  }
-
-  async getProducts(category) {
-    try {
-      const allProducts = await getAllProducts();
-      if (!allProducts) {
-        throw new Error("No se encontraron productos");
-      }
+      let products;
 
       if (category) {
-        const categoryFormated = category.toLowerCase();
-        const productsByCategory = allProducts.filter(
-          (p) => p.category === categoryFormated
-        );
-
-        if (!productsByCategory) {
-          throw new Error("No se encontraron productos por esa categoria");
-        }
-
-        return productsByCategory;
+        products = await ProductsManager.getProducts(category);
+      } else {
+        products = await ProductsManager.getProducts();
       }
-
-      return allProducts;
+      res.status(200).json(products);
     } catch (error) {
-      throw error;
+      console.error("Error in endpoint:", error);
+      res.status(500).json({
+        error: "Internal Server Error",
+        details: error.message,
+      });
     }
   }
 
-  async getProductById(id) {
+  static async getProductById(req, res) {
     try {
-      const allProducts = await getAllProducts();
-      if (!allProducts) {
-        throw new Error("No se encontraron productos");
+      const { id } = req.params;
+
+      console.log("id", id);
+      
+
+      if (!id) {
+        return res.status(400).json({
+          error: "Id is required",
+          details: "El id no puede ser vacio",
+        });
       }
 
-      const product = allProducts.find((p) => p.id === parseInt(id));
+      const product = await ProductsManager.getProductById(id);
 
-      if (!product) {
-        throw new Error(
-          `Error: El producto con el id: ${id}, no se ha encontrado.`
-        );
-      }
-
-      return product;
+      res.status(200).json(product);
     } catch (error) {
-      throw error;
+      res.status(500).json({
+        error: "Internal Server Error",
+        details: error.message,
+      });
     }
   }
 
-  async getLimitProducts(limit, category) {
+  static async getLimitProducts(req, res) {
     try {
-      const allProducts = await getAllProducts();
-      if (!allProducts) {
-        throw new Error("No se encontraron productos");
-      }
+      const { category } = req.params;
+      const { limit } = req.params;
 
       if (!limit) {
-        throw new Error("Error, el limite de busqueda es necesario");
+        return res.status(400).json({
+          error: "Limit is required",
+          details: "El limite de productos no puede ser vacio",
+        });
       }
 
-      const limitFormated = parseInt(limit);
-
-      if (limitFormated > allProducts.length) {
-        throw new Error(
-          "La cantidad de datos solicitados es mayor a la cantidad de productos."
-        );
-      }
-
-      // Si se agrega una categoria se retornan un limite de productos de esa categoria
+      let productsLimited;
       if (category) {
-        const productsCategory = await this.getProducts(category);
-
-        if (limitFormated > productsCategory.length) {
-          throw new Error(
-            "La cantidad de datos solicitados es mayor a la cantidad de productos."
-          );
-        }
-
-        const productsCategoryLimited = productsCategory.slice(
-          0,
-          limitFormated
+        productsLimited = await ProductsManager.getLimitProducts(
+          limit,
+          category
         );
-
-        return productsCategoryLimited;
+      } else {
+        productsLimited = await ProductsManager.getLimitProducts(limit);
       }
 
-      // Se limita el array de acuerdo a la cantidad solicitada
-      const allProductsLimited = allProducts.slice(0, limitFormated);
-      return allProductsLimited;
+      res.status(200).json(productsLimited);
     } catch (error) {
-      throw error;
+      res.status(500).json({
+        error: "Internal Server Error",
+        details: error.message,
+      });
     }
   }
 
-  // async getCategories() {
-  //   console.log("Metodo getCategories iniciado");
-
+  // static async getCategories(req, res) {
   //   try {
-  //     const allProducts = await getAllProducts();
-  //     console.log("All products", allProducts);
-
-  //     if (!allProducts) {
-  //       throw new Error("No se encontraron productos");
-  //     }
-  //     // Se sacan todas las categorias de todos los objetos en un nuevo array
-  //     const categories = allProducts.map((p) => p.category);
-  //     console.log("All categories", categories);
-
-  //     if (!categories || categories.length === 0) {
-  //       throw new Error("Error al obtener las categorias general");
-  //     }
-
-  //     /**
-  //      * Se aplica un new Set(array) para eliminar valores duplicados
-  //      * Se usa spread operator ... para transformar cada propiedad del objeto SET en un espacio del array
-  //      */
-  //     const categorySingle = [...new Set(categories)];
-  //     // const categoryMap = {};
-  //     // categories.forEach((category) => {
-  //     //   categoryMap[category] = true;
-  //     // });
-
-  //     // const categorySingle = Object.keys(categoryMap);
-
-  //     console.log("Single category", categorySingle);
-
-  //     if (!categorySingle || categorySingle.length === 0) {
-  //       throw new Error("Error al obtener las categorias.");
-  //     }
-
-  //     return categorySingle;
+  //     console.log("Antes de llamar a getCategories");
+  //     const resultCategories = await ProductsManager.getCategories();
+  //     console.log("response categories", resultCategories);
+  //     res.status(200).json(resultCategories);
   //   } catch (error) {
-  //     throw error;
+  //     res.status(500).send(error.message);
   //   }
   // }
 
-  async addProduct(product) {
+  static async addProduct(req, res) {
     try {
-      const allProducts = await getAllProducts();
+      const productBody = req.body;
 
-      // Validacion de existencia de los productos en la DB
-      if (!allProducts) {
-        throw new Error("No se encontraron productos");
+      if (!productBody) {
+        return res.status(400).json({
+          error: "Product is required",
+          details: "El producto y sus detalles no puede ser vacio",
+        });
       }
-
-      // Validación de los campos obligatorios
-      for (const requiredField of this.#requiredFields) {
-        if (!(requiredField in product)) {
-          throw new Error(`El campo ${requiredField} es obligatorio.`);
-        }
-      }
-
-      // Validacion de que el codigo no este repetido
-      if (allProducts.some((p) => p.code === product.code)) {
-        throw new Error(`El código ${product.code} ya esta registrado.`);
-      }
-
-      const newProduct = {
-        id: allProducts.length + 1,
-        ...product,
-      };
-
-      allProducts.push(newProduct);
-
-      const resultAddProduct = await this.updateProducts(allProducts);
-
-      if (!resultAddProduct) {
-        throw new Error("No se obtuvo el producto a agregar");
-      }
-
-      return newProduct;
+      const resultAddProduct = await ProductsManager.addProduct(productBody);
+      res.status(200).json(resultAddProduct);
     } catch (error) {
-      throw error;
+      res.status(500).json({
+        error: "Internal Server Error",
+        details: error.message,
+      });
     }
   }
 
-  async updateProduct(id, product) {
+  static async updateProduct(req, res) {
     try {
-      const allProducts = await getAllProducts();
+      const { pid } = req.query;
+      const productBody = req.body;
 
-      // Validacion de existencia de los productos en la DB
-      if (!allProducts) {
-        throw new Error("No se encontraron productos");
+      if (!pid || !productBody) {
+        return res.status(400).json({
+          error: "Product id & details are required",
+          details: "El id y los detalles no pueden ser vacios",
+        });
       }
 
-      //Validacion si el producto viene con id para actualizar
-      if (product?.id) {
-        throw new Error("Error, no se puede actualizar el ID de un producto");
-      }
-
-      // Validacion si la peticion viene con codigo para actualizar
-      if (product?.code) {
-        // Validacion de que el codigo no este repetido
-        if (allProducts.some((p) => p.code === product.code)) {
-          throw new Error(
-            "No se logro actualizar el producto, código ya existente"
-          );
-        }
-
-        const indice = allProducts.findIndex((p) => p.id === parseInt(id));
-
-        // Si no se encuentra el objeto, retornar un msj de error
-        if (indice === -1) {
-          throw new Error("No se encontro el producto a actualizar");
-        }
-
-        // Se crea una nueva copia del array de productos
-        const newAllProducts = [...allProducts];
-
-        // Se actualizan los datos proporsionados
-        newAllProducts[indice] = {
-          ...newAllProducts[indice], // Se mantienen los existentes
-          ...product, // Se sobreescriben los suministrados
-        };
-
-        // Se realiza la actualizacion sobre la DB
-        const resultUpdatedProduct = await this.updateProducts(newAllProducts);
-
-        if (!resultUpdatedProduct) {
-          throw new Error("No se obtuvo el producto a actualizar");
-        }
-
-        return newAllProducts[indice];
-      } else {
-        const indice = allProducts.findIndex((p) => p.id === parseInt(id));
-
-        if (indice === -1) {
-          throw new Error("No se encontro el producto a actualizar");
-        }
-
-        const newAllProducts = [...allProducts];
-
-        newAllProducts[indice] = {
-          ...newAllProducts[indice],
-          ...product,
-        };
-
-        const resultUpdatedProduct = await this.updateProducts(newAllProducts);
-
-        if (!resultUpdatedProduct) {
-          throw new Error("No se obtuvo el producto a actualizar");
-        }
-
-        return newAllProducts[indice];
-      }
+      const resultUpdatedProduct = await ProductsManager.updateProduct(
+        pid,
+        productBody
+      );
+      res.status(200).json(resultUpdatedProduct);
     } catch (error) {
-      throw error;
+      res.status(500).json({
+        error: "Internal Server Error",
+        details: error.message,
+      });
     }
   }
 
-  async deleteProduct(id) {
+  static async deleteProduct(req, res) {
     try {
-      const allProducts = await getAllProducts();
+      const { pid } = req.query;
 
-      if (!allProducts) {
-        throw new Error("No se encontraron productos");
+      if (!pid) {
+        return res.status(400).json({
+          error: "Product id is required",
+          details: "El id no puede ser vacio",
+        });
       }
 
-      const productToDelete = allProducts.find((p) => p.id === parseInt(id));
-
-      if (!productToDelete) {
-        throw new Error("No existe un producto con el id suministrado");
-      }
-
-      const indice = allProducts.findIndex((p) => p.id === parseInt(id));
-
-      if (indice === -1) {
-        throw new Error("No se encontro el producto a eliminar");
-      }
-
-      const newAllProducts = [...allProducts];
-
-      newAllProducts[indice] = {
-        ...newAllProducts[indice],
-        status: false,
-      };
-
-      const resultDeleteProduct = await this.updateProducts(newAllProducts);
-
-      if (!resultDeleteProduct) {
-        throw new Error("No se obtuvo el producto a eliminar");
-      }
-
-      return "Producto eliminado exitosamente!";
+      const newProducts = await ProductsManager.deleteProduct(pid);
+      res.status(200).json({
+        success:true,
+        message: newProducts
+      });
     } catch (error) {
-      throw error;
+      res.status(500).json({
+        error: "Internal Server Error",
+        details: error.message,
+      });
     }
   }
 }

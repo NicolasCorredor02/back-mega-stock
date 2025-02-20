@@ -1,4 +1,4 @@
-import createServer from './server/config/server.js';
+import createServer from "@/config/server.js";
 
 const app = createServer();
 const PORT = 8080;
