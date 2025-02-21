@@ -1,4 +1,4 @@
-import { ProductsManager } from "@/managers/product.manager.js";
+import { ProductsManager } from "root/managers/product.manager.js";
 import createHttpError from "http-errors";
 
 export class ProductsController {

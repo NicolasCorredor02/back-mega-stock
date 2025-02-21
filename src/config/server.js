@@ -1,7 +1,7 @@
 import express from "express";
-import routes from '@/routes/index.js';
+import routes from 'root/routes/index.js';
 import logger from 'morgan'
-import errorHandler from "@/middlewares/errorHandler.js";
+import errorHandler from "root/middlewares/errorHandler.js";
 
 const createServer = () => {
   const app = express();

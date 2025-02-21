@@ -1,4 +1,4 @@
-import { CartsManager } from "@/managers/cart.manager.js";
+import { CartsManager } from "root/managers/cart.manager.js";
 import createHttpError from "http-errors";
 
 export class CartsController {

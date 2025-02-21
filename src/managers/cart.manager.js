@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import { ProductsManager } from "@/managers/product.manager.js";
+import { ProductsManager } from "root/managers/product.manager.js";
 
 const ruteDB = path.resolve("src/db/carts.json");
 
