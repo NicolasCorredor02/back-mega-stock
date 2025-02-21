@@ -11,8 +11,7 @@ export class ProductsManager {
     "price",
     "status",
     "stock",
-    "category",
-    "thumbnails",
+    "category"
   ];
 
   /**
@@ -224,6 +223,8 @@ export class ProductsManager {
 
       const newProduct = {
         id: allProducts.length + 1,
+        status: true,
+        thumbnails: product.thumbnails || ["/uploads/default.webp"],
         ...product,
       };
 

@@ -1,5 +1,6 @@
 import multer from "multer";
 import path from "path";
+import { v4 as uuidv4 } from "uuid"
 
 // Configuración de almacenamiento
 const storage = multer.diskStorage({
@@ -7,8 +8,8 @@ const storage = multer.diskStorage({
     cb(null, "src/uploads/"); // Carpeta destino
   },
   filename: (req, file, cb) => {
-    const uniqueName = `${file.originalname}`;
-    cb(null, uniqueName); // Nombre unico: nopmbre origial del archivo
+    const uniqueName = `${uuidv4()}${path.extname(file.originalname)}`;
+    cb(null, uniqueName); // Nombre unico: codigo unico + extension del archivo
   },
 });
 

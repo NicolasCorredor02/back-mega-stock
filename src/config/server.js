@@ -6,14 +6,15 @@ import path from "path";
 
 const createServer = () => {
   const app = express();
-  const srcPath = path.resolve("./src"); // Patg que apunta a la ruta raiz del proyecto
+  const srcPath = path.resolve("./src/"); // Patg que apunta a la ruta raiz del proyecto
 
   //* Middlewares
   app.use(express.json()); // Ingreso de data por el body de HTTP
   app.use(express.urlencoded({ extended: true })); // Ingreso de data de forms que sean extensos y requieran una inspeccion profunda
   app.use(logger("dev"));
-  app.use("/static", express.static(srcPath + "/public")); // Implementacion de middleware para establecer un directorio static que alojara los archivos public para el render desde server
-
+  app.use("/static", express.static(path.join(srcPath, "public"))); // Implementacion de middleware para establecer un directorio static que alojara los archivos public para el render desde server
+  app.use("/uploads", express.static(path.join(srcPath, "uploads"))); // Implementacion para establecer directorio estatico de las imagenes que se suben
+  
   //* CORS
   // Config de los dominios que pueden acceder a la API
   app.use((req, res, next) => {

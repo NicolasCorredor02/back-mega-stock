@@ -89,11 +89,30 @@ export class ProductsController {
   static async addProduct(req, res, next) {
     try {
       const productBody = req.body;
+      const files = req.files; // Data de las images
 
-      if (!productBody) {
+      if (!productBody || !files || files.length === 0) {
         throw createHttpError(404, "Product and product details are required");
       }
-      const resultAddProduct = await ProductsManager.addProduct(productBody);
+
+      //Verificar que el producto tenga un valor minimo de stock
+
+      const numStock = parseInt(productBody.stock);
+      if (isNaN(numStock) || numStock <= 0) {
+        throw createHttpError(404, "The quantity in stock must be a minimum of 1");
+      }
+
+      // Mapeo de las rutas de las imagenes
+      const thumbnails = files.map((file) => `/uploads/${file.filename}`);
+
+      // Se crea el product Data con los datos del body y el nuevo array de thumbnails
+      const productData = {
+        ...productBody,
+        thumbnails: thumbnails,
+        status: true // Se asegura el estado inicial como activo
+      }
+
+      const resultAddProduct = await ProductsManager.addProduct(productData);
       res.status(200).json(resultAddProduct);
     } catch (error) {
       next(error);
@@ -145,7 +164,7 @@ export class ProductsController {
         message: newProducts,
       });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 }
