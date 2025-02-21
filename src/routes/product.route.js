@@ -3,14 +3,11 @@ import { ProductsController } from "@/controller/product.controller.js";
 
 const router = Router();
 
-// Get all products or get products by category
-router.get("/:category?", ProductsController.getProducts);
-
 // Get product by ID
 router.get("/product/:id", ProductsController.getProductById);
 
 // Get limit products
-router.get("/:category?/limited/:limit", ProductsController.getLimitProducts);
+router.get("/limited/:category?/:limit", ProductsController.getLimitProducts);
 
 // Get categories
 // router.get("/categories", ProductsController.getCategories);
@@ -24,4 +21,6 @@ router.put("/update", ProductsController.updateProduct);
 // Delete product from DB
 router.delete("/delete", ProductsController.deleteProduct);
 
+// Get all products or get products by category
+router.get("/:category?", ProductsController.getProducts);
 export default router;

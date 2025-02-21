@@ -40,7 +40,7 @@ export class ProductsManager {
 
       return true;
     } catch (error) {
-      throw new Error("Error al guardar o actualizar el/los producto(s)");
+      throw new Error("Error when saving or updating product(s)");
     }
   }
 
@@ -53,7 +53,7 @@ export class ProductsManager {
     try {
       const allProducts = await ProductsManager.readDB();
       if (!allProducts) {
-        throw new Error("No se encontraron productos");
+        throw new Error("No products found");
       }
 
       if (category) {
@@ -63,7 +63,7 @@ export class ProductsManager {
         );
 
         if (!productsByCategory) {
-          throw new Error("No se encontraron productos por esa categoria");
+          throw new Error("No products found for this category");
         }
 
         return productsByCategory;
@@ -86,14 +86,14 @@ export class ProductsManager {
       console.log("Products", allProducts);
       
       if (!allProducts) {
-        throw new Error("No se encontraron productos");
+        throw new Error("No products found");
       }
 
       const product = allProducts.find((p) => p.id === parseInt(id));
 
       if (!product) {
         throw new Error(
-          `Error: El producto con el id: ${id}, no se ha encontrado.`
+          `Error: Product with id: ${id}, not found.`
         );
       }
 
@@ -113,18 +113,18 @@ export class ProductsManager {
     try {
       const allProducts = await ProductsManager.readDB();
       if (!allProducts) {
-        throw new Error("No se encontraron productos");
+        throw new Error("No products found");
       }
 
       if (!limit) {
-        throw new Error("Error, el limite de busqueda es necesario");
+        throw new Error("Error, the search limit is required");
       }
 
       const limitFormated = parseInt(limit);
 
       if (limitFormated > allProducts.length) {
         throw new Error(
-          "La cantidad de datos solicitados es mayor a la cantidad de productos."
+          "The amount of data requested is greater than the amount of products"
         );
       }
 
@@ -134,7 +134,7 @@ export class ProductsManager {
 
         if (limitFormated > productsCategory.length) {
           throw new Error(
-            "La cantidad de datos solicitados es mayor a la cantidad de productos."
+            "The amount of data requested is greater than the amount of products"
           );
         }
 
@@ -162,14 +162,14 @@ export class ProductsManager {
   //     console.log("All products", allProducts);
 
   //     if (!allProducts) {
-  //       throw new Error("No se encontraron productos");
+  //       throw new Error("No products found");
   //     }
   //     // Se sacan todas las categorias de todos los objetos en un nuevo array
   //     const categories = allProducts.map((p) => p.category);
   //     console.log("All categories", categories);
 
   //     if (!categories || categories.length === 0) {
-  //       throw new Error("Error al obtener las categorias general");
+  //       throw new Error("Error obtaining general categories");
   //     }
 
   //     /**
@@ -187,7 +187,7 @@ export class ProductsManager {
   //     console.log("Single category", categorySingle);
 
   //     if (!categorySingle || categorySingle.length === 0) {
-  //       throw new Error("Error al obtener las categorias.");
+  //       throw new Error("Error when obtaining the categories");
   //     }
 
   //     return categorySingle;
@@ -207,19 +207,19 @@ export class ProductsManager {
 
       // Validacion de existencia de los productos en la DB
       if (!allProducts) {
-        throw new Error("No se encontraron productos");
+        throw new Error("No products found");
       }
 
       // Validación de los campos obligatorios
       for (const requiredField of ProductsManager.requiredFields) {
         if (!(requiredField in product)) {
-          throw new Error(`El campo ${requiredField} es obligatorio.`);
+          throw new Error(`The ${requiredField} field is mandatory.`);
         }
       }
 
       // Validacion de que el codigo no este repetido
       if (allProducts.some((p) => p.code === product.code)) {
-        throw new Error(`El código ${product.code} ya esta registrado.`);
+        throw new Error(`The code ${product.code} is already registered.`);
       }
 
       const newProduct = {
@@ -232,7 +232,7 @@ export class ProductsManager {
       const resultAddProduct = await ProductsManager.writeDB(allProducts);
 
       if (!resultAddProduct) {
-        throw new Error("No se obtuvo el producto a agregar");
+        throw new Error("The product to be added was not obtained");
       }
 
       return newProduct;
@@ -253,12 +253,12 @@ export class ProductsManager {
 
       // Validacion de existencia de los productos en la DB
       if (!allProducts) {
-        throw new Error("No se encontraron productos");
+        throw new Error("No products found");
       }
 
       //Validacion si el producto viene con id para actualizar
       if (product?.id) {
-        throw new Error("Error, no se puede actualizar el ID de un producto");
+        throw new Error("Error, product ID can not be updated");
       }
 
       // Se crea una nueva copia del array de productos
@@ -269,7 +269,7 @@ export class ProductsManager {
 
       // Si no se encuentra el objeto, retornar un msj de error
       if (indice === -1) {
-        throw new Error("No se encontro el producto a actualizar");
+        throw new Error("The product to be updated was not found");
       }
 
       // Validacion si la peticion viene con codigo para actualizar
@@ -277,7 +277,7 @@ export class ProductsManager {
         // Validacion de que el codigo no este repetido
         if (newAllProducts.some((p) => p.code === product.code)) {
           throw new Error(
-            "No se logro actualizar el producto, código ya existente"
+            "Failed to update the product, code already existing"
           );
         }
       }
@@ -292,7 +292,7 @@ export class ProductsManager {
       const resultUpdatedProduct = await ProductsManager.writeDB(newAllProducts);
 
       if (!resultUpdatedProduct) {
-        throw new Error("No se obtuvo el producto a actualizar");
+        throw new Error("Product to be upgraded was not obtained");
       }
 
       return newAllProducts[indice];
@@ -311,19 +311,19 @@ export class ProductsManager {
       const allProducts = await ProductsManager.readDB();
 
       if (!allProducts) {
-        throw new Error("No se encontraron productos");
+        throw new Error("No products found");
       }
 
       const productToDelete = allProducts.find((p) => p.id === parseInt(id));
 
       if (!productToDelete) {
-        throw new Error("No existe un producto con el id suministrado");
+        throw new Error("There is no product with the supplied id");
       }
 
       const indice = allProducts.findIndex((p) => p.id === parseInt(id));
 
       if (indice === -1) {
-        throw new Error("No se encontro el producto a eliminar");
+        throw new Error("The product to be removed was not found");
       }
 
       const newAllProducts = [...allProducts];
@@ -338,10 +338,10 @@ export class ProductsManager {
       const resultDeleteProduct = await ProductsManager.writeDB(newAllProducts);
 
       if (!resultDeleteProduct) {
-        throw new Error("No se obtuvo el producto a eliminar");
+        throw new Error("The product to be removed was not found");
       }
 
-      return "Producto eliminado exitosamente";
+      return "Product successfully removed";
     } catch (error) {
       throw error;
     }

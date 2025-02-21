@@ -1,6 +1,7 @@
 import express from "express";
 import routes from '@/routes/index.js';
 import logger from 'morgan'
+import errorHandler from "@/middlewares/errorHandler.js";
 
 const createServer = () => {
   const app = express();
@@ -9,6 +10,7 @@ const createServer = () => {
   app.use(express.json()) // Ingreso de data por el body de HTTP
   app.use(express.urlencoded({extended: true})) // Ingreso de data de forms que sean extensos y requieran una inspeccion profunda
   app.use(logger("dev"))
+  app.use(errorHandler) // Middleware propio para el manejo global de errores
 
   //* CORS
   // Config de los dominios que pueden acceder a la API

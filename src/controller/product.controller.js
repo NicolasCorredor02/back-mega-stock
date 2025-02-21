@@ -1,7 +1,8 @@
 import { ProductsManager } from "@/managers/product.manager.js";
+import createHttpError from "http-errors";
 
 export class ProductsController {
-  static async getProducts(req, res) {
+  static async getProducts(req, res, next) {
     try {
       const { category } = req.params;
 
@@ -14,11 +15,7 @@ export class ProductsController {
       }
       res.status(200).json(products);
     } catch (error) {
-      console.error("Error in endpoint:", error);
-      res.status(500).json({
-        error: "Internal Server Error",
-        details: error.message,
-      });
+      next(error);
     }
   }
 
@@ -27,19 +24,13 @@ export class ProductsController {
       const { id } = req.params;
 
       if (!id || id.trim() === "") {
-        return res.status(400).json({
-          error: "Id is required",
-          details: "El id no puede ser vacio",
-        });
+        throw createHttpError(404, "Id is required");
       }
 
       // Verificar que sea un número válido
       const numId = parseInt(id);
       if (isNaN(numId) || numId <= 0) {
-        return res.status(400).json({
-          error: "Invalid limit",
-          details: "El id debe ser un número positivo",
-        });
+        throw createHttpError(404, "ID must be a positive number")
       }
 
       const product = await ProductsManager.getProductById(id);

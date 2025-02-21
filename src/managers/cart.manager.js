@@ -32,7 +32,7 @@ export class CartsManager {
 
       return true;
     } catch (error) {
-      throw new Error("Error al crear o actualizar el/los carrito(s)");
+      throw new Error("Error when creating or updating cart(s)");
     }
   }
 
@@ -44,7 +44,7 @@ export class CartsManager {
     try {
       const allCarts = await CartsManager.readDB();
       if (!allCarts) {
-        throw new Error("No se encontraron carritos");
+        throw new Error("No carts found");
       }
       const newCart = {
         id: allCarts.length + 1,
@@ -56,7 +56,7 @@ export class CartsManager {
       const resultCreateCart = await CartsManager.writeDB(allCarts);
 
       if (!resultCreateCart) {
-        throw new Error("No se logro crear el carrito");
+        throw new Error("Failed to create cart");
       }
 
       return newCart;
@@ -74,14 +74,14 @@ export class CartsManager {
     try {
       const allCarts = await CartsManager.readDB();
       if (!allCarts) {
-        throw new Error("No se encontraron carritos");
+        throw new Error("No carts found");
       }
 
       // Se obtiene el carrito a buscar
       const cart = allCarts.find((c) => c.id === parseInt(id));
 
       if (!cart) {
-        throw new Error(`Error: el carrito con el id ${id} no existe`);
+        throw new Error(`Error: cart with id ${id} does not exist`);
       }
 
       // Si el carrito no tiene productos o está vacío
@@ -110,7 +110,7 @@ export class CartsManager {
 
         if (!result) {
           throw new Error(
-            "No se encontraron productos con el/los id(s) del carrito"
+            "No products found with cart id(s)"
           );
         }
         return result;
@@ -122,7 +122,7 @@ export class CartsManager {
       };
 
       if (!resultCartProducts) {
-        throw new Error("Error al retornar carrito con informacion solicitada");
+        throw new Error("Error returning cart with requested information");
       }
 
       return resultCartProducts;
@@ -142,21 +142,21 @@ export class CartsManager {
       const allCarts = await CartsManager.readDB();
 
       if (!allCarts) {
-        throw new Error("No se encontraron carritos");
+        throw new Error("No carts found");
       }
 
       if (!idCart) {
-        throw new Error("El id del carrito es obligatorio!");
+        throw new Error("Cart ID is required");
       }
 
       if (!product) {
-        throw new Error("El producto que se agregara al carrito es obligatorio!");
+        throw new Error("The product to be added to the cart is mandatory");
       }
 
       // Validacion de los campos requeridos para agregar el producto
       for (const requiredField of CartsManager.requiredFields) {
         if (!(requiredField in product)) {
-          throw new Error(`El campo ${requiredField} es obligatorio.`);
+          throw new Error(`The ${requiredField} field is required`);
         }
       }
 
@@ -165,7 +165,7 @@ export class CartsManager {
 
       // Validacion para saber si el id del carrito existe
       if (!cart) {
-        throw new Error(`El carrito con el id ${idCart} no existe`);
+        throw new Error(`Cart with id ${idCart} does not exist`);
       }
 
       // Se busca el indice del carrito
@@ -174,7 +174,7 @@ export class CartsManager {
       // Si no se encuentra el objeto, retorna un msj de error
       if (indiceCart === -1) {
         throw new Error(
-          "No se encontro el carrito al cual se quiere agregar el producto"
+          "The cart to which you want to add the product was not found"
         );
       }
 
@@ -183,7 +183,7 @@ export class CartsManager {
         parseInt(product.id)
       );
       if (!productExist) {
-        throw new Error(`Error, el producto con el ${product.id} no existe`);
+        throw new Error(`Error, the product with the ${product.id} does not exist`);
       }
 
       // Se formatea el producto ya que puede venir como String
@@ -236,7 +236,7 @@ export class CartsManager {
 
       if (!resultUpdateCart) {
         throw new Error(
-          "Error, no se obtuvo el carrito y/o producto a agregar"
+          "Error, did not get the cart and/or product to add"
         );
       }
 
