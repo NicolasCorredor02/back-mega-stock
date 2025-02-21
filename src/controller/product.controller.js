@@ -19,7 +19,7 @@ export class ProductsController {
     }
   }
 
-  static async getProductById(req, res) {
+  static async getProductById(req, res, next) {
     try {
       const { id } = req.params;
 
@@ -30,17 +30,14 @@ export class ProductsController {
       // Verificar que sea un número válido
       const numId = parseInt(id);
       if (isNaN(numId) || numId <= 0) {
-        throw createHttpError(404, "ID must be a positive number")
+        throw createHttpError(404, "ID must be a positive number");
       }
 
       const product = await ProductsManager.getProductById(id);
 
       res.status(200).json(product);
     } catch (error) {
-      res.status(500).json({
-        error: "Internal Server Error",
-        details: error.message,
-      });
+      next(error);
     }
   }
 
@@ -50,19 +47,13 @@ export class ProductsController {
       const { limit } = req.params;
 
       if (!limit || limit.trim() === "") {
-        return res.status(400).json({
-          error: "Limit is required",
-          details: "El limite de productos no puede ser vacio",
-        });
+        throw createHttpError(404, "Limit is required");
       }
 
       // Verificar que sea un número válido
       const numLimit = parseInt(limit);
       if (isNaN(numLimit) || numLimit <= 0) {
-        return res.status(400).json({
-          error: "Invalid limit",
-          details: "El límite debe ser un número positivo",
-        });
+        throw createHttpError(404, "ID must be a positive number");
       }
 
       let productsLimited;
@@ -84,56 +75,44 @@ export class ProductsController {
     }
   }
 
-  // static async getCategories(req, res) {
+  // static async getCategories(req, res, next) {
   //   try {
   //     console.log("Antes de llamar a getCategories");
   //     const resultCategories = await ProductsManager.getCategories();
   //     console.log("response categories", resultCategories);
   //     res.status(200).json(resultCategories);
   //   } catch (error) {
-  //     res.status(500).send(error.message);
+  //     next(error)
   //   }
   // }
 
-  static async addProduct(req, res) {
+  static async addProduct(req, res, next) {
     try {
       const productBody = req.body;
 
       if (!productBody) {
-        return res.status(400).json({
-          error: "Product is required",
-          details: "El producto y sus detalles no puede ser vacio",
-        });
+        throw createHttpError(404, "Product and product details are required");
       }
       const resultAddProduct = await ProductsManager.addProduct(productBody);
       res.status(200).json(resultAddProduct);
     } catch (error) {
-      res.status(500).json({
-        error: "Internal Server Error",
-        details: error.message,
-      });
+      next(error);
     }
   }
 
-  static async updateProduct(req, res) {
+  static async updateProduct(req, res, next) {
     try {
       const { pid } = req.query;
       const productBody = req.body;
 
       if (!pid || pid.trim() === "" || !productBody) {
-        return res.status(400).json({
-          error: "Product id & details are required",
-          details: "El id y los detalles no pueden ser vacios",
-        });
+        throw createHttpError(404, "Product id & details are required");
       }
 
       // Verificar que sea un número válido
       const numPid = parseInt(pid);
       if (isNaN(numPid) || numPid <= 0) {
-        return res.status(400).json({
-          error: "Invalid limit",
-          details: "El id debe ser un número positivo",
-        });
+        throw createHttpError(404, "ID must be a positive number");
       }
 
       const resultUpdatedProduct = await ProductsManager.updateProduct(
@@ -142,31 +121,22 @@ export class ProductsController {
       );
       res.status(200).json(resultUpdatedProduct);
     } catch (error) {
-      res.status(500).json({
-        error: "Internal Server Error",
-        details: error.message,
-      });
+      next(error);
     }
   }
 
-  static async deleteProduct(req, res) {
+  static async deleteProduct(req, res, next) {
     try {
       const { pid } = req.query;
 
       if (!pid || pid.trim() === "") {
-        return res.status(400).json({
-          error: "Product id is required",
-          details: "El id no puede ser vacio",
-        });
+        throw createHttpError(404, "ID is required");
       }
 
       // Verificar que sea un número válido
       const numPid = parseInt(pid);
       if (isNaN(numPid) || numPid <= 0) {
-        return res.status(400).json({
-          error: "Invalid limit",
-          details: "El límite debe ser un número positivo",
-        });
+        throw createHttpError(404, "ID must be a positive number");
       }
 
       const newProducts = await ProductsManager.deleteProduct(pid);
@@ -175,10 +145,7 @@ export class ProductsController {
         message: newProducts,
       });
     } catch (error) {
-      res.status(500).json({
-        error: "Internal Server Error",
-        details: error.message,
-      });
+      next(error)
     }
   }
 }
