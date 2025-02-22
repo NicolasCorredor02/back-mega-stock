@@ -1,5 +1,16 @@
 import { ProductsManager } from "root/managers/product.manager.js";
 import createHttpError from "http-errors";
+import fs from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Obtener la ruta del archivo actual y el directorio
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Ruta para almacenar y guardar las imagenes
+const projectRoot = path.resolve(__dirname, "../../");
+const ruteImages = path.join(projectRoot, "src/uploads");
 
 export class ProductsController {
   static async getProducts(req, res, next) {
@@ -87,34 +98,70 @@ export class ProductsController {
   // }
 
   static async addProduct(req, res, next) {
+    let uploadFiles = []; // Array para guardar los nombres de los uploads existentes
+
     try {
       const productBody = req.body;
       const files = req.files; // Data de las images
+      const allProducts = await ProductsManager.readDB(); //Data actual de productos en DB
 
-      if (!productBody || !files || files.length === 0) {
+      if (!productBody) {
         throw createHttpError(404, "Product and product details are required");
       }
 
-      //Verificar que el producto tenga un valor minimo de stock
+      // Se guardan los nombres de los files temp
+      uploadFiles = files.map((file) => file.path);
 
-      const numStock = parseInt(productBody.stock);
-      if (isNaN(numStock) || numStock <= 0) {
-        throw createHttpError(404, "The quantity in stock must be a minimum of 1");
+      // Validacion de que el codigo no este repetido
+      if (allProducts.some((p) => p.code === productBody.code)) {
+        throw createHttpError(
+          404,
+          `The code ${productBody.code} is already registered`
+        );
       }
 
-      // Mapeo de las rutas de las imagenes
-      const thumbnails = files.map((file) => `/uploads/${file.filename}`);
+      //Verificar que el producto tenga un valor minimo de stock
+      const numStock = parseInt(productBody.stock);
+      if (isNaN(numStock) || numStock <= 0) {
+        throw createHttpError(
+          404,
+          "The quantity in stock must be a minimum of 1"
+        );
+      }
+
+      let thumbnails;
+
+      if (files || files.length === 0) {
+        // Mapeo de las rutas de las imagenes
+        thumbnails = files.map((file) => `${ruteImages}/${file.filename}`);
+      }
+
+      thumbnails = [`${ruteImages}/default.webp`];
 
       // Se crea el product Data con los datos del body y el nuevo array de thumbnails
       const productData = {
         ...productBody,
+        price: parseFloat(productBody.price),
+        stock: parseInt(productBody.stock),
+        status: true,
         thumbnails: thumbnails,
-        status: true // Se asegura el estado inicial como activo
-      }
+      };
 
       const resultAddProduct = await ProductsManager.addProduct(productData);
       res.status(200).json(resultAddProduct);
     } catch (error) {
+      // Si hay error se elminan los archivos que se hayan subido a la carpeta uploads
+      if (uploadFiles.length > 0) {
+        await Promise.all(
+          uploadFiles.map(async (filePath) => {
+            try {
+              await fs.unlink(filePath); // Eliminar file fisico
+            } catch (unlinkError) {
+              console.error("Error deleting file:", unlinkError);
+            }
+          })
+        );
+      }
       next(error);
     }
   }

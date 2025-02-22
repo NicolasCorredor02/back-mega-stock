@@ -212,19 +212,13 @@ export class ProductsManager {
       // Validación de los campos obligatorios
       for (const requiredField of ProductsManager.requiredFields) {
         if (!(requiredField in product)) {
-          throw new Error(`The ${requiredField} field is mandatory.`);
+          throw new Error(`The ${requiredField} field is required`);
         }
-      }
-
-      // Validacion de que el codigo no este repetido
-      if (allProducts.some((p) => p.code === product.code)) {
-        throw new Error(`The code ${product.code} is already registered.`);
       }
 
       const newProduct = {
         id: allProducts.length + 1,
-        status: true,
-        thumbnails: product.thumbnails || ["/uploads/default.webp"],
+        thumbnails: product.thumbnails,
         ...product,
       };
 
