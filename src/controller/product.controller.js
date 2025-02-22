@@ -131,12 +131,12 @@ export class ProductsController {
 
       let thumbnails;
 
-      if (files || files.length === 0) {
+      if (files || files.length !== 0) {
         // Mapeo de las rutas de las imagenes
         thumbnails = files.map((file) => `${ruteImages}/${file.filename}`);
       }
 
-      thumbnails = [`${ruteImages}/default.webp`];
+      thumbnails = [`${ruteImages}/default-product.webp`];
 
       // Se crea el product Data con los datos del body y el nuevo array de thumbnails
       const productData = {

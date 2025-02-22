@@ -33,6 +33,7 @@
   "homepage": "https://github.com/NicolasCorredor02/back-mega-stock#readme",
   "dependencies": {
     "express": "^5.0.1",
+    "express-handlebars": "^8.0.1",
     "http-errors": "^2.0.0",
     "link-module-alias": "^1.2.0",
     "morgan": "^1.10.0",
