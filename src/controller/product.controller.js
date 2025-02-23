@@ -17,14 +17,27 @@ export class ProductsController {
     try {
       const { category } = req.params;
 
-      let products;
+      // let products;
+      let context = {};
 
       if (category) {
-        products = await ProductsManager.getProducts(category);
-      } else {
-        products = await ProductsManager.getProducts();
+        context = {
+          category,
+          products: await ProductsManager.getProducts(category),
+        };
       }
-      res.status(200).json(products);
+      context = {
+        products: await ProductsManager.getProducts(),
+      };
+
+      return res.render("products", context);
+
+      // if (category) {
+      //   products =  await ProductsManager.getProducts(category);
+      // } else {
+      //   products = await ProductsManager.getProducts();
+      // }
+      // res.status(200).json(products);
     } catch (error) {
       next(error);
     }

@@ -3,14 +3,22 @@ import routes from "root/routes/index.js";
 import logger from "morgan";
 import errorHandler from "root/middlewares/errorHandler.js";
 import path from "path";
-import { engine } from "express-handlebars";
+import exphbs from "express-handlebars"
 
 const createServer = () => {
   const app = express();
   const srcPath = path.resolve("./src/"); // Patg que apunta a la ruta raiz del proyecto
 
   //* SETEO handlebars
-  app.engine("handlebars", engine({ defaultLayout: "main", extname: ".hbs" }));
+  // Configuracion de layout default, directorio del layout y de los partials
+  const hbs = exphbs.create({
+    defaultLayout: "main",
+    extname: ".hbs",
+    layoutsDir: path.join(srcPath, "/views/layouts"),
+    partialsDir: path.join(srcPath, "/views/partials"),
+  });
+
+  app.engine("hbs", hbs.engine);
   app.set("view engine", ".hbs");
   app.set("views", path.join(srcPath, "views"));
 
