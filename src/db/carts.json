@@ -1,6 +1,31 @@
 [
   {
     "id": 1,
+    "user_id": 1,
+    "user_type": "registered",
+    "user_info": {
+      "first_name": "Raton",
+      "last_name": "Pérez",
+      "id_number": 1022165489,
+      "email": "registered@ejemplo.com",
+      "phone": "+573104987566"
+    },
+    "address": {
+      "street": "Calle Mayor 123",
+      "city": "Madrid",
+      "state": "Madrid",
+      "postal_code": "28001",
+      "country": "España"
+    },
+    "payment_method": {
+      "type": "card",
+      "provider": "visa",
+      "last_four": "4321",
+      "expiry_date": "12/27"
+    },
+    "status": "active",
+    "create_at": "2025-02-20T15:30:22Z",
+    "updated_at": "2025-02-24T09:45:10Z",
     "products": [
       {
         "id": 10,
@@ -14,10 +39,50 @@
         "id": 3,
         "quantity": 1
       }
-    ]
+    ],
+    "subtotal": 689.99
   },
   {
     "id": 2,
-    "products": []
+    "user_id": null,
+    "user_type": "guest",
+    "user_info": {
+      "first_name": "Juan",
+      "last_name": "Pérez",
+      "id_number": 100465489,
+      "email": "guest@ejemplo.com",
+      "phone": "+573114564466"
+    },
+    "address": {
+      "street": "Calle Mayor 123",
+      "city": "Madrid",
+      "state": "Madrid",
+      "postal_code": "28001",
+      "country": "España"
+    },
+    "payment-method": {
+      "type": "card",
+      "provider": "visa",
+      "last_four": "4321",
+      "expiry_date": "12/27"
+    },
+    "status": "active",
+    "create_at": "2025-02-20T15:30:22Z",
+    "updated_at": "2025-02-24T09:45:10Z",
+    "products": [
+      {
+        "id": 10,
+        "quantity": 2
+      },
+      {
+        "id": 1,
+        "quantity": 6
+      },
+      {
+        "id": 3,
+        "quantity": 1
+      }
+    ],
+    "subtotal": 689.99
   }
 ]

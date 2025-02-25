@@ -9,9 +9,8 @@ export class ProductsManager {
     "description",
     "code",
     "price",
-    "status",
     "stock",
-    "category"
+    "category",
   ];
 
   /**
@@ -50,7 +49,7 @@ export class ProductsManager {
    */
   static async getProducts(category) {
     try {
-      const allProducts = await ProductsManager.readDB();
+      const allProducts = await this.readDB();
       if (!allProducts) {
         throw new Error("No products found");
       }
@@ -81,9 +80,9 @@ export class ProductsManager {
    */
   static async getProductById(id) {
     try {
-      const allProducts = await ProductsManager.readDB();
+      const allProducts = await this.readDB();
       console.log("Products", allProducts);
-      
+
       if (!allProducts) {
         throw new Error("No products found");
       }
@@ -91,9 +90,7 @@ export class ProductsManager {
       const product = allProducts.find((p) => p.id === parseInt(id));
 
       if (!product) {
-        throw new Error(
-          `Error: Product with id: ${id}, not found.`
-        );
+        throw new Error(`Error: Product with id: ${id}, not found.`);
       }
 
       return product;
@@ -110,7 +107,7 @@ export class ProductsManager {
    */
   static async getLimitProducts(limit, category) {
     try {
-      const allProducts = await ProductsManager.readDB();
+      const allProducts = await this.readDB();
       if (!allProducts) {
         throw new Error("No products found");
       }
@@ -129,7 +126,7 @@ export class ProductsManager {
 
       // Si se agrega una categoria se retornan un limite de productos de esa categoria
       if (category) {
-        const productsCategory = await ProductsManager.getProducts(category);
+        const productsCategory = await this.getProducts(category);
 
         if (limitFormated > productsCategory.length) {
           throw new Error(
@@ -157,7 +154,7 @@ export class ProductsManager {
   //   console.log("Metodo getCategories iniciado");
 
   //   try {
-  //     const allProducts = await ProductsManager.readDB();
+  //     const allProducts = await this.readDB();
   //     console.log("All products", allProducts);
 
   //     if (!allProducts) {
@@ -202,7 +199,7 @@ export class ProductsManager {
    */
   static async addProduct(product) {
     try {
-      const allProducts = await ProductsManager.readDB();
+      const allProducts = await this.readDB();
 
       // Validacion de existencia de los productos en la DB
       if (!allProducts) {
@@ -210,7 +207,7 @@ export class ProductsManager {
       }
 
       // Validación de los campos obligatorios
-      for (const requiredField of ProductsManager.requiredFields) {
+      for (const requiredField of this.requiredFields) {
         if (!(requiredField in product)) {
           throw new Error(`The ${requiredField} field is required`);
         }
@@ -224,7 +221,7 @@ export class ProductsManager {
 
       allProducts.push(newProduct);
 
-      const resultAddProduct = await ProductsManager.writeDB(allProducts);
+      const resultAddProduct = await this.writeDB(allProducts);
 
       if (!resultAddProduct) {
         throw new Error("The product to be added was not obtained");
@@ -244,16 +241,21 @@ export class ProductsManager {
    */
   static async updateProduct(id, product) {
     try {
-      const allProducts = await ProductsManager.readDB();
+      const allProducts = await this.readDB();
 
       // Validacion de existencia de los productos en la DB
       if (!allProducts) {
         throw new Error("No products found");
       }
 
-      //Validacion si el producto viene con id para actualizar
-      if (product?.id) {
-        throw new Error("Error, product ID can not be updated");
+      // //Validacion si el producto viene con id para actualizar
+      // if (product.id) {
+      //   throw new Error("Error, product ID can not be updated");
+      // }
+
+      // Validacion de thumbnails Max 5 images
+      if (product.thumbnails && product.thumbnails.length > 5) {
+        throw new Error("Maximum 5 images allowed");
       }
 
       // Se crea una nueva copia del array de productos
@@ -267,15 +269,15 @@ export class ProductsManager {
         throw new Error("The product to be updated was not found");
       }
 
-      // Validacion si la peticion viene con codigo para actualizar
-      if (product?.code) {
-        // Validacion de que el codigo no este repetido
-        if (newAllProducts.some((p) => p.code === product.code)) {
-          throw new Error(
-            "Failed to update the product, code already existing"
-          );
-        }
-      }
+      // // Validacion si la peticion viene con codigo para actualizar
+      // if (product?.code) {
+      //   // Validacion de que el codigo no este repetido
+      //   if (newAllProducts.some((p) => p.code === product.code)) {
+      //     throw new Error(
+      //       "Failed to update the product, code already existing"
+      //     );
+      //   }
+      // }
 
       // Se actualizan los datos proporsionados
       newAllProducts[indice] = {
@@ -284,7 +286,7 @@ export class ProductsManager {
       };
 
       // Se realiza la actualizacion sobre la DB
-      const resultUpdatedProduct = await ProductsManager.writeDB(newAllProducts);
+      const resultUpdatedProduct = await this.writeDB(newAllProducts);
 
       if (!resultUpdatedProduct) {
         throw new Error("Product to be upgraded was not obtained");
@@ -303,7 +305,7 @@ export class ProductsManager {
    */
   static async deleteProduct(id) {
     try {
-      const allProducts = await ProductsManager.readDB();
+      const allProducts = await this.readDB();
 
       if (!allProducts) {
         throw new Error("No products found");
@@ -330,7 +332,7 @@ export class ProductsManager {
       //     status: false,
       //   };
 
-      const resultDeleteProduct = await ProductsManager.writeDB(newAllProducts);
+      const resultDeleteProduct = await this.writeDB(newAllProducts);
 
       if (!resultDeleteProduct) {
         throw new Error("The product to be removed was not found");

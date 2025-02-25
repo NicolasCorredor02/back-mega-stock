@@ -12,7 +12,7 @@ router.get("/:category/limited/:limit", ProductsController.getLimitProducts);
 router.get("/limited/:limit", ProductsController.getLimitProducts);
 
 // Get product by ID
-router.get("/product/:id", ProductsController.getProductById);
+router.get("/product/:pid", ProductsController.getProductById);
 
 // Get all products by category
 router.get("/:category", ProductsController.getProducts);
@@ -29,7 +29,12 @@ router.post(
 );
 
 // Put product to update
-router.put("/update", ProductsController.updateProduct);
+router.put(
+  "/update/:pid",
+  upload.array("newThumbnails", 5), // Se añade el middleware de upload de la configuraion de multer para trabajar con las imagenes de los productos (max 5)
+  handleErrorUploads, // Se agrega el middleware para validar los files que se suben como imagen del producto
+  ProductsController.updateProduct
+);
 
 // Delete product from DB
 router.delete("/delete", ProductsController.deleteProduct);

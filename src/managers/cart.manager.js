@@ -4,6 +4,8 @@ import { ProductsManager } from "root/managers/product.manager.js";
 
 const ruteDB = path.resolve("src/db/carts.json");
 
+//TODO Actualizar logica sobre cart de acuerdo a la nueva estructura del json
+
 export class CartsManager {
   static requiredFields = ["id", "quantity"];
 

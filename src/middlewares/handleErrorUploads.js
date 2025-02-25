@@ -13,6 +13,10 @@ export default function handleErrorUploads(error, req, res, next) {
       return next(
         createHttpError(400, "Only the 'thumbnails' field is allowed for image uploads"));
     }
+    if (error.code === "LIMIT_UNEXPECTED_FILE") {
+      return next(
+        createHttpError(400, "Only the 'newThumbnails' field is allowed for image uploads"));
+    }
   }
 
   next(error);
