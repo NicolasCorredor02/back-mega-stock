@@ -418,19 +418,5 @@
       "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
       "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
     ]
-  },
-  {
-    "id": 31,
-    "thumbnails": [
-      "C:\\Users\\nicol\\Documents\\code\\coder-house\\backend-01\\back-mega-stock\\src\\uploads/46fa4de5-85b0-4ea3-9f5a-88496df2e1cf_Samsung-Galaxy-S22-Ultra-Rojo.webp",
-      "C:\\Users\\nicol\\Documents\\code\\coder-house\\backend-01\\back-mega-stock\\src\\uploads/73e590d9-08c8-4984-8ea2-06b733997bb1_sa-en-galaxy-s22-ultra-s908-sm-s908ezgdmea-thumb-530981844.webp"
-    ],
-    "title": "Samsung Galaxy s24 ultra",
-    "description": "Phone integrated with the new AI, lighter and much more powerful. With the 4 cameras of 200Mpx you can capture the best moments of your life.",
-    "code": "TEC-SS03",
-    "price": 699.99,
-    "status": true,
-    "stock": 2,
-    "category": "technology"
   }
 ]

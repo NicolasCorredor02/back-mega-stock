@@ -1,11 +1,12 @@
 import multer from "multer";
+import { v4 as uuidv4 } from "uuid";
 import path from "path";
-import { v4 as uuidv4 } from "uuid"
+import { rootPath } from "root/utils/paths.js";
 
 // Configuración de almacenamiento
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "src/uploads/"); // Carpeta destino
+    cb(null, path.resolve(rootPath, "uploads")); // Carpeta destino
   },
   filename: (req, file, cb) => {
     const uniqueName = `${uuidv4()}_${file.originalname}`;

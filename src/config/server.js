@@ -1,35 +1,32 @@
 import express from "express";
+import { createServer } from "node:http";
 import routes from "root/routes/index.js";
 import logger from "morgan";
 import errorHandler from "root/middlewares/errorHandler.js";
+import handlebarsConfig from "root/config/handlebars.js";
 import path from "path";
-import exphbs from "express-handlebars"
+import { rootPath } from "root/utils/paths.js";
+import socketConfig from "root/sockets/socket.js";
 
-const createServer = () => {
+const serverUp = () => {
   const app = express();
-  const srcPath = path.resolve("./src/"); // Patg que apunta a la ruta raiz del proyecto
+  const server = createServer(app); // Se levanta el server para socket.io
+  // const srcPath = path.resolve("./src/"); // Patg que apunta a la ruta raiz del proyecto
 
   //* SETEO handlebars
-  // Configuracion de layout default, directorio del layout y de los partials
-  const hbs = exphbs.create({
-    defaultLayout: "main",
-    extname: ".hbs",
-    layoutsDir: path.join(srcPath, "/views/layouts"),
-    partialsDir: path.join(srcPath, "/views/partials"),
-  });
+  handlebarsConfig(app);
 
-  app.engine("hbs", hbs.engine);
-  app.set("view engine", ".hbs");
-  app.set("views", path.join(srcPath, "views"));
+  //* Implementacion de socket.io
+  socketConfig(server);
 
   //* Middlewares
   app.use(express.json()); // Ingreso de data por el body de HTTP
   app.use(express.urlencoded({ extended: true })); // Ingreso de data de forms que sean extensos y requieran una inspeccion profunda
   app.use(logger("dev"));
 
-  //* archivos static
-  app.use("/static", express.static(path.join(srcPath, "public"))); // Implementacion de middleware para establecer un directorio static que alojara los archivos public para el render desde server
-  app.use("/uploads", express.static(path.join(srcPath, "uploads"))); // Implementacion para establecer directorio estatico de las imagenes que se suben
+  //* Middlewares para archivos static
+  app.use("/static", express.static(path.resolve(rootPath, "public"))); // Implementacion de middleware para establecer un directorio static que alojara los archivos public para el render desde server
+  app.use("/uploads", express.static(path.resolve(rootPath, "uploads"))); // Implementacion para establecer directorio estatico de las imagenes que se suben
 
   //* CORS
   // Config de los dominios que pueden acceder a la API
@@ -46,7 +43,8 @@ const createServer = () => {
   // todo Route not found
 
   app.use(errorHandler); // Middleware propio para el manejo global de errores
-  return app;
+
+  return server;
 };
 
-export default createServer;
+export default serverUp;

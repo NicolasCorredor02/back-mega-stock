@@ -2,18 +2,14 @@ import { ProductsManager } from "root/managers/product.manager.js";
 import createHttpError from "http-errors";
 import fs from "fs/promises";
 import path from "path";
-import { fileURLToPath } from "url";
-
-// Obtener la ruta del archivo actual y el directorio
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { rootPath } from "root/utils/paths.js";
 
 // Ruta para almacenar y guardar las imagenes de los productos
-const projectRoot = path.resolve(__dirname, "../../");
-const ruteImages = path.join(projectRoot, "src/uploads");
+// const projectRoot = path.resolve(__dirname, "../../");
+const ruteImages = path.resolve(rootPath, "uploads");
 
 // Ruta de la imgen por default para productos que se crean sin imagenes
-const defaultImageRute = path.join(projectRoot, "src/assets/default/images");
+const defaultImageRute = path.resolve(rootPath, "assets", "default", "images");
 
 /**
  * TODO actualizar la validacion de los id como con updateProduct

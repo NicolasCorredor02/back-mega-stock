@@ -1,7 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
+import { rootPath } from "root/utils/paths";
 
-const ruteDB = path.resolve("src/db/users.json");
+const ruteDB = path.resolve(rootPath, "db", "users.json");
 
 export class UsersManager {
   //* Arrays de datos requeridos para la creacion de datos del usuario

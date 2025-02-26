@@ -1,8 +1,9 @@
 import fs from "fs/promises";
-import path from "path";
 import { ProductsManager } from "root/managers/product.manager.js";
+import path from "path";
+import { rootPath } from "root/utils/paths.js";
 
-const ruteDB = path.resolve("src/db/carts.json");
+const ruteDB = path.resolve(rootPath, "db", "carts.json");
 
 //TODO Actualizar logica sobre cart de acuerdo a la nueva estructura del json
 
@@ -111,9 +112,7 @@ export class CartsManager {
         );
 
         if (!result) {
-          throw new Error(
-            "No products found with cart id(s)"
-          );
+          throw new Error("No products found with cart id(s)");
         }
         return result;
       };
@@ -185,7 +184,9 @@ export class CartsManager {
         parseInt(product.id)
       );
       if (!productExist) {
-        throw new Error(`Error, the product with the ${product.id} does not exist`);
+        throw new Error(
+          `Error, the product with the ${product.id} does not exist`
+        );
       }
 
       // Se formatea el producto ya que puede venir como String
@@ -237,9 +238,7 @@ export class CartsManager {
       const resultUpdateCart = await CartsManager.writeDB(newAllCarts);
 
       if (!resultUpdateCart) {
-        throw new Error(
-          "Error, did not get the cart and/or product to add"
-        );
+        throw new Error("Error, did not get the cart and/or product to add");
       }
 
       return newAllCarts[indiceCart];

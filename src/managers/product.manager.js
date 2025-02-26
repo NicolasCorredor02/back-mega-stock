@@ -1,7 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
+import { rootPath } from "root/utils/paths.js";
 
-const ruteDB = path.resolve("src/db/products.json");
+const ruteDB = path.resolve(rootPath, "db", "products.json");
 
 export class ProductsManager {
   static requiredFields = [
