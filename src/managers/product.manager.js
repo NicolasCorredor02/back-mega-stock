@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { rootPath } from "root/utils/paths.js";
+import { socketModule } from "root/sockets/socket.js";
 
 const ruteDB = path.resolve(rootPath, "db", "products.json");
 
@@ -228,8 +229,26 @@ export class ProductsManager {
         throw new Error("The product to be added was not obtained");
       }
 
+      // Emision de evento despues de agregar el product
+      try {
+        socketModule.emitAddProduct(newProduct);
+      } catch (error) {
+        throw new Error("Socket not initialized, omitting event broadcast to add product");
+      }
+
       return newProduct;
     } catch (error) {
+      // En caso de error en la emision se emite el error
+      try {
+        socketModule.emitSocketError({
+          message: "Error adding product",
+        });
+      } catch (socketError) {
+        console.error(
+          "Socket not initialized, omitting event broadcast",
+          socketError
+        );
+      }
       throw error;
     }
   }

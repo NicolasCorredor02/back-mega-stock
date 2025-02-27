@@ -16,6 +16,7 @@ const defaultImageRute = path.resolve(rootPath, "assets", "default", "images");
  */
 
 export class ProductsController {
+  // Get for clients
   static async getProducts(req, res, next) {
     try {
       const { category } = req.params;
@@ -34,6 +35,37 @@ export class ProductsController {
       };
 
       return res.render("products", context);
+
+      // if (category) {
+      //   products =  await ProductsManager.getProducts(category);
+      // } else {
+      //   products = await ProductsManager.getProducts();
+      // }
+      // res.status(200).json(products);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  //Get for admin
+  static async getProductsAdmin(req, res, next) {
+    try {
+      const { category } = req.params;
+
+      // let products;
+      let context = {};
+
+      if (category) {
+        context = {
+          category,
+          products: await ProductsManager.getProducts(category),
+        };
+      }
+      context = {
+        products: await ProductsManager.getProducts(),
+      };
+
+      return res.render("realTimeProducts", context);
 
       // if (category) {
       //   products =  await ProductsManager.getProducts(category);
@@ -272,6 +304,11 @@ export class ProductsController {
           ...newImages,
         ];
       }
+      
+      // Actualización de la imgen por default si se borran todas las imagenes
+      if (currentProduct.thumbnails.length === 0) {
+        currentProduct.thumbnails = [`${defaultImageRute}/default-product.webp`];
+      }
 
       // Actualizacion de otros campos
       const updatedProduct = {
@@ -285,8 +322,9 @@ export class ProductsController {
           : currentProduct.stock,
       };
 
-      // Eliminacion del array deleteImages que se usa para especificar las imagenes a eliminar desde la peticion Http
+      // Eliminacion del array deleteImages y newThumbnails que se usa para especificar las imagenes a eliminar desde la peticion Http
       delete updatedProduct.deleteImages;
+      delete updatedProduct.newThumbnails;
 
       const resultUpdatedProduct = await ProductsManager.updateProduct(
         pid,

@@ -1,9 +1,57 @@
 //* --------------------- CLIENTE ---------------------------------
-//* ----------------- FORMULARIO DE REGISTRO DE PRODUCTOS ----------------------
+
 document.addEventListener("DOMContentLoaded", function (params) {
-  //* Conexion con el servidor Socket
+  //* -------------- Conexion con el servidor Socket ------------
   const socket = io("http://localhost:8080"); //Por defecto trabaja con el puerto y el servidor levantado (localhost:8080) pero en caso de produccion se debe especificar el link del dominio o server
 
+  //* ------------- ESCUCHAR EVENTO DE NUEVO PRODUCTO -----------
+  const productsList = document.getElementById("productsList");
+  socket.on("addProduct", (product) => {
+    const newProductHTML = `
+      <tr id={{id}} class="hover:bg-gray-50">
+              <td class="px-6 py-4">${product.id}</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <img
+                  src=''
+                  alt=${product.title}
+                  class="h-10 w-10 rounded-full"
+                />
+              </td>
+              <td class="px-6 py-4">${product.title}</td>
+              <td class="px-6 py-4">${product.description}</td>
+              <td class="px-6 py-4">${product.code}</td>
+              <td class="px-6 py-4">$${product.price}</td>
+              <td class="px-6 py-4">${product.stock}</td>
+              <td class="px-6 py-4">${product.category}</td>
+              <td class="px-6 py-4">
+                <button
+                  class="text-blue-600 hover:text-blue-900 mr-2"
+                >Edit</button>
+                <button class="text-red-600 hover:text-red-900">Delete</button>
+              </td>
+            </tr>
+    `;
+
+    productsList.insertAdjacentHTML("afterbegin", newProductHTML);
+
+    Swal.fire({
+      position: "top-end",
+      title: "Product successfully added",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1000,
+    });
+  });
+
+  socket.on("socketError", (data) => {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: `${data.message}`,
+    });
+  });
+
+  //* --------- FORMULARIO DE REGISTRO DE PRODUCTOS ---------
   const dropImgesArea = document.getElementById("dropImgesArea");
   const fileInput = document.getElementById("fileInput");
   const previewImages = document.getElementById("previewImages");
@@ -93,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function (params) {
   }
 
   // Manejar el envío del formulario
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     // Se crea un objeto FormData para mostrar cómo se podrían preparar los datos
@@ -118,35 +166,37 @@ document.addEventListener("DOMContentLoaded", function (params) {
       document.getElementById("productCategory").value
     );
 
-    // Para demostración, mostramos los datos en la consola
-    console.log("Formulario enviado con éxito");
+    try {
+      Swal.fire({
+        title: "Loading...",
+        text: "Please wait while we process your request",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
 
-    // Envio del form data por medio del socket hacia el servidor
-    socket.emit("addProduct", formData);
+      const response = await fetch(
+        "http://localhost:8080/api/admin/products/add",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
-    // En un caso real, aquí enviarías formData al servidor
-    // usando fetch o axios
+      if (!response.ok) {
+        throw new Error("Error processing the request");
+      }
 
-    // Ejemplo:
-    // fetch('/api/products', {
-    //   method: 'POST',
-    //   body: formData
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //   console.log('Producto guardado:', data);
-    //   form.reset();
-    //   preview.innerHTML = '';
-    //   uploadedFiles = [];
-    // })
-    // .catch(error => {
-    //   console.error('Error:', error);
-    // });
-
-    // Para la demostración, simplemente reiniciamos el formulario
-    // alert("Producto añadido con éxito (simulación)");
-    // form.reset();
-    // preview.innerHTML = "";
-    // uploadedFiles = [];
+      form.reset();
+      uploadedFiles = [ ];
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "An error has occurred",
+      });
+    }
   });
 });

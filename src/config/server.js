@@ -1,4 +1,5 @@
 import express from "express";
+import { Server } from 'socket.io';
 import { createServer } from "node:http";
 import routes from "root/routes/index.js";
 import logger from "morgan";
@@ -6,18 +7,16 @@ import errorHandler from "root/middlewares/errorHandler.js";
 import handlebarsConfig from "root/config/handlebars.js";
 import path from "path";
 import { rootPath } from "root/utils/paths.js";
-import socketConfig from "root/sockets/socket.js";
+import { socketModule } from "root/sockets/socket.js";
 
 const serverUp = () => {
   const app = express();
   const server = createServer(app); // Se levanta el server para socket.io
+  const io = new Server(server); // Creacion del io para el acceso al socket del server
   // const srcPath = path.resolve("./src/"); // Patg que apunta a la ruta raiz del proyecto
 
   //* SETEO handlebars
   handlebarsConfig(app);
-
-  //* Implementacion de socket.io
-  socketConfig(server);
 
   //* Middlewares
   app.use(express.json()); // Ingreso de data por el body de HTTP
@@ -36,6 +35,9 @@ const serverUp = () => {
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE"); // Metodos permitidos
     next(); // Middleware para no frenar la ejecucion de la API y en cambio se siguen ejecutando los demas middlewares
   });
+
+  //* Implementacion de socket.io
+  socketModule.init(io);
 
   //* Routes o endpoints
   app.use("/", routes);

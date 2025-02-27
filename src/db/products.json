@@ -418,5 +418,18 @@
       "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
       "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
     ]
+  },
+  {
+    "id": 31,
+    "thumbnails": [
+      "C:\\Users\\nicol\\Documents\\code\\coder-house\\backend-01\\back-mega-stock\\src\\assets\\default\\images/default-product.webp"
+    ],
+    "title": "Samsung Galaxy s24 ultra",
+    "description": "Phone integrated with the new AI, lighter and much more powerful. With the 4 cameras of 200Mpx you can capture the best moments of your life.",
+    "code": "TEC-SS04",
+    "price": 699.99,
+    "status": true,
+    "stock": 2,
+    "category": "technology"
   }
 ]
