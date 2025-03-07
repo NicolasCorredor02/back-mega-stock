@@ -2,11 +2,11 @@
     {
         "id": 1,
         "personal_info": {
-            "first_name": "Juan",
-            "last_name": "Pérez",
+            "first_name": "Jhon",
+            "last_name": "Doe",
             "id_number": 1022165489,
-            "email": "juan.perez@ejemplo.com",
-            "img_profile": "C:\\Users\\nicol\\Documents\\code\\coder-house\\backend-01\\back-mega-stock\\src\\assets/default/images/default-user.webp",
+            "email": "jhondoe@example.com",
+            "img_profile": "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781419/default-user_dhx4rw.webp",
             "phone": "+573116546644",
             "birth_date": "1990-05-15",
             "gender": "male"
@@ -23,10 +23,10 @@
                 "id": 1,
                 "type": "send",
                 "street": "Calle Mayor 123",
-                "city": "Madrid",
-                "state": "Madrid",
+                "city": "Bogota",
+                "state": "Bogota",
                 "postal_code": "28001",
-                "country": "España"
+                "country": "Colombia"
             }
         ],
         "payment_methods": [

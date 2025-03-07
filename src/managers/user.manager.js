@@ -1,34 +1,36 @@
-import fs from "fs/promises";
-import path from "path";
-import { rootPath } from "root/utils/paths";
+/* eslint-disable camelcase */
+/* eslint-disable no-useless-catch */
+import fs from 'fs/promises'
+import path from 'path'
+import { rootPath } from 'root/utils/paths'
 
-const ruteDB = path.resolve(rootPath, "db", "users.json");
+const ruteDB = path.resolve(rootPath, 'db', 'users.json')
 
 export class UsersManager {
   //* Arrays de datos requeridos para la creacion de datos del usuario
 
   static requiredToCreateUser = [
-    "first_name",
-    "last_name",
-    "id_number",
-    "email",
-    "phone",
-    "birth_date",
-    "gender",
-    "password_hash",
-    "policy_consent",
-  ];
+    'first_name',
+    'last_name',
+    'id_number',
+    'email',
+    'phone',
+    'birth_date',
+    'gender',
+    'password_hash',
+    'policy_consent'
+  ]
 
-  static requieredToAddAddress = ["street", "city", "state", "country"];
+  static requieredToAddAddress = ['street', 'city', 'state', 'country']
 
   /**
    *
    * @returns {array} array with products
    */
-  static async readDB() {
-    const data = await fs.readFile(ruteDB, "utf-8");
-    if (!data) return [];
-    return JSON.parse(data);
+  static async readDB () {
+    const data = await fs.readFile(ruteDB, 'utf-8')
+    if (!data) return []
+    return JSON.parse(data)
   }
 
   /**
@@ -36,17 +38,17 @@ export class UsersManager {
    * @param {array} products
    * @returns {boolean}
    */
-  static async writeDB(products) {
+  static async writeDB (products) {
     try {
       if (!products) {
-        return false;
+        return false
       }
 
-      await fs.writeFile(ruteDB, JSON.stringify(products, null, 2));
+      await fs.writeFile(ruteDB, JSON.stringify(products, null, 2))
 
-      return true;
+      return true
     } catch (error) {
-      throw new Error("Error when saving or updating product(s)");
+      throw new Error('Error when saving or updating product(s)')
     }
   }
 
@@ -56,17 +58,17 @@ export class UsersManager {
    *
    * @returns {array} // Array with users
    */
-  static async getUsers() {
+  static async getUsers () {
     try {
-      const allUsers = await this.readDB();
+      const allUsers = await this.readDB()
 
       if (!allUsers) {
-        throw new Error("No users found");
+        throw new Error('No users found')
       }
 
-      return allUsers;
+      return allUsers
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -75,21 +77,21 @@ export class UsersManager {
    * @param {*} id
    * @returns
    */
-  static async getUserById(id) {
+  static async getUserById (id) {
     try {
-      const allUsers = await this.readDB();
+      const allUsers = await this.readDB()
 
       if (!allUsers) {
-        throw new Error("No users found");
+        throw new Error('No users found')
       }
 
-      const user = allUsers.find((u) => u.id === parseInt(id));
+      const user = allUsers.find((u) => u.id === parseInt(id))
 
       if (!user) {
-        throw new Error(`Error: User with id ${id} not found`);
+        throw new Error(`Error: User with id ${id} not found`)
       }
 
-      return user;
+      return user
     } catch (error) {}
   }
 
@@ -98,17 +100,17 @@ export class UsersManager {
    * @param {object} user
    * @returns {object} // User obj
    */
-  static async createUser(user) {
+  static async createUser (user) {
     try {
-      const allUsers = await this.readDB();
+      const allUsers = await this.readDB()
 
       if (!allUsers) {
-        throw new Error("No users found");
+        throw new Error('No users found')
       }
 
       for (const requiredField of this.requiredToCreateUser) {
         if (!(requiredField in user)) {
-          throw new Error(`The ${requiredField} is required`);
+          throw new Error(`The ${requiredField} is required`)
         }
       }
 
@@ -124,8 +126,8 @@ export class UsersManager {
         gender,
         password_hash,
         policy_consent,
-        marketing_consent,
-      } = user;
+        marketing_consent
+      } = user
 
       const newUser = {
         id: allUsers.length + 1,
@@ -137,85 +139,85 @@ export class UsersManager {
           img_profile,
           phone,
           birth_date,
-          gender,
+          gender
         },
         account: {
           password_hash,
           crate_at: new Date(),
           status: true,
           policy_consent,
-          marketing_consent,
+          marketing_consent
         },
         addresses: [],
         payment_methods: [],
         security: {
-          failed_login_attempts: 0,
+          failed_login_attempts: 0
         },
         commerce_data: {
           carts: [],
           total_spent: 0,
-          last_order_date: "",
-          customer_tier: "regular",
-        },
-      };
-
-      allUsers.push(newUser);
-
-      const resultAddUser = await this.writeDB(allUsers);
-
-      if (!resultAddUser) {
-        throw new Error("Error, an error occurred while registering the user");
+          last_order_date: '',
+          customer_tier: 'regular'
+        }
       }
 
-      return newUser;
+      allUsers.push(newUser)
+
+      const resultAddUser = await this.writeDB(allUsers)
+
+      if (!resultAddUser) {
+        throw new Error('Error, an error occurred while registering the user')
+      }
+
+      return newUser
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
-  static async addAddress(idUser, objAddress) {
+  static async addAddress (idUser, objAddress) {
     try {
-      const currentUser = await this.getUserById(idUser);
+      let currentUser = await this.getUserById(idUser)
 
       if (!currentUser) {
-        throw new Error("The user is not in the database");
+        throw new Error('The user is not in the database')
       }
 
       for (const requiredField of this.requieredToAddAddress) {
         if (!(requiredField in objAddress)) {
-          throw new Error(`The ${requiredField} is required`);
+          throw new Error(`The ${requiredField} is required`)
         }
       }
 
       // Recuperacion de las direcciones actuales del usuario
-      const currentAddresses = currentUser.addresses;
+      const currentAddresses = currentUser.addresses
 
       // Destructuring del objAddress
-      const { street, city, state, country } = objAddress;
+      const { street, city, state, country } = objAddress
 
       // array newAddress para ser insertado en el usuario
       const newAddress = {
         id: currentAddresses.length + 1,
-        type: "send",
+        type: 'send',
         street,
         city,
         state,
-        postal_code: objAddress.postal_code ? objAddress.postal_code : "",
-        country,
-      };
+        postal_code: objAddress.postal_code ? objAddress.postal_code : '',
+        country
+      }
 
       // Push de la nueva direccion
-      currentAddresses.push(newAddress);
+      currentAddresses.push(newAddress)
 
       // Acualizaicon del usuario
       currentUser = {
         ...currentUser,
-        addresses: currentAddresses,
-      };
+        addresses: currentAddresses
+      }
 
-      //TODO Seguir logica teniendo en cuenta Mongoose y mongo para facilidad
+      // TODO Seguir logica teniendo en cuenta Mongoose y mongo para facilidad
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 }

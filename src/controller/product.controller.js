@@ -1,15 +1,20 @@
-import { ProductsManager } from "root/managers/product.manager.js";
-import createHttpError from "http-errors";
-import fs from "fs/promises";
-import path from "path";
-import { rootPath } from "root/utils/paths.js";
+import { ProductsManager } from 'root/managers/product.manager.js'
+import createHttpError from 'http-errors'
+import { cloudinary, deleteCloudinaryImages } from 'root/config/cloudinary.js'
+// import path from 'path'
+// import fs from 'fs/promises'
+import { socketModule } from 'root/sockets/socket.js'
+import Product from 'root/models/product.model.js'
+import mongoose from 'mongoose'
+// import { v4 as uuidv4 } from 'uuid'
+// import { rootPath } from 'root/utils/paths.js'
 
-// Ruta para almacenar y guardar las imagenes de los productos
-// const projectRoot = path.resolve(__dirname, "../../");
-const ruteImages = path.resolve(rootPath, "uploads");
+// // Ruta para almacenar y guardar las imagenes de los productos
+// // const projectRoot = path.resolve(__dirname, "../../");
+// const ruteImages = path.resolve(rootPath, 'uploads')
 
-// Ruta de la imgen por default para productos que se crean sin imagenes
-const defaultImageRute = path.resolve(rootPath, "assets", "default", "images");
+// // Ruta de la imgen por default para productos que se crean sin imagenes
+// const defaultImageRute = path.resolve(rootPath, 'assets', 'default', 'images')
 
 /**
  * TODO actualizar la validacion de los id como con updateProduct
@@ -17,24 +22,24 @@ const defaultImageRute = path.resolve(rootPath, "assets", "default", "images");
 
 export class ProductsController {
   // Get for clients
-  static async getProducts(req, res, next) {
+  static async getProducts (req, res, next) {
     try {
-      const { category } = req.params;
+      const { category } = req.params
 
       // let products;
-      let context = {};
+      let context = {}
 
       if (category) {
         context = {
           category,
-          products: await ProductsManager.getProducts(category),
-        };
+          products: await ProductsManager.getProducts(category)
+        }
       }
       context = {
-        products: await ProductsManager.getProducts(),
-      };
+        products: await ProductsManager.getProducts()
+      }
 
-      return res.render("products", context);
+      return res.render('products', context)
 
       // if (category) {
       //   products =  await ProductsManager.getProducts(category);
@@ -43,29 +48,29 @@ export class ProductsController {
       // }
       // res.status(200).json(products);
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
 
-  //Get for admin
-  static async getProductsAdmin(req, res, next) {
+  // Get for admin
+  static async getProductsAdmin (req, res, next) {
     try {
-      const { category } = req.params;
+      const { category } = req.params
 
       // let products;
-      let context = {};
+      let context = {}
 
       if (category) {
         context = {
           category,
-          products: await ProductsManager.getProducts(category),
-        };
+          products: await ProductsManager.getProducts(category)
+        }
       }
       context = {
-        products: await ProductsManager.getProducts(),
-      };
+        products: await ProductsManager.getProducts()
+      }
 
-      return res.render("realTimeProducts", context);
+      return res.render('realTimeProducts', context)
 
       // if (category) {
       //   products =  await ProductsManager.getProducts(category);
@@ -74,63 +79,62 @@ export class ProductsController {
       // }
       // res.status(200).json(products);
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
 
-  static async getProductById(req, res, next) {
+  static async getProductById (req, res, next) {
     try {
-      const { id } = req.params;
+      const { pid } = req.params
 
-      if (!id || id.trim() === "") {
-        throw createHttpError(404, "Id is required");
+      if (!pid || pid.trim() === '') {
+        throw createHttpError(404, 'Id is required')
       }
 
-      // Verificar que sea un número válido
-      const numId = parseInt(id);
-      if (isNaN(numId) || numId <= 0) {
-        throw createHttpError(404, "ID must be a positive number");
+      // Validación del ID
+      if (!mongoose.Types.ObjectId.isValid(pid)) {
+        throw createHttpError(400, 'Invalid product ID format')
       }
 
-      const product = await ProductsManager.getProductById(id);
+      const product = await ProductsManager.getProductById(pid)
 
-      res.status(200).json(product);
+      res.status(200).json(product)
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
 
-  static async getLimitProducts(req, res) {
+  static async getLimitProducts (req, res) {
     try {
-      const { category } = req.params;
-      const { limit } = req.params;
+      const { category } = req.params
+      const { limit } = req.params
 
-      if (!limit || limit.trim() === "") {
-        throw createHttpError(404, "Limit is required");
+      if (!limit || limit.trim() === '') {
+        throw createHttpError(404, 'Limit is required')
       }
 
       // Verificar que sea un número válido
-      const numLimit = parseInt(limit);
+      const numLimit = parseInt(limit)
       if (isNaN(numLimit) || numLimit <= 0) {
-        throw createHttpError(404, "ID must be a positive number");
+        throw createHttpError(404, 'ID must be a positive number')
       }
 
-      let productsLimited;
+      let productsLimited
       if (category) {
         productsLimited = await ProductsManager.getLimitProducts(
           limit,
           category
-        );
+        )
       } else {
-        productsLimited = await ProductsManager.getLimitProducts(limit);
+        productsLimited = await ProductsManager.getLimitProducts(limit)
       }
 
-      res.status(200).json(productsLimited);
+      res.status(200).json(productsLimited)
     } catch (error) {
       res.status(500).json({
-        error: "Internal Server Error",
-        details: error.message,
-      });
+        error: 'Internal Server Error',
+        details: error.message
+      })
     }
   }
 
@@ -145,229 +149,232 @@ export class ProductsController {
   //   }
   // }
 
-  static async addProduct(req, res, next) {
-    let uploadFiles = []; // Array para guardar los nombres de los uploads existentes
+  static async addProduct (req, res, next) {
+    // En caso de error, eliminacion de las imagenes subidas a Cloudinary
+    const handleDestroyCloudinaryImages = () => {
+      if (req.files) {
+        req.files.forEach(async (file) => {
+          const publicId = file.filename
+          await cloudinary.uploader.destroy(publicId)
+        })
+      }
+    }
 
     try {
-      const productBody = req.body;
-      const files = req.files; // Data de las images
-      const allProducts = await ProductsManager.readDB(); //Data actual de productos en DB
+      const productBody = req.body
+      const uploadFiles = req.files.map(file => file.path)
 
       if (!productBody) {
-        throw createHttpError(404, "Product and product details are required");
+        handleDestroyCloudinaryImages()
+        throw createHttpError(404, 'Product and product details are required')
       }
 
-      // Se guardan los nombres de los files temp
-      uploadFiles = files.map((file) => file.path);
-
-      // Validacion de que el codigo no este repetido
-      if (allProducts.some((p) => p.code === productBody.code)) {
-        throw createHttpError(
-          404,
-          `The code ${productBody.code} is already registered`
-        );
+      if (req.files.length > 5) {
+        handleDestroyCloudinaryImages()
+        throw createHttpError(404, 'Maximum 5 images allowed')
       }
 
-      //Verificar que el producto tenga un valor minimo de stock
-      const numStock = parseInt(productBody.stock);
-      if (isNaN(numStock) || numStock <= 0) {
-        throw createHttpError(
-          404,
-          "The quantity in stock must be a minimum of 1"
-        );
+      // Antes de guardar en MongoDB se valida que no exista el codigo en alguno de los productos ya existentes
+      const existingProduct = await Product.findOne({ code: productBody.code })
+      if (existingProduct) {
+        handleDestroyCloudinaryImages()
+        throw createHttpError(404, `The code ${productBody.code} is already registered`)
       }
-
-      let thumbnails;
-
-      if (!files || files.length === 0) {
-        thumbnails = [`${defaultImageRute}/default-product.webp`];
-      } else {
-        // Mapeo de las rutas de las imagenes
-        thumbnails = files.map((file) => `${ruteImages}/${file.filename}`);
-      }
-
-      // Se crea el product Data con los datos del body y el nuevo array de thumbnails
-      const productData = {
+      // Preparacion de datos del producto para su almacenamiento
+      let productData = {
         ...productBody,
         price: parseFloat(productBody.price),
-        stock: parseInt(productBody.stock),
-        status: true,
-        thumbnails: thumbnails,
-      };
-
-      const resultAddProduct = await ProductsManager.addProduct(productData);
-      res.status(200).json(resultAddProduct);
-    } catch (error) {
-      // Si hay error se elminan los archivos que se hayan subido a la carpeta uploads
-      if (uploadFiles.length > 0) {
-        await Promise.all(
-          uploadFiles.map(async (filePath) => {
-            try {
-              await fs.unlink(filePath); // Eliminar file fisico
-            } catch (unlinkError) {
-              console.error("Error deleting file:", unlinkError);
-            }
-          })
-        );
+        stock: parseInt(productBody.stock)
       }
-      next(error);
+
+      if (uploadFiles.length === 0) {
+        productData = {
+          ...productData,
+          thumbnails: ['https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp']
+        }
+      } else {
+        productData = {
+          ...productData,
+          thumbnails: uploadFiles
+        }
+      }
+
+      // Almacenamiento del producto en MongoDB
+      const newProduct = await ProductsManager.addProduct(productData)
+      // Emision de evento despues de agregar el product
+      try {
+        socketModule.emitAddProduct(newProduct)
+      } catch (error) {
+        handleDestroyCloudinaryImages()
+        throw new Error(
+          'Socket not initialized, omitting event broadcast to add product'
+        )
+      }
+
+      res.status(201).json(newProduct)
+    } catch (error) {
+      handleDestroyCloudinaryImages()
+      next(error)
     }
   }
 
-  static async updateProduct(req, res, next) {
-    const files = req.files;
-    let newUploadFiles = files ? files.map((file) => file.path) : []; // Array para guardar los nombres de los uploads existentes
-
+  static async updateProduct (req, res, next) {
     try {
-      const { pid } = req.params;
-      const productBody = req.body;
-      const deleteImages = JSON.parse(productBody.deleteImages || "[]"); // URLS de las imagenes a eliminar
-      const allProducts = await ProductsManager.readDB(); //Data actual de productos en DB
+      const { pid } = req.params
+      const productBody = req.body
+      const files = req.files
+      const deleteImages = JSON.parse(productBody.deleteImages || '[]') // Obtener las urls de las imagenes que se quiren eliminar
+
+      const defaultImage = 'https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp'
+      const folder = 'MegaStock/uploads/products'
 
       // Validación del ID
-      if (!pid || pid.trim() === "" || isNaN(pid) || parseInt(pid) <= 0) {
-        throw createHttpError(400, "Invalid ID");
+      if (!mongoose.Types.ObjectId.isValid(pid)) {
+        throw createHttpError(400, 'Invalid product ID format')
       }
 
-      //Validacion si el producto viene con id para actualizar
-      if (productBody.id) {
-        throw createHttpError(404, "Error, product ID can not be updated");
+      // Validacion si el producto viene con id para actualizar
+      if (productBody._id) {
+        throw createHttpError(404, 'Error, product ID can not be updated')
       }
 
-      // Validacion si la peticion viene con codigo para actualizar
-      if (productBody.code) {
-        // Validacion de que el codigo no este repetido
-        const existingProduct = allProducts.find(
-          (p) => p.code === productBody.code
-        );
+      // Recuperar el producto que se quiere actualizar
+      const currentProduct = await Product.findById(pid)
+      if (!currentProduct) {
+        throw createHttpError(404, 'Product not found')
+      }
+
+      // Validacion sobre el codigo para que este sea unico
+      if (productBody.code && productBody.code !== currentProduct.code) {
+        const existingProduct = await Product.findOne({
+          code: productBody.code
+        })
         if (existingProduct) {
           throw createHttpError(
             404,
             `The code ${productBody.code} is already registered`
-          );
+          )
         }
       }
 
-      // Encontrar indice del producto a actualizar
-      const productIndex = allProducts.findIndex((p) => p.id === parseInt(pid));
+      let updatedThumbnails = [...currentProduct.thumbnails] // Inicilizacion de array con las imagenes actuales
 
-      if (productIndex === -1) {
-        throw createHttpError(404, "Product not found");
+      // Eliminar imagenes especificas si se solicita
+      if (deleteImages && deleteImages.length > 0) {
+        console.log('Images to Delte:', deleteImages)
+        // Filtrar las imagenes que se van a mantener
+        updatedThumbnails = updatedThumbnails.filter(url => !deleteImages.includes(url))
+
+        // Eliminar de Cloudinary solo las imagenes que no son la default
+        const imagesToDeleteFromCloud = deleteImages.filter(url => url !== defaultImage)
+        if (imagesToDeleteFromCloud.length > 0) {
+          await deleteCloudinaryImages(folder, imagesToDeleteFromCloud)
+        }
+
+        console.log('Thumbnails después de eliminar:', updatedThumbnails)
       }
 
-      // Se almacena el producto especifico que se quiere actualizar
-      const currentProduct = { ...allProducts[productIndex] };
-
-      // Antes de eliminar archivos: Este código asegura que solo se eliminen imágenes válidas, evitando errores comunes como índices inválidos o rutas inexistentes
-      const imagesToDelete = deleteImages
-        .filter((item) => !isNaN(item)) // Filtra índices numéricos para obtener solo elementos que pueden ser numeros o lo son ya
-        .map((index) => currentProduct.thumbnails[index]) // Obtiene rutas reales convierte el indice resultante anteriormente en la ruta correspondiente al array thumbnails del producto a actualizar
-        .filter((path) => path !== undefined); // Elimina índices inválidos que no existan en el array de thumbnails del producto, retornando un valor undefind
-      // Solo quedara un array con las rutas de los indices correspondientes
-
-      // Eliminacion fisica de imagenes sobre la carpeta uploads
-      await Promise.all(
-        imagesToDelete.map(async (imgPath) => {
-          console.log("imgPath:", imgPath);
-          console.log(path.basename(imgPath));
-
-          try {
-            const fileName = path.basename(imgPath);
-            await fs.unlink(path.join(ruteImages, fileName)); // Se toma el path de la imgen en ciclo
-          } catch (error) {
-            console.error("Error deleting image:", error);
-          }
-        })
-      );
-
-      // Eliminacion de rutas thumbnails sobre el producto actual
-      currentProduct.thumbnails = currentProduct.thumbnails.filter(
-        (imgPath, index) =>
-          !deleteImages.includes(index.toString()) && // Se usa toString() ya que desde la solicitud el array de deleteImages viene como String y aca se tienen en cuenta los indices para eliminar
-          !deleteImages.includes(imgPath) && // Aca se validan las URLs de las imagenes que vienen en el array de deleteImages en caso de coincidir con las URLs del producto a actualizar
-          !deleteImages.includes(path.basename("default-product.webp"))
-      );
-
-      // Añadir nuevas imagenes
+      // Agregar nuevas imagenes si se envian por form-data
       if (files && files.length > 0) {
-        newUploadFiles = files.map((file) => file.path);
-        const newImages = files.map((file) => `${ruteImages}/${file.filename}`);
+        // Validacion para que no superen las 5 imagenes
+        if (updatedThumbnails.length + files.length > 5) {
+          // Roll back de las imagenes subidas ya que superan las 5
+          const newImagesUrls = files.map(file => file.path)
+          await deleteCloudinaryImages(folder, newImagesUrls)
 
-        // Validacion del maximo de 5 imagenes
-        const totalImages = currentProduct.thumbnails.length + newImages.length;
-        if (totalImages > 5) {
-          throw createHttpError(400, "Maximum 5 images per product");
+          throw createHttpError(404, 'A maximum of 5 images per product is allowed')
         }
 
-        currentProduct.thumbnails = [
-          ...currentProduct.thumbnails,
-          ...newImages,
-        ];
-      }
-      
-      // Actualización de la imgen por default si se borran todas las imagenes
-      if (currentProduct.thumbnails.length === 0) {
-        currentProduct.thumbnails = [`${defaultImageRute}/default-product.webp`];
+        // Obtener las URLs de las nuevas imagenes
+        const newImagesUrls = files.map(file => file.path)
+        console.log('Nuevas imagenes a agregar:', newImagesUrls)
+
+        // Si la unica imagen es la default, se remplaza con las nuevas
+        if (updatedThumbnails.length === 1 && updatedThumbnails[0] === defaultImage) {
+          updatedThumbnails = newImagesUrls
+        } else {
+          // En el caso de que no, se agregan las nuevas
+          updatedThumbnails = [...updatedThumbnails, ...newImagesUrls]
+        }
+
+        console.log('Thumbnails despues de agregar nuevas:', updatedThumbnails)
       }
 
-      // Actualizacion de otros campos
-      const updatedProduct = {
-        ...currentProduct,
+      // En caso de que no queden imagenes, se usa la imagen default
+      if (updatedThumbnails.length === 0) {
+        updatedThumbnails = [defaultImage]
+        console.log('Se asigno la imagen por defecto')
+      }
+
+      // Se actualiza el producto en la base de datos
+      // Actualizacion de los demas datos del producto
+      const updateData = {
         ...productBody,
-        price: productBody.price
-          ? parseFloat(productBody.price)
-          : currentProduct.price,
-        stock: productBody.stock
-          ? parseInt(productBody.stock)
-          : currentProduct.stock,
-      };
-
-      // Eliminacion del array deleteImages y newThumbnails que se usa para especificar las imagenes a eliminar desde la peticion Http
-      delete updatedProduct.deleteImages;
-      delete updatedProduct.newThumbnails;
-
-      const resultUpdatedProduct = await ProductsManager.updateProduct(
-        pid,
-        updatedProduct
-      );
-      res.status(200).json(resultUpdatedProduct);
-    } catch (error) {
-      if (newUploadFiles.length > 0) {
-        await Promise.all(
-          newUploadFiles.map(async (filePath) => {
-            try {
-              await fs.unlink(filePath);
-            } catch (unlinkError) {
-              console.error("Error deleting new image(s):", unlinkError);
-            }
-          })
-        );
+        thumbnails: updatedThumbnails,
+        price: productBody.price ? parseFloat(productBody.price) : currentProduct.price,
+        stock: productBody.stock ? parseInt(productBody.stock) : currentProduct.stock
       }
-      next(error);
+
+      // Actualizaicon del producto
+      const updatedProduct = await ProductsManager.updateProduct(pid, updateData)
+
+      res.status(200).json(updatedProduct)
+    } catch (error) {
+      // Eliminar imagenes subidas en caso de error
+      if (req.files) {
+        await deleteCloudinaryImages(req.files.map(file => file.path))
+      }
+      next(error)
     }
   }
 
-  static async deleteProduct(req, res, next) {
+  static async changeStatus (req, res, next) {
     try {
-      const { pid } = req.query;
-
-      if (!pid || pid.trim() === "") {
-        throw createHttpError(404, "ID is required");
+      const { pid } = req.query
+      if (!pid || pid.trim() === '') {
+        throw createHttpError(404, "Product's ID is required")
       }
 
-      // Verificar que sea un número válido
-      const numPid = parseInt(pid);
-      if (isNaN(numPid) || numPid <= 0) {
-        throw createHttpError(404, "ID must be a positive number");
+      // Validación del ID
+      if (!mongoose.Types.ObjectId.isValid(pid)) {
+        throw createHttpError(400, 'Invalid product ID format')
       }
 
-      const newProducts = await ProductsManager.deleteProduct(pid);
-      res.status(200).json({
-        success: true,
-        message: newProducts,
-      });
+      const changedProduct = await ProductsManager.changeStatus(pid)
+
+      // res.status(200).json({
+      //   success: true,
+      //   product: changedProduct
+      // })
+
+      res.status(200).json(changedProduct)
     } catch (error) {
-      next(error);
+      next(error)
+    }
+  }
+
+  static async deleteProduct (req, res, next) {
+    try {
+      const { pid } = req.query
+
+      if (!pid || pid.trim() === '') {
+        throw createHttpError(404, "Product's ID is required")
+      }
+
+      // Validación del ID
+      if (!mongoose.Types.ObjectId.isValid(pid)) {
+        throw createHttpError(400, 'Invalid product ID format')
+      }
+
+      const deletedProduct = await ProductsManager.deleteProduct(pid)
+      // res.status(200).json({
+      //   success: true,
+      //   message: 'Product deleted succesfully'
+      //   product: deletedProduct
+      // })
+      res.status(200).json(deletedProduct)
+    } catch (error) {
+      next(error)
     }
   }
 }
