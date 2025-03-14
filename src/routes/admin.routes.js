@@ -23,13 +23,13 @@ router.put(
 )
 
 // Change product's status from DB
-router.delete('/product/delete', ProductsController.changeStatus)
+// router.delete('/product/delete', ProductsController.changeStatus)
 
 // Delete product from DB
-// router.delete('/product/delete', ProductsController.deleteProduct)
+router.delete('/products/delete', ProductsController.deleteProduct)
 
 // Get product by ID
-router.get('/product/:pid', ProductsController.getProductById)
+router.get('/products/product/:pid', ProductsController.getProductById)
 
 // Get all products
 router.get('/', ProductsController.getProductsAdmin)

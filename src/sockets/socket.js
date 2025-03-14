@@ -22,6 +22,20 @@ export const socketModule = {
     io.emit('addProduct', product)
   },
 
+  emitUpdatedProduct: function (productUpdated) {
+    if (!io) {
+      throw new Error('Socket.io not initilized')
+    }
+    io.emit('productUpdated', productUpdated)
+  },
+
+  emitDeletedProduct: function (productDeleted) {
+    if (!io) {
+      throw new Error('Socket.io not initilized')
+    }
+    io.emit('productDeleted', productDeleted)
+  },
+
   emitSocketError: function (error) {
     if (!io) {
       throw new Error('Socket.io no initialized')

@@ -9,26 +9,11 @@ import path from 'path'
 import { rootPath } from 'root/utils/paths.js'
 import { socketModule } from 'root/sockets/socket.js'
 import connectDB from 'root/config/database.js'
-import fs from 'fs/promises'
-
-// Funcion para crear un folder temporal que almacena las imagenes que se suben de productos o usuarios
-const createTempDir = async () => {
-  try {
-    await fs.mkdir('temp/uploads', { recursive: true })
-    console.log('Temporal folder created')
-  } catch (error) {
-    console.error('Error creating the temporary uploads folder:', error)
-  }
-}
 
 const serverUp = async () => {
-  // Se inicia la creacion de la carpeta temporal antes de crear todo el server
-  await createTempDir()
-
   const app = express()
   const server = createServer(app) // Se levanta el server para socket.io
   const io = new Server(server) // Creacion del io para el acceso al socket del server
-  // const srcPath = path.resolve("./src/"); // Patg que apunta a la ruta raiz del proyecto
 
   // Conexion a la base de datos
   connectDB()

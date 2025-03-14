@@ -1,24 +1,10 @@
 import { ProductsManager } from 'root/managers/product.manager.js'
 import createHttpError from 'http-errors'
-import { cloudinary, deleteCloudinaryImages } from 'root/config/cloudinary.js'
-// import path from 'path'
-// import fs from 'fs/promises'
+import { deleteCloudinaryImages } from 'root/config/cloudinary.js'
 import { socketModule } from 'root/sockets/socket.js'
 import Product from 'root/models/product.model.js'
 import mongoose from 'mongoose'
-// import { v4 as uuidv4 } from 'uuid'
-// import { rootPath } from 'root/utils/paths.js'
-
-// // Ruta para almacenar y guardar las imagenes de los productos
-// // const projectRoot = path.resolve(__dirname, "../../");
-// const ruteImages = path.resolve(rootPath, 'uploads')
-
-// // Ruta de la imgen por default para productos que se crean sin imagenes
-// const defaultImageRute = path.resolve(rootPath, 'assets', 'default', 'images')
-
-/**
- * TODO actualizar la validacion de los id como con updateProduct
- */
+import { pathImagesProducts, productUrlImageDefault } from 'root/utils/paths.js'
 
 export class ProductsController {
   // Get for clients
@@ -138,46 +124,31 @@ export class ProductsController {
     }
   }
 
-  // static async getCategories(req, res, next) {
-  //   try {
-  //     console.log("Antes de llamar a getCategories");
-  //     const resultCategories = await ProductsManager.getCategories();
-  //     console.log("response categories", resultCategories);
-  //     res.status(200).json(resultCategories);
-  //   } catch (error) {
-  //     next(error)
-  //   }
-  // }
-
   static async addProduct (req, res, next) {
-    // En caso de error, eliminacion de las imagenes subidas a Cloudinary
-    const handleDestroyCloudinaryImages = () => {
-      if (req.files) {
-        req.files.forEach(async (file) => {
-          const publicId = file.filename
-          await cloudinary.uploader.destroy(publicId)
-        })
-      }
-    }
-
     try {
       const productBody = req.body
       const uploadFiles = req.files.map(file => file.path)
 
       if (!productBody) {
-        handleDestroyCloudinaryImages()
+        if (uploadFiles.length > 0) {
+          await deleteCloudinaryImages(pathImagesProducts, uploadFiles)
+        }
         throw createHttpError(404, 'Product and product details are required')
       }
 
       if (req.files.length > 5) {
-        handleDestroyCloudinaryImages()
+        if (uploadFiles.length > 0) {
+          await deleteCloudinaryImages(pathImagesProducts, uploadFiles)
+        }
         throw createHttpError(404, 'Maximum 5 images allowed')
       }
 
       // Antes de guardar en MongoDB se valida que no exista el codigo en alguno de los productos ya existentes
       const existingProduct = await Product.findOne({ code: productBody.code })
       if (existingProduct) {
-        handleDestroyCloudinaryImages()
+        if (uploadFiles.length > 0) {
+          await deleteCloudinaryImages(pathImagesProducts, uploadFiles)
+        }
         throw createHttpError(404, `The code ${productBody.code} is already registered`)
       }
       // Preparacion de datos del producto para su almacenamiento
@@ -190,7 +161,7 @@ export class ProductsController {
       if (uploadFiles.length === 0) {
         productData = {
           ...productData,
-          thumbnails: ['https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp']
+          thumbnails: [productUrlImageDefault]
         }
       } else {
         productData = {
@@ -205,15 +176,18 @@ export class ProductsController {
       try {
         socketModule.emitAddProduct(newProduct)
       } catch (error) {
-        handleDestroyCloudinaryImages()
-        throw new Error(
-          'Socket not initialized, omitting event broadcast to add product'
-        )
+        if (uploadFiles.length > 0) {
+          await deleteCloudinaryImages(pathImagesProducts, uploadFiles)
+        }
+        socketModule.emitSocketError(error)
       }
 
       res.status(201).json(newProduct)
     } catch (error) {
-      handleDestroyCloudinaryImages()
+      const uploadFiles = req.files.map(file => file.path)
+      if (uploadFiles > 0) {
+        await deleteCloudinaryImages(pathImagesProducts, uploadFiles)
+      }
       next(error)
     }
   }
@@ -225,10 +199,11 @@ export class ProductsController {
       const files = req.files
       const deleteImages = JSON.parse(productBody.deleteImages || '[]') // Obtener las urls de las imagenes que se quiren eliminar
 
-      const defaultImage = 'https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp'
-      const folder = 'MegaStock/uploads/products'
-
       // Validación del ID
+      if (!pid || pid.trim() === '') {
+        throw createHttpError(404, "Product's ID is required")
+      }
+
       if (!mongoose.Types.ObjectId.isValid(pid)) {
         throw createHttpError(400, 'Invalid product ID format')
       }
@@ -266,9 +241,9 @@ export class ProductsController {
         updatedThumbnails = updatedThumbnails.filter(url => !deleteImages.includes(url))
 
         // Eliminar de Cloudinary solo las imagenes que no son la default
-        const imagesToDeleteFromCloud = deleteImages.filter(url => url !== defaultImage)
+        const imagesToDeleteFromCloud = deleteImages.filter(url => url !== productUrlImageDefault)
         if (imagesToDeleteFromCloud.length > 0) {
-          await deleteCloudinaryImages(folder, imagesToDeleteFromCloud)
+          await deleteCloudinaryImages(pathImagesProducts, imagesToDeleteFromCloud)
         }
 
         console.log('Thumbnails después de eliminar:', updatedThumbnails)
@@ -280,7 +255,7 @@ export class ProductsController {
         if (updatedThumbnails.length + files.length > 5) {
           // Roll back de las imagenes subidas ya que superan las 5
           const newImagesUrls = files.map(file => file.path)
-          await deleteCloudinaryImages(folder, newImagesUrls)
+          await deleteCloudinaryImages(pathImagesProducts, newImagesUrls)
 
           throw createHttpError(404, 'A maximum of 5 images per product is allowed')
         }
@@ -290,7 +265,7 @@ export class ProductsController {
         console.log('Nuevas imagenes a agregar:', newImagesUrls)
 
         // Si la unica imagen es la default, se remplaza con las nuevas
-        if (updatedThumbnails.length === 1 && updatedThumbnails[0] === defaultImage) {
+        if (updatedThumbnails.length === 1 && updatedThumbnails[0] === productUrlImageDefault) {
           updatedThumbnails = newImagesUrls
         } else {
           // En el caso de que no, se agregan las nuevas
@@ -302,7 +277,7 @@ export class ProductsController {
 
       // En caso de que no queden imagenes, se usa la imagen default
       if (updatedThumbnails.length === 0) {
-        updatedThumbnails = [defaultImage]
+        updatedThumbnails = [productUrlImageDefault]
         console.log('Se asigno la imagen por defecto')
       }
 
@@ -318,11 +293,19 @@ export class ProductsController {
       // Actualizaicon del producto
       const updatedProduct = await ProductsManager.updateProduct(pid, updateData)
 
+      // Emitit Socket de producto actulizado
+      try {
+        socketModule.emitUpdatedProduct(updatedProduct)
+      } catch (error) {
+        socketModule.emitSocketError(error)
+      }
+
       res.status(200).json(updatedProduct)
     } catch (error) {
       // Eliminar imagenes subidas en caso de error
-      if (req.files) {
-        await deleteCloudinaryImages(req.files.map(file => file.path))
+      const uploadFiles = req.files.map(file => file.path)
+      if (uploadFiles > 0) {
+        await deleteCloudinaryImages(pathImagesProducts, uploadFiles)
       }
       next(error)
     }
@@ -341,6 +324,13 @@ export class ProductsController {
       }
 
       const changedProduct = await ProductsManager.changeStatus(pid)
+
+      try {
+        const { _id } = await changedProduct
+        socketModule.emitDeletedProduct(_id)
+      } catch (error) {
+        socketModule.emitSocketError()
+      }
 
       // res.status(200).json({
       //   success: true,
@@ -372,6 +362,21 @@ export class ProductsController {
       //   message: 'Product deleted succesfully'
       //   product: deletedProduct
       // })
+
+      // Se recuperan las urls de las imagenes del producto
+      const { thumbnails } = await deletedProduct
+
+      if (thumbnails && thumbnails.length > 0 && (thumbnails[0] !== productUrlImageDefault)) {
+        // Se eliminan las imagenes que se encuentran alojadas en Cloudinary
+        await deleteCloudinaryImages(pathImagesProducts, thumbnails)
+      }
+
+      try {
+        const { _id } = await deletedProduct
+        socketModule.emitDeletedProduct(_id)
+      } catch (error) {
+        socketModule.emitSocketError()
+      }
       res.status(200).json(deletedProduct)
     } catch (error) {
       next(error)

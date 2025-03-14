@@ -1,11 +1,6 @@
 /* eslint-disable no-useless-catch */
 import mongoose from 'mongoose'
 import Product from 'root/models/product.model.js'
-// import fs from 'fs/promises'
-// import path from 'path'
-// import { rootPath } from 'root/utils/paths.js'
-
-// const ruteDB = path.resolve(rootPath, 'db', 'products.json')
 
 export class ProductsManager {
   /**
@@ -57,48 +52,6 @@ export class ProductsManager {
       throw error
     }
   }
-
-  // static async getCategories() {
-  //   console.log("Metodo getCategories iniciado");
-
-  //   try {
-  //     const allProducts = await this.readDB();
-  //     console.log("All products", allProducts);
-
-  //     if (!allProducts) {
-  //       throw new Error("No products found");
-  //     }
-  //     // Se sacan todas las categorias de todos los objetos en un nuevo array
-  //     const categories = allProducts.map((p) => p.category);
-  //     console.log("All categories", categories);
-
-  //     if (!categories || categories.length === 0) {
-  //       throw new Error("Error obtaining general categories");
-  //     }
-
-  //     /**
-  //      * Se aplica un new Set(array) para eliminar valores duplicados
-  //      * Se usa spread operator ... para transformar cada propiedad del objeto SET en un espacio del array
-  //      */
-  //     const categorySingle = [...new Set(categories)];
-  //     // const categoryMap = {};
-  //     // categories.forEach((category) => {
-  //     //   categoryMap[category] = true;
-  //     // });
-
-  //     // const categorySingle = Object.keys(categoryMap);
-
-  //     console.log("Single category", categorySingle);
-
-  //     if (!categorySingle || categorySingle.length === 0) {
-  //       throw new Error("Error when obtaining the categories");
-  //     }
-
-  //     return categorySingle;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
 
   /**
    *
@@ -159,44 +112,6 @@ export class ProductsManager {
     } catch (error) {
       throw error
     }
-    // try {
-    //   const allProducts = await this.readDB()
-
-    //   if (!allProducts) {
-    //     throw new Error('No products found')
-    //   }
-
-    //   const productToDelete = allProducts.find((p) => p.id === parseInt(id))
-
-    //   if (!productToDelete) {
-    //     throw new Error('There is no product with the supplied id')
-    //   }
-
-    //   const indice = allProducts.findIndex((p) => p.id === parseInt(id))
-
-    //   if (indice === -1) {
-    //     throw new Error('The product to be removed was not found')
-    //   }
-
-    //   const newAllProducts = [...allProducts]
-
-    //   newAllProducts.splice(indice, 1)
-
-    //   //   newAllProducts[indice] = {
-    //   //     ...newAllProducts[indice],
-    //   //     status: false,
-    //   //   };
-
-    //   const resultDeleteProduct = await this.writeDB(newAllProducts)
-
-    //   if (!resultDeleteProduct) {
-    //     throw new Error('The product to be removed was not found')
-    //   }
-
-    //   return 'Product successfully removed'
-    // } catch (error) {
-    //   throw error
-    // }
   }
 
   /**

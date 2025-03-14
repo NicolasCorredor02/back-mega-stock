@@ -6,12 +6,13 @@ let currentProductId = null
 let currentImages = []
 const MAX_IMAGES = 5
 // Carga de datos actuales al formulario
+// eslint-disable-next-line no-unused-vars
 async function updateProduct (pid) {
   currentProductId = pid
 
   try {
     const response = await fetch(
-      `http://localhost:8080/api/admin/product/${pid}`
+      `http://localhost:8080/api/admin/products/product/${pid}`
     )
 
     if (!response.ok) {
@@ -187,7 +188,8 @@ async function handleFormSubmit (event) {
     })
 
     if (!response.ok) {
-      throw new Error('Error processing the request')
+      const errorData = await response.json()
+      throw new Error(errorData.message || 'Error processing the request')
     }
 
     resetForm()
@@ -195,7 +197,40 @@ async function handleFormSubmit (event) {
     Swal.fire({
       icon: 'error',
       title: 'Oops...',
-      text: `An error has occurred: ${error}`
+      text: `An error has occurred: ${error.message}`
+    })
+  }
+}
+
+// eslint-disable-next-line no-unused-vars
+async function handleDeletedProduct (productId) {
+  const url = `http://localhost:8080/api/admin/products/delete?pid=${productId}`
+  const method = 'DELETE'
+
+  try {
+    Swal.fire({
+      title: 'Loading...',
+      text: 'Please wait while we process your request',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading()
+      }
+    })
+
+    const response = await fetch(url, {
+      method
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || 'Error processing the request')
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: `An error has occurred: ${error.message}`
     })
   }
 }
@@ -272,7 +307,8 @@ function handleFileInput () {
         imageContainer.remove()
         updateFileInputStatus(
           document.querySelectorAll('.keep-image-checkbox:checked').length +
-            document.querySelectorAll('.new-image').length - 1
+            document.querySelectorAll('.new-image').length -
+            1
         )
       })
 
@@ -295,7 +331,6 @@ function socketEvents () {
   // eslint-disable-next-line no-undef
   const socket = io('http://localhost:8080') // Por defecto trabaja con el puerto y el servidor levantado (localhost:8080) pero en caso de produccion se debe especificar el link del dominio o server
 
-  // TODO Hacer Socket para update product
   // TODO Revisar problema en el uso del input file porque solo sirve cuando se actualiza la pagina o cuando se carga por primera vez
 
   //* ------------- ESCUCHAR EVENTO DE NUEVO PRODUCTO -----------
@@ -327,7 +362,10 @@ function socketEvents () {
     productsList.insertAdjacentHTML('afterbegin', newProductHTML)
 
     // Ejecucion de la funcion para editar los botones de update del producto agregado
-    updateEditButtons()
+    // updateEditButtons()
+
+    // Ejecucion de la funcion para editar los botones de delete del producto agregado
+    // updateDeleteButtons()
 
     Swal.fire({
       position: 'top-end',
@@ -338,6 +376,68 @@ function socketEvents () {
     })
   })
 
+  //* ------------- ESCUCHAR EVENTO DE ACTUALIZACION DE PRODUCTO -----------
+  socket.on('productUpdated', (updatedProduct) => {
+    const productToUpdate = document.getElementById(`${updatedProduct._id}`)
+
+    const productUpdated = `<tr id=${updatedProduct._id} class="hover:bg-gray-50">
+    <td class="px-6 py-4">${updatedProduct._id}</td>
+    <td class="px-6 py-4 whitespace-nowrap">
+    <img
+    src=${updatedProduct.thumbnails[0]}
+    alt=${updatedProduct.title}
+    class="h-10 w-10 rounded-full"
+    />
+    </td>
+    <td class="px-6 py-4">${updatedProduct.title}</td>
+    <td class="px-6 py-4">${updatedProduct.description}</td>
+    <td class="px-6 py-4">${updatedProduct.code}</td>
+    <td class="px-6 py-4">$${updatedProduct.price}</td>
+    <td class="px-6 py-4">${updatedProduct.stock}</td>
+    <td class="px-6 py-4">${updatedProduct.category}</td>
+    <td class="px-6 py-4">
+    <button class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
+    <button class="text-red-600 hover:text-red-900">Delete</button>
+    </td>
+    </tr>`
+    // Se inserta el nuevo elemento antes del elemento antiguo que se remplaza
+    productToUpdate.insertAdjacentHTML('beforebegin', productUpdated)
+
+    // Se elimina el producto antiguo de la lista
+    productToUpdate.parentNode.removeChild(productToUpdate)
+
+    // Ejecucion de la funcion para editar los botones de update del producto actualizado
+    // updateEditButtons()
+
+    // Ejecucion de la funcion para editar los botones de delete del producto agregado
+    // updateDeleteButtons()
+
+    Swal.fire({
+      position: 'top-end',
+      title: 'Product successfully updated',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1000
+    })
+  })
+
+  //* ------------- ESCUCHAR EVENTO DELETE DE PRODUCTO -----------
+  socket.on('productDeleted', (idProductToDelete) => {
+    const productToDelete = document.getElementById(`${idProductToDelete}`)
+
+    // Se elimina el producto de la lista
+    productToDelete.parentNode.removeChild(productToDelete)
+
+    Swal.fire({
+      position: 'top-end',
+      title: 'Product successfully deleted',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1000
+    })
+  })
+
+  //* ------------- ESCUCHAR EVENTO DE ERROR -----------
   socket.on('socketError', (data) => {
     Swal.fire({
       icon: 'error',
@@ -352,10 +452,14 @@ document.addEventListener('DOMContentLoaded', function () {
   socketEvents()
 
   // Envio de fomulario
-  document.getElementById('productForm').addEventListener('submit', handleFormSubmit)
+  document
+    .getElementById('productForm')
+    .addEventListener('submit', handleFormSubmit)
 
   // Cambio para el input de files
-  document.getElementById('fileInput').addEventListener('change', handleFileInput)
+  document
+    .getElementById('fileInput')
+    .addEventListener('change', handleFileInput)
 
   // Funcion para limpiar el formulario a traves del boton de Cancel
   document.getElementById('cancelForm').addEventListener('click', resetForm)
@@ -366,11 +470,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function initializeDragAndDrop () {
   const dropArea = document.getElementById('dropImgesArea')
-  const fileInput = document.getElementById('fileInput')
+  const fileInput = document
+    .getElementById('fileInput')
 
-  // Prevent default behaviors
     // eslint-disable-next-line no-unexpected-multiline, no-sequences
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
       dropArea.addEventListener(eventName, preventDefaults, false)
     })
 
@@ -380,11 +484,11 @@ function initializeDragAndDrop () {
   }
 
   // Highlight drop area when file is dragged over
-  ['dragenter', 'dragover'].forEach(eventName => {
+  ['dragenter', 'dragover'].forEach((eventName) => {
     dropArea.addEventListener(eventName, highlight, false)
   });
 
-  ['dragleave', 'drop'].forEach(eventName => {
+  ['dragleave', 'drop'].forEach((eventName) => {
     dropArea.addEventListener(eventName, unhighlight, false)
   })
 
@@ -406,17 +510,32 @@ function initializeDragAndDrop () {
   }
 }
 
-// Funcion para actualizar el parametro Update de la lista de productos
-function updateEditButtons () {
-  // Seleccion de todos botones en la tabla de productos
-  const editButtons = document.querySelectorAll('button.text-blue-600')
+// // Funcion para actualizar el parametro Update de la lista de productos
+// function updateEditButtons () {
+//   // Seleccion de todos botones en la tabla de productos
+//   const editButtons = document.querySelectorAll('button.text-blue-600')
 
-  // Se añade envento del click para cada boton
-  editButtons.forEach(button => {
-    button.onclick = function (e) {
-      e.preventDefault()
-      const productId = this.closest('tr').id
-      updateProduct(productId)
-    }
-  })
-}
+//   // Se añade envento del click para cada boton
+//   editButtons.forEach((button) => {
+//     button.onclick = function (e) {
+//       e.preventDefault()
+//       const productId = this.closest('tr').id
+//       updateProduct(productId)
+//     }
+//   })
+// }
+
+// // Funcion para actualizar el parametro Delete de la lista de productos
+// function updateDeleteButtons () {
+//   // Seleccion de todos los botones en la tabla de productos
+//   const deleteButtons = document.querySelectorAll('button.text-red-600')
+
+//   // Se añade evento del click para cada boton
+//   deleteButtons.forEach((button) => {
+//     button.onclick = function (e) {
+//       e.preventDefault()
+//       const productId = this.closest('tr').id
+//       handleDeletedProduct(productId)
+//     }
+//   })
+// }
