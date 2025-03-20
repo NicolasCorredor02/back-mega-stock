@@ -1,7 +1,6 @@
 [
   {
     "id": 1,
-    "user_id": 1,
     "user_type": "registered",
     "user_info": {
       "first_name": "Raton",
@@ -44,7 +43,6 @@
   },
   {
     "id": 2,
-    "user_id": null,
     "user_type": "guest",
     "user_info": {
       "first_name": "Juan",
