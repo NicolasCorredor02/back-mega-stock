@@ -1,68 +1,20 @@
 /* eslint-disable no-useless-catch */
-import fs from 'fs/promises'
+import mongoose from 'mongoose'
+import Cart from 'root/models/cart.model.js'
 import { ProductsManager } from 'root/managers/product.manager.js'
-import path from 'path'
-import { rootPath } from 'root/utils/paths.js'
-
-const ruteDB = path.resolve(rootPath, 'db', 'carts.json')
-
-// TODO Actualizar logica sobre cart de acuerdo a la nueva estructura del json
 
 export class CartsManager {
   static requiredFields = ['id', 'quantity']
 
   /**
    *
-   * @returns {array} array with products
+   * @param {object} cartData
+   * @returns {object}
    */
-  static async readDB () {
-    const data = await fs.readFile(ruteDB, 'utf-8')
-    if (!data) return []
-    return JSON.parse(data)
-  }
-
-  /**
-   *
-   * @param {array} carts
-   * @returns {boolean}
-   */
-  static async writeDB (carts) {
+  static async createCart (cartData) {
     try {
-      if (!carts) {
-        return false
-      }
-
-      await fs.writeFile(ruteDB, JSON.stringify(carts, null, 2))
-
-      return true
-    } catch (error) {
-      throw new Error('Error when creating or updating cart(s)')
-    }
-  }
-
-  /**
-   *
-   * @returns {object} Empty Cart
-   */
-  static async createCart () {
-    try {
-      const allCarts = await CartsManager.readDB()
-      if (!allCarts) {
-        throw new Error('No carts found')
-      }
-      const newCart = {
-        id: allCarts.length + 1,
-        products: []
-      }
-
-      allCarts.push(newCart)
-
-      const resultCreateCart = await CartsManager.writeDB(allCarts)
-
-      if (!resultCreateCart) {
-        throw new Error('Failed to create cart')
-      }
-
+      const newCart = new Cart(cartData)
+      await newCart.save()
       return newCart
     } catch (error) {
       throw error
