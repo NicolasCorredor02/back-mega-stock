@@ -4,7 +4,7 @@ import { CartsController } from 'root/controller/cart.controller.js'
 const router = Router()
 
 // Post create a cart
-router.post('/', CartsController.createCart)
+router.post('/create', CartsController.createCart)
 
 // Get cart by id
 router.get('/cart/:cid', CartsController.getCart)
