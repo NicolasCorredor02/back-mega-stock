@@ -4,8 +4,18 @@ import createHttpError from 'http-errors'
 export class CartsController {
   static async createCart (req, res, next) {
     try {
-      const resultCreateCart = await CartsManager.createCart()
-      res.status(200).json(resultCreateCart)
+      const cartBody = req.body
+      if (!cartBody) {
+        throw createHttpError(404, "Cart's details is required")
+      }
+
+      const cartData = {
+        ...cartBody,
+        sub_total: parseFloat(cartBody.sub_total)
+      }
+
+      const newCart = await CartsManager.createCart(cartData)
+      res.status(200).json(newCart)
     } catch (error) {
       next(error)
     }
