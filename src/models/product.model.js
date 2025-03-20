@@ -50,4 +50,6 @@ const productSchema = new mongoose.Schema(
     timestamps: true // Se agrega automaticamente el create_at y updated_at
   })
 
+productSchema.index({ title: 'text', description: 'text', code: 'text', category: 1, status: 1 })
+
 export default mongoose.model('Product', productSchema)
