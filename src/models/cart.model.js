@@ -1,5 +1,34 @@
 import mongoose from 'mongoose'
 
+// Subesquema para la informacion del usuario
+const userInfoSchema = new mongoose.Schema({
+  firts_name: {
+    type: String,
+    trim: true,
+    required: [true, 'Firts name is required']
+  },
+  last_name: {
+    type: String,
+    trim: true,
+    required: [true, 'Last name is required']
+  },
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    trim: true,
+    lowercase: true
+  },
+  phone: {
+    type: String,
+    trim: true,
+    required: [true, 'A phone number is required']
+  },
+  id_number: {
+    type: Number,
+    required: [true, 'DNI is required']
+  }
+})
+
 const cartSchema = new mongoose.Schema(
   {
     user_type: {
@@ -10,12 +39,7 @@ const cartSchema = new mongoose.Schema(
       }
     },
     user_info: {
-      firts_name: String,
-      last_name: String,
-      email: String,
-      phone: String,
-      id_number: Number,
-      required: [true, 'User infor is required']
+      userInfoSchema
     },
     address: {
       type: mongoose.Schema.Types.ObjectId,
