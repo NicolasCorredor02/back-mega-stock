@@ -1,10 +1,15 @@
 import { CartsManager } from 'root/managers/cart.manager.js'
 import createHttpError from 'http-errors'
+import Cart from 'root/models/cart.model.js'
+import mongoose from 'mongoose'
 
 export class CartsController {
   static async createCart (req, res, next) {
     try {
       const cartBody = req.body
+
+      console.log('CartBody:', cartBody)
+
       if (!cartBody) {
         throw createHttpError(404, "Cart's details is required")
       }
@@ -14,6 +19,8 @@ export class CartsController {
         sub_total: parseFloat(cartBody.sub_total)
       }
 
+      console.log('CartData:', cartData)
+
       const newCart = await CartsManager.createCart(cartData)
       res.status(200).json(newCart)
     } catch (error) {
@@ -21,7 +28,16 @@ export class CartsController {
     }
   }
 
-  static async getCart (req, res, next) {
+  static async getAllCarts (req, res, next) {
+    try {
+      const allCarts = await CartsManager.getAllCarts()
+      res.status(200).json(allCarts)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async getCartById (req, res, next) {
     try {
       const { cid } = req.params
 
@@ -29,39 +45,70 @@ export class CartsController {
         throw createHttpError(404, 'Id cart is required')
       }
 
-      // Verificar que sea un número válido
-      const numCid = parseInt(cid)
-      if (isNaN(numCid) || numCid <= 0) {
-        throw createHttpError(404, 'ID must be a positive number')
+      if (!mongoose.Types.ObjectId.isValid(cid)) {
+        throw createHttpError(404, 'Invalid cart ID format')
       }
-
-      const resultCartById = await CartsManager.getCart(cid)
-      res.status(200).json(resultCartById)
+      const cart = await CartsManager.getCartById(cid)
+      res.status(200).json(cart)
     } catch (error) {
       next(error)
     }
   }
 
-  static async addProductCart (req, res, next) {
+  static async updateCartData (req, res, next) {
     try {
       const { cid } = req.params
-      const product = req.body
+      const cartBody = req.body
 
-      if (!cid || cid.trim() === '' || !product) {
+      if (!cid || cid.trim() === '' || !cartBody) {
         throw createHttpError(404, 'Cart id & product details are required')
       }
 
-      // Verificar que sea un número válido
-      const numCid = parseInt(cid)
-      if (isNaN(numCid) || numCid <= 0) {
-        throw createHttpError(404, 'ID must be a positive number')
+      if (!mongoose.Types.ObjectId.isValid(cid)) { throw createHttpError(404, 'Invalid cart ID format') }
+
+      if (
+        cartBody._id ||
+        cartBody.user_type ||
+        cartBody.address ||
+        cartBody.payment_method
+      ) {
+        throw createHttpError(
+          404,
+          'Error, cart ID and user type can not be updated'
+        )
       }
 
-      const resultAddProductCart = await CartsManager.addProductCart(
-        cid,
-        product
-      )
-      res.status(200).json(resultAddProductCart)
+      const currentCart = await Cart.findById(cid)
+      if (!currentCart) throw createHttpError(404, 'Cart not found')
+
+      const updateData = {
+        ...cartBody,
+        sub_total: cartBody.sub_total
+          ? parseFloat(cartBody.sub_total)
+          : currentCart.sub_total
+      }
+
+      const updatedCart = await CartsManager.updateCartData(cid, updateData)
+
+      // TODO: Hacer el evento socket para actualizar el producto en vivo
+      res.status(200).json(updatedCart)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async deleteCart (req, res, next) {
+    try {
+      const { cid } = req.params
+
+      if (!cid || cid.trim() === '') throw createHttpError(404, "Cart's ID is required")
+
+      if (!mongoose.Types.ObjectId.isValid(cid)) throw createHttpError(404, 'Invalid cart ID format')
+
+      const deletedCart = await CartsManager.deleteCart(cid)
+      // TODO: Hacer el evento socket para eliminar el producto en vivo
+
+      res.status(200).json(deletedCart)
     } catch (error) {
       next(error)
     }
