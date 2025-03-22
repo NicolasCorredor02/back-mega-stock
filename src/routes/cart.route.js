@@ -7,9 +7,15 @@ const router = Router()
 router.post('/create', CartsController.createCart)
 
 // Get cart by id
-router.get('/cart/:cid', CartsController.getCart)
+router.get('/cart/:cid', CartsController.getCartById)
 
-// Post add product to cart by id
-router.post('/add/:cid/product', CartsController.addProductCart)
+// Put para actualizar la data de un carrito
+router.put('/update/cart/:cid', CartsController.updateCartData)
+
+// Delete cart by id
+router.delete('/delete/cart/:cid', CartsController.deleteCart)
+
+// Get all Carts
+router.get('/', CartsController.getAllCarts)
 
 export default router
