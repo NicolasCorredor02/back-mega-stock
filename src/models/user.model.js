@@ -1,4 +1,8 @@
+/* eslint-disable no-unused-vars */
 import mongoose from 'mongoose'
+import Cart from 'root/models/cart.model.js'
+import Address from 'root/models/address.model.js'
+import PaymentMethod from 'root/models/paymentMethod.model.js'
 
 const userSchema = new mongoose.Schema(
   {
@@ -56,17 +60,51 @@ const userSchema = new mongoose.Schema(
         }
       }
     ],
-    shopping_carts: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ShoppingCart'
+    security: {
+      failed_login_attempts: {
+        type: Number,
+        default: 0,
+        max: 3
       }
-    ]
+    },
+    commerce_data: {
+      carts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cart'
+      }],
+      total_spent: {
+        type: Number,
+        default: 0,
+        min: 0.1
+      },
+      last_order_date: {
+        type: String
+      },
+      customer_tier: {
+        type: String,
+        required: [true, 'Customer tier is required'],
+        enum: ['regular', 'vip'],
+        default: 'regular'
+      }
+    }
   },
   {
     timestamps: true // Se agrega automaticamente el create_at y updated_at
   }
 )
+
+// Middleware para aplicar populates a los datos que se consulten
+userSchema.pre('find', function () {
+  this.populate({ path: 'addresses.address' }).populate({ path: 'payment_methods.payment_method' }).populate({ path: 'commerce_data.carts' })
+})
+
+userSchema.pre('findOne', function () {
+  this.populate({ path: 'addresses.address' }).populate({ path: 'payment_methods.payment_method' }).populate({ path: 'commerce_data.carts' })
+})
+
+userSchema.pre('findById', function () {
+  this.populate({ path: 'addresses.address' }).populate({ path: 'payment_methods.payment_method' }).populate({ path: 'commerce_data.carts' })
+})
 
 userSchema.index({ email: 1, id_number: 1 })
 

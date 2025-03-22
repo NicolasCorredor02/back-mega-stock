@@ -1,33 +1,7 @@
+/* eslint-disable no-unused-vars */
 import mongoose from 'mongoose'
-
-// Subesquema para la informacion del usuario
-const userInfoSchema = new mongoose.Schema({
-  firts_name: {
-    type: String,
-    trim: true,
-    required: [true, 'Firts name is required']
-  },
-  last_name: {
-    type: String,
-    trim: true,
-    required: [true, 'Last name is required']
-  },
-  email: {
-    type: String,
-    required: [true, 'Email is required'],
-    trim: true,
-    lowercase: true
-  },
-  phone: {
-    type: String,
-    trim: true,
-    required: [true, 'A phone number is required']
-  },
-  id_number: {
-    type: Number,
-    required: [true, 'DNI is required']
-  }
-})
+import Address from 'root/models/address.model.js'
+import PaymentMethod from 'root/models/paymentMethod.model.js'
 
 const cartSchema = new mongoose.Schema(
   {
@@ -39,7 +13,31 @@ const cartSchema = new mongoose.Schema(
       }
     },
     user_info: {
-      userInfoSchema
+      first_name: {
+        type: String,
+        trim: true,
+        required: [true, 'First name is required']
+      },
+      last_name: {
+        type: String,
+        trim: true,
+        required: [true, 'Last name is required']
+      },
+      email: {
+        type: String,
+        required: [true, 'Email is required'],
+        trim: true,
+        lowercase: true
+      },
+      phone: {
+        type: String,
+        trim: true,
+        required: [true, 'A phone number is required']
+      },
+      id_number: {
+        type: Number,
+        required: [true, 'DNI is required']
+      }
     },
     address: {
       type: mongoose.Schema.Types.ObjectId,
@@ -59,7 +57,8 @@ const cartSchema = new mongoose.Schema(
     },
     products: [
       {
-        prodcut: {
+        _id: false,
+        product: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Product',
           requiered: [true, 'Product reference is required']
@@ -81,4 +80,16 @@ const cartSchema = new mongoose.Schema(
   }
 )
 
+// Middleware para aplicar populates a los datos que se consulten
+cartSchema.pre('find', function () {
+  this.populate('address').populate('payment_method').populate({ path: 'products.product' })
+})
+
+cartSchema.pre('findOne', function () {
+  this.populate('address').populate('payment_method').populate({ path: 'products.product' })
+})
+
+cartSchema.pre('findById', function () {
+  this.populate('address').populate('payment_method').populate({ path: 'products.product' })
+})
 export default mongoose.model('Cart', cartSchema)
