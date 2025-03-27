@@ -1,25 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+        <link rel="stylesheet" href="/static/css/styles.css">
+        <title>Mega Stock</title>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <title>Mega Stock</title>
-</head>
-
-<body>
-    <div class="grid min-h-screen grid-cols-1 md:grid-cols-[25%_1fr] grid-rows-[10%_1fr] md:grid-rows-[90%_1fr] gap-0 bg-gray-50">
-        {{> header}}
-        <main class="max-h-dvh md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-3 overflow-y-auto bg-gray-300">
-            {{{body}}}
-        </main>
-        {{> footer}}
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/static/js/index.js"></script>
-</body>
+    <body>
+        <div class="grid min-h-screen grid-cols-1 md:grid-cols-[25%_1fr] grid-rows-[10%_1fr] md:grid-rows-[90%_1fr] gap-0 bg-gray-50">
+            {{> header}}
+            <main class="max-h-dvh md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-3 overflow-y-auto bg-gray-300">
+                {{{body}}}
+            </main>
+            {{> footer}}
+        </div>
+        {{!-- sweet alert --}}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        {{!-- lucide icons --}}
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script>
+            lucide.createIcons();
+        </script>
+        {{!-- socket.io --}}
+        <script src="/socket.io/socket.io.js"></script>
+        {{!-- general index --}}
+        <script src="/static/js/index.js"></script>
+    </body>
 
 </html>
