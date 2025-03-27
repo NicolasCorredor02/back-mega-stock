@@ -8,7 +8,12 @@ function handlebarsConfig (app) {
     defaultLayout: 'main',
     extname: '.hbs',
     layoutsDir: path.resolve(rootPath, 'views', 'layouts'),
-    partialsDir: path.resolve(rootPath, 'views', 'partials')
+    partialsDir: path.resolve(rootPath, 'views', 'partials'),
+    helpers: {
+      toJSON: function (obj) {
+        return JSON.stringify(obj).replace(/"/g, '&quot;')
+      }
+    }
   })
 
   app.engine('hbs', hbs.engine)
