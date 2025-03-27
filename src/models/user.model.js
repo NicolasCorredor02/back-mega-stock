@@ -68,10 +68,13 @@ const userSchema = new mongoose.Schema(
       }
     },
     commerce_data: {
-      carts: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Cart'
-      }],
+      carts: [
+        {
+          cart: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Cart'
+          }
+        }],
       total_spent: {
         type: Number,
         default: 0,
@@ -95,15 +98,15 @@ const userSchema = new mongoose.Schema(
 
 // Middleware para aplicar populates a los datos que se consulten
 userSchema.pre('find', function () {
-  this.populate({ path: 'addresses.address' }).populate({ path: 'payment_methods.payment_method' }).populate({ path: 'commerce_data.carts' })
+  this.populate({ path: 'addresses.address' }).populate({ path: 'payment_methods.payment_method' }).populate({ path: 'commerce_data.carts.cart' })
 })
 
 userSchema.pre('findOne', function () {
-  this.populate({ path: 'addresses.address' }).populate({ path: 'payment_methods.payment_method' }).populate({ path: 'commerce_data.carts' })
+  this.populate({ path: 'addresses.address' }).populate({ path: 'payment_methods.payment_method' }).populate({ path: 'commerce_data.carts.cart' })
 })
 
 userSchema.pre('findById', function () {
-  this.populate({ path: 'addresses.address' }).populate({ path: 'payment_methods.payment_method' }).populate({ path: 'commerce_data.carts' })
+  this.populate({ path: 'addresses.address' }).populate({ path: 'payment_methods.payment_method' }).populate({ path: 'commerce_data.carts.cart' })
 })
 
 userSchema.index({ email: 1, id_number: 1 })
