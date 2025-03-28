@@ -13,7 +13,7 @@ router.get('/limited/:limit', ProductsController.getLimitProducts)
 router.get('/product/:pid', ProductsController.getProductById)
 
 // Get all products by category
-router.get('/:category', ProductsController.getProducts)
+// router.get('/:category', ProductsController.getProducts)
 
 // Get categories
 // router.get("/categories", ProductsController.getCategories);
