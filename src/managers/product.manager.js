@@ -8,14 +8,21 @@ export class ProductsManager {
    * @param {string} category
    * @returns {array} All products or all products by category
    */
-  static async getProducts (category) {
+  static async getProducts (pipeline) {
     try {
-      const filter = category ? { category: category.toLocaleLowerCase() } : {}
-      return await Product.find(filter).lean()
+      return await Product.aggregate(pipeline)
     } catch (error) {
       throw error
     }
   }
+  // static async getProducts (category) {
+  //   try {
+  //     const filter = category ? { category: category.toLocaleLowerCase() } : {}
+  //     return await Product.find(filter).lean()
+  //   } catch (error) {
+  //     throw error
+  //   }
+  // }
 
   /**
    *

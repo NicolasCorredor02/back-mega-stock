@@ -13,18 +13,65 @@ export class ProductsController {
   // Get for admin
   static async getProducts (req, res, next) {
     try {
-      const context = {
-        products: await ProductsManager.getProducts()
+      const reqQuerys = req.query
+
+      // Se define el pipeline de base
+      const pipeline = []
+
+      if (Object.keys(reqQuerys).length > 0) {
+        // Se reciben todas las query params
+        const queryParams = req.query
+
+        // Se define el mapa de querys permitidas para crear sus transformaciones ante el pipeline
+        const paramMapping = {
+          search: {
+            type: 'text',
+            field: ['title', 'description']
+          },
+          category: {
+            type: 'exact',
+            field: 'category'
+          }
+        }
+
+        // Objeto para guardar las coincidencias de match
+        const matchConditions = {}
+
+        Object.keys(paramMapping).forEach((param) => {
+          const paramConfig = paramMapping[param]
+
+          if (paramConfig) {
+            const value = paramConfig.field
+
+            // Manejo de busqueda por texto para filtro de productos
+            if (paramConfig.type === 'text' && (queryParams.search)) {
+              const searchTerms = queryParams.search.split('-').map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+              const orMatches = value.map((param) => ({
+                [param]: {
+                  $regex: searchTerms.join('|'),
+                  $options: 'i'
+                }
+              }))
+              matchConditions.$or = orMatches
+            } else if (paramConfig.type === 'exact' && (queryParams.category)) {
+              matchConditions[paramConfig.field] = queryParams.category.toLowerCase()
+            }
+          }
+        })
+
+        // Se pushean las condiciones al pipeline en caso de que se hayan encontrado por query params
+        if (Object.keys(matchConditions).length > 0) {
+          pipeline.push({ $match: matchConditions })
+        }
       }
 
-      return res.render('productsAdmin', context)
+      const context = {
+        products: await ProductsManager.getProducts(pipeline.length > 0 ? pipeline : [{ $match: {} }])
+      }
 
-      // if (category) {
-      //   products =  await ProductsManager.getProducts(category);
-      // } else {
-      //   products = await ProductsManager.getProducts();
-      // }
-      // res.status(200).json(products);
+      // products = await ProductsManager.getProducts();
+      // res.status(200).json(context)
+      return res.render('productsAdmin', context)
     } catch (error) {
       next(error)
     }
