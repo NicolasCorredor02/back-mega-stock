@@ -55,6 +55,7 @@ export class ProductsController {
         // Se pushean las condiciones al pipeline en caso de que se hayan encontrado por query params
         if (Object.keys(matchConditions).length > 0) {
           pipeline.push({ $match: matchConditions })
+          pipeline.push({ $proyect: { _id: 1, title: 1, thumbnails: 1, price: 1, description: 1, category: 1 } })
         }
       }
 
