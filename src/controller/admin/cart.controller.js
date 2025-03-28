@@ -32,7 +32,7 @@ export class CartsController {
   static async getAllCarts (req, res, next) {
     try {
       const context = {
-        products: await ProductsManager.getProducts(),
+        products: await ProductsManager.getProducts([{ $match: {} }]),
         carts: await CartsManager.getAllCarts()
       }
 
