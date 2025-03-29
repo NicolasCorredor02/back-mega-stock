@@ -173,7 +173,7 @@
           </tr>
         </thead>
         <tbody id="productsList" class="bg-white divide-y divide-gray-200 overflow-scroll">
-          {{#each products}}
+          {{#each products.docs}}
             <tr id={{_id}} class="hover:bg-gray-50">
               <td class="px-6 py-4">{{_id}}</td>
               <td class="px-6 py-4 whitespace-nowrap">
@@ -196,6 +196,19 @@
             </tr>
           {{/each}}
         </tbody>
+        <tfoot>
+          <tr>
+            <th class="flex gap-4 text-blue-500">
+              {{#if products.hasPrevPage}}
+                <a href="/api/admin/products?page={{products.prevPage}}">Previus</a>
+              {{/if}}
+              <span>Page {{products.page}} of {{products.totalPages}}</span>
+              {{#if products.hasNextPage}}
+                <a href="/api/admin/products?page={{products.nextPage}}">Next</a>
+              {{/if}}
+            </th>
+          </tr>
+        </tfoot>
       </table>
     </div>
   </div>
