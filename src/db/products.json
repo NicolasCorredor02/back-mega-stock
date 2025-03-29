@@ -1,6 +1,5 @@
 [
   {
-    "id": 1,
     "title": "Apple Airpods Pro (2nd Gen)",
     "description": "Active noise cancellation, adaptive transparency, and personalized spatial audio.",
     "code": "TEC-AP01",
@@ -9,12 +8,10 @@
     "stock": 150,
     "category": "technology",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 2,
     "title": "Samsung 55 QLED 4K Smart TV",
     "description": "Quantum dot technology with HDR10+ for stunning picture quality.",
     "code": "TEC-SS01",
@@ -23,12 +20,10 @@
     "stock": 75,
     "category": "technology",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
-  {
-    "id": 3,
+  { 
     "title": "Sony WH-1000XM5 Wireless Headphones",
     "description": "Industry-leading noise cancellation with 30-hour battery life.",
     "code": "TEC-SN01",
@@ -37,12 +32,10 @@
     "stock": 200,
     "category": "technology",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 4,
     "title": "Logitech MX Master 3S Wireless Mouse",
     "description": "Ergonomic design with ultra-fast scrolling and customizable buttons.",
     "code": "TEC-LG01",
@@ -51,12 +44,10 @@
     "stock": 300,
     "category": "technology",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 5,
     "title": "Apple iPad Air (5th Gen)",
     "description": "Powerful M1 chip, 10.9-inch Liquid Retina display, and 5G connectivity.",
     "code": "TEC-AP02",
@@ -65,12 +56,10 @@
     "stock": 120,
     "category": "technology",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 6,
     "title": "DJI Mini 3 Pro Drone",
     "description": "Compact drone with 4K video, 48MP photos, and 34-minute flight time.",
     "code": "TEC-DJ01",
@@ -79,12 +68,10 @@
     "stock": 50,
     "category": "technology",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 7,
     "title": "Amazon Echo Dot (5th Gen)",
     "description": "Smart speaker with Alexa, improved sound quality, and motion detection.",
     "code": "TEC-AM01",
@@ -93,12 +80,10 @@
     "stock": 500,
     "category": "technology",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 8,
     "title": "Women's Classic Trench Coat",
     "description": "Waterproof, knee-length trench coat in beige.",
     "code": "WCL-WC01",
@@ -107,12 +92,10 @@
     "stock": 80,
     "category": "women's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 9,
     "title": "Floral Print Maxi Dress",
     "description": "Lightweight, flowy dress with a vibrant floral pattern.",
     "code": "WCL-FD01",
@@ -121,12 +104,10 @@
     "stock": 120,
     "category": "women's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 10,
     "title": "High-Waist Skinny Jeans",
     "description": "Stretch denim jeans with a high-waist fit.",
     "code": "WCL-SJ01",
@@ -135,12 +116,10 @@
     "stock": 200,
     "category": "women's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 11,
     "title": "Cashmere Sweater",
     "description": "Soft, luxurious cashmere sweater in various colors.",
     "code": "WCL-CS01",
@@ -149,12 +128,10 @@
     "stock": 90,
     "category": "women's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 12,
     "title": "Leather Crossbody Bag",
     "description": "Genuine leather bag with adjustable strap and multiple compartments.",
     "code": "WCL-BC01",
@@ -163,12 +140,10 @@
     "stock": 150,
     "category": "women's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 13,
     "title": "Women's Running Leggings",
     "description": "High-performance leggings with moisture-wicking fabric.",
     "code": "WCL-RL01",
@@ -177,12 +152,10 @@
     "stock": 300,
     "category": "women's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 14,
     "title": "Silk Blouse",
     "description": "Elegant silk blouse with a button-down front.",
     "code": "WCL-SB01",
@@ -191,12 +164,10 @@
     "stock": 100,
     "category": "women's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 15,
     "title": "Men's Slim-Fit Suit",
     "description": "Two-piece suit in charcoal gray, perfect for formal occasions.",
     "code": "MCL-SS01",
@@ -205,12 +176,10 @@
     "stock": 60,
     "category": "men's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 16,
     "title": "Cotton Polo Shirt",
     "description": "Breathable polo shirt in assorted colors.",
     "code": "MCL-PS01",
@@ -219,12 +188,10 @@
     "stock": 250,
     "category": "men's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 17,
     "title": "Denim Jacket",
     "description": "Classic blue denim jacket with a relaxed fit.",
     "code": "MCL-DJ01",
@@ -233,12 +200,10 @@
     "stock": 100,
     "category": "men's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 18,
     "title": "Men's Jogger Pants",
     "description": "Comfortable joggers with an elastic waistband and cuffs.",
     "code": "MCL-JP01",
@@ -247,12 +212,10 @@
     "stock": 180,
     "category": "men's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 19,
     "title": "Leather Belt",
     "description": "Genuine leather belt with a polished silver buckle.",
     "code": "MCL-LB01",
@@ -261,12 +224,10 @@
     "stock": 200,
     "category": "men's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 20,
     "title": "Men's Winter Parka",
     "description": "Heavy-duty parka with faux fur trim and multiple pockets.",
     "code": "MCL-WP01",
@@ -275,12 +236,10 @@
     "stock": 70,
     "category": "men's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 21,
     "title": "Graphic T-Shirt",
     "description": "Casual t-shirt with a unique graphic print.",
     "code": "MCL-GT01",
@@ -289,12 +248,10 @@
     "stock": 400,
     "category": "men's clothing",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 22,
     "title": "Women's White Sneakers",
     "description": "Comfortable and stylish sneakers for everyday wear.",
     "code": "FWT-WS01",
@@ -303,12 +260,10 @@
     "stock": 200,
     "category": "footwear",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 23,
     "title": "Men's Leather Boots",
     "description": "Durable leather boots with a rugged sole",
     "code": "FWT-MB01",
@@ -317,12 +272,10 @@
     "stock": 90,
     "category": "footwear",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 24,
     "title": "Women's Ankle Boots",
     "description": "Chic ankle boots with a low heel.",
     "code": "FWT-WA01",
@@ -331,12 +284,10 @@
     "stock": 120,
     "category": "footwear",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 25,
     "title": "Men's Running Shoes",
     "description": "Lightweight running shoes with excellent arch support.",
     "code": "FWT-MR01",
@@ -345,12 +296,10 @@
     "stock": 150,
     "category": "footwear",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 26,
     "title": "Women's Ballet Flats",
     "description": "Comfortable and elegant flats in various colors.",
     "code": "FWT-WF01",
@@ -359,12 +308,10 @@
     "stock": 180,
     "category": "footwear",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 27,
     "title": "Men's Loafers",
     "description": "Classic leather loafers for a polished look.",
     "code": "FWT-ML01",
@@ -373,12 +320,10 @@
     "stock": 100,
     "category": "footwear",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 28,
     "title": "Women's Hiking Boots",
     "description": "Waterproof hiking boots with superior grip.",
     "code": "FWT-WH01",
@@ -387,12 +332,10 @@
     "stock": 80,
     "category": "footwear",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 29,
     "title": "Men's Sandals",
     "description": "Comfortable sandals with adjustable straps.",
     "code": "FWT-MS01",
@@ -401,12 +344,10 @@
     "stock": 250,
     "category": "footwear",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
-    "id": 30,
     "title": "Women's High Heels",
     "description": "Elegant high heels for formal occasions.",
     "code": "FWT-WH02",
@@ -415,8 +356,7 @@
     "stock": 120,
     "category": "footwear",
     "thumbnails": [
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg",
-      "https://fakestoreapi.com/img/61sbMiUnoGL._AC_UL640_QL65_ML3_.jpg"
+      "https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp"
     ]
   },
   {
