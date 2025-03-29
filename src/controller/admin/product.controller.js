@@ -65,8 +65,18 @@ export class ProductsController {
         }
       }
 
+      // Construccion de los parametros para el paginate
+      const { page = 1, limit = 10 } = reqQuerys
+
+      const paginateParams = {
+        page: parseInt(page),
+        limit: parseInt(limit)
+      }
+
+      const pipelineValue = pipeline.length > 0 ? pipeline : [{ $match: {} }]
+
       const context = {
-        products: await ProductsManager.getProducts(pipeline.length > 0 ? pipeline : [{ $match: {} }])
+        products: await ProductsManager.getProducts(pipelineValue, paginateParams)
       }
 
       // products = await ProductsManager.getProducts();

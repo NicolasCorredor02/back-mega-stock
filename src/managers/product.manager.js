@@ -8,9 +8,19 @@ export class ProductsManager {
    * @param {string} category
    * @returns {array} All products or all products by category
    */
-  static async getProducts (pipeline) {
+  static async getProducts (pipeline, paginateParams) {
     try {
-      return await Product.aggregate(pipeline)
+      // Implementacion de mongoose paginate
+      const optionsPaginate = {
+        ...paginateParams,
+        sort: { stock: -1 }
+      }
+
+      const productsPipeline = Product.aggregate(pipeline)
+
+      const productsPaginate = await Product.aggregatePaginate(productsPipeline, optionsPaginate)
+
+      return productsPaginate
     } catch (error) {
       throw error
     }

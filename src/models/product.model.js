@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
 
 const productSchema = new mongoose.Schema(
   {
@@ -51,5 +52,8 @@ const productSchema = new mongoose.Schema(
   })
 
 productSchema.index({ title: 'text', description: 'text', code: 'text', category: 1, status: 1 })
+
+// Se agrega el plugin de mongoose paginate aggregate
+productSchema.plugin(aggregatePaginate)
 
 export default mongoose.model('Product', productSchema)
