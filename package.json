@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./src/index.js",
+    "dev": "node --watch ./src/index.js",
     "setup-alias": "link-module-alias"
   },
   "_moduleAliases": {
