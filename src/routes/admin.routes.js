@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { ProductsController } from 'root/controller/admin/product.controller.js'
-import { CartsController } from 'root/controller/admin/cart.controller.js'
+import { productController } from 'root/controller/admin/product.controller.js'
+import { cartController } from 'root/controller/admin/cart.controller.js'
 import { uploadProductImages } from 'root/config/multer.js'
 import handleErrorUploads from 'root/middlewares/handleErrorUploads.js'
 
@@ -12,7 +12,7 @@ router.post(
   '/products/product/add',
   uploadProductImages, // Se añade el middleware de upload de la configuraion de multer para trabajar con las imagenes de los productos
   handleErrorUploads, // Se agrega el middleware para validar los files que se suben como imagen del producto
-  ProductsController.addProduct
+  productController.create
 )
 
 // Put product to update
@@ -20,39 +20,39 @@ router.put(
   '/products/product/update/:pid',
   uploadProductImages, // Se añade el middleware de upload de la configuraion de multer para trabajar con las imagenes de los productos (max 5)
   handleErrorUploads, // Se agrega el middleware para validar los files que se suben como imagen del producto
-  ProductsController.updateProduct
+  productController.update
 )
 
 // Change product's status from DB
-// router.delete('/products/product/delete', ProductsController.changeStatus)
+// router.delete('/products/product/delete', productController.changeStatus)
 
 // Delete product from DB
-router.delete('/products/product/delete', ProductsController.deleteProduct)
+router.delete('/products/product/delete', productController.delete)
 
 // Get product by ID
-router.get('/products/product/:pid', ProductsController.getProductById)
+router.get('/products/product/:pid', productController.getById)
 
 // Get all products
-router.get('/products', ProductsController.getProducts)
+router.get('/products', productController.getAll)
 
 //* --------------- Admin carts ------------------------
 // Post create a cart
-router.post('/carts/cart/create', CartsController.createCart)
+router.post('/carts/cart/create', cartController.create)
 
 // Put para actualizar la data de un carrito
-router.put('/carts/cart/update/:cid', CartsController.updateCartData)
+router.put('/carts/cart/update/:cid', cartController.update)
 
 // Delete cart by id
-router.delete('/carts/cart/delete', CartsController.deleteCart)
+router.delete('/carts/cart/delete', cartController.delete)
 
 // Get cart by ID
-router.get('/carts/cart/:cid', CartsController.getCartById)
+router.get('/carts/cart/:cid', cartController.getById)
 
 // Get all Carts
-router.get('/carts', CartsController.getAllCarts)
+router.get('/carts', cartController.getAll)
 
 // Get all CartsJSON
-router.get('/carts/JSON', CartsController.getAllCartsJSON)
+// router.get('/carts/JSON', CartsController.getAllCartsJSON)
 
 // Get admin settings
 router.get('/', (req, res, next) => {

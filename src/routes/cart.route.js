@@ -1,9 +1,10 @@
 import { Router } from 'express'
-import { CartsController } from 'root/controller/client/cart.controller.js'
+import { cartController } from 'root/controller/user/cart.controller.js'
 
 const router = Router()
 // Get cart by id
-router.get('/:cid', CartsController.getCartById)
+router.get('/:cid', cartController.getById)
 
-router.get('/', CartsController.getCartById)
+router.get('/', cartController.getById)
+
 export default router

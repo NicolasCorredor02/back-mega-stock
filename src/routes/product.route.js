@@ -1,16 +1,16 @@
 import { Router } from 'express'
-import { ProductsController } from 'root/controller/client/product.controller.js'
+import { productController } from 'root/controller/user/product.controller.js'
 
 const router = Router()
 
 // Get limit products by category
-router.get('/:category/limited/:limit', ProductsController.getLimitProducts)
+// router.get('/:category/limited/:limit', ProductsController.getLimitProducts)
 
 // Get limit products
-router.get('/limited/:limit', ProductsController.getLimitProducts)
+// router.get('/limited/:limit', ProductsController.getLimitProducts)
 
 // Get product by ID
-router.get('/product/:pid', ProductsController.getProductById)
+router.get('/product/:pid', productController.getById)
 
 // Get all products by category
 // router.get('/:category', ProductsController.getProducts)
@@ -19,6 +19,6 @@ router.get('/product/:pid', ProductsController.getProductById)
 // router.get("/categories", ProductsController.getCategories);
 
 // Get all products
-router.get('/', ProductsController.getProducts)
+router.get('/', productController.getAll)
 
 export default router
