@@ -35,6 +35,7 @@ function getShoppingCartByAmount () {
  * @param {object} param
  */
 function addToShoppingCart (object) {
+  console.log('Object to add cart:', object)
   const currentCart = getShoppingCartByAmount()
 
   if (currentCart.some((item) => item._id === object._id)) {
@@ -985,25 +986,6 @@ async function handleCreateCartSubmit (event) {
 
   event.preventDefault()
 
-  // Objeto para almacenar las url de fetch
-  // const urls = {
-  //   address: '',
-  //   paymenMethod: '',
-  //   cart: ''
-  // }
-
-  // FormData para crear la nueva direccion en la DB
-  // const formAddressClient = new FormData()
-
-  // formAddressClient.append('street', document.getElementById('streetClient').value)
-  // formAddressClient.append('city', document.getElementById('cityClient').value)
-  // formAddressClient.append('sate', document.getElementById('stateClient').value)
-  // formAddressClient.append('postal_code', document.getElementById('postalCodeClient').value)
-  // formAddressClient.append('country', document.getElementById('countryClient').value)
-
-  // FormData para crear el nuevo metodo de pago en la DB
-  // const formPaymentMethodClient = new FormData()
-
   // Creacion del obj user_info necesario para crear el cart
   const userInfo = {
     first_name: document.getElementById('firstNameClient').value,
@@ -1011,6 +993,22 @@ async function handleCreateCartSubmit (event) {
     email: document.getElementById('emailClient').value,
     phone: document.getElementById('phoneClient').value,
     id_number: parseInt(document.getElementById('idNumberClient').value)
+  }
+
+  const address = {
+    street: document.getElementById('streetClient').value,
+    city: document.getElementById('cityClient').value,
+    state: document.getElementById('stateClient').value,
+    postal_code: document.getElementById('postalCodeClient').value,
+    country: document.getElementById('countryClient').value
+  }
+
+  const paymentMethod = {
+    type: document.getElementById('payTypeClient').value,
+    provider: document.getElementById('payProviderClient').value,
+    card_number: document.getElementById('cardNumberClient').value,
+    last_four: document.getElementById('lastFourCardNumberCLient').value,
+    expiry_date: document.getElementById('expiryDateClient').value
   }
 
   const currentShoppingCart = getShoppingCartByAmount() // Obtener el cart del localStorage
@@ -1032,8 +1030,8 @@ async function handleCreateCartSubmit (event) {
   const formCartClient = {
     user_type: 'guest',
     user_info: userInfo,
-    address: '67dc92a7366b4a45dfa08053',
-    payment_method: '67ddba8c8a525755ebb8aae5',
+    address,
+    paymentMethod,
     status: 'active',
     products: shoppingCartFormated,
     sub_total: parseFloat(cartSubTotal())

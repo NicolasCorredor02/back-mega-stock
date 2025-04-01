@@ -178,7 +178,7 @@
             </tr>
           </thead>
           <tbody id="productsList" class="bg-white divide-y divide-gray-200 overflow-scroll">
-            {{#each carts}}
+            {{#each carts.docs}}
               <tr id={{_id}} class="hover:bg-gray-50">
                 <td class="border-r border-slate-300 px-6 py-4">{{_id}}</td>
                 <td class="border-r border-slate-300 px-6 py-4">{{user_type}}</td>
