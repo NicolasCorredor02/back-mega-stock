@@ -3,12 +3,12 @@ import { Server } from 'socket.io'
 import { createServer } from 'node:http'
 import routes from 'root/routes/index.js'
 import logger from 'morgan'
-import errorHandler from 'root/middlewares/errorHandler.js'
+import { errorHandler } from 'root/middlewares/errorHandler.js'
 import handlebarsConfig from 'root/config/handlebars.js'
 import path from 'path'
 import { rootPath } from 'root/utils/paths.js'
 import { socketModule } from 'root/sockets/socket.js'
-import connectDB from 'root/config/database.js'
+import connectDB from 'root/daos/mongodb/connection.js'
 
 const serverUp = async () => {
   const app = express()
