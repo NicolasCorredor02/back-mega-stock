@@ -1,3 +1,5 @@
+import CustomError from 'root/utils/customError.js'
+
 let io
 
 export const socketModule = {
@@ -16,30 +18,37 @@ export const socketModule = {
   },
 
   emitAddProduct: function (product) {
-    if (!io) {
-      throw new Error('Socket.io no initialized')
-    }
+    if (!io) throw new CustomError('Socket.io no initialized', 500)
     io.emit('addProduct', product)
   },
 
   emitUpdatedProduct: function (productUpdated) {
-    if (!io) {
-      throw new Error('Socket.io not initilized')
-    }
+    if (!io) throw new CustomError('Socket.io not initilized', 500)
     io.emit('productUpdated', productUpdated)
   },
 
   emitDeletedProduct: function (productDeleted) {
-    if (!io) {
-      throw new Error('Socket.io not initilized')
-    }
+    if (!io) throw new CustomError('Socket.io not initilized', 500)
     io.emit('productDeleted', productDeleted)
   },
 
+  emitAddCart: function (cartAdded) {
+    if (!io) throw new CustomError('Socket.io not initilized', 500)
+    io.emit('cartAdded', cartAdded)
+  },
+
+  emitUpdatedCart: function (cartUpdated) {
+    if (!io) throw new CustomError('Socket.io not initilized', 500)
+    io.emit('cartUpdated', cartUpdated)
+  },
+
+  emitDeletedCart: function (cartDeleted) {
+    if (!io) throw new CustomError('Socket.io not initilized', 500)
+    io.emit('cartDeleted', cartDeleted)
+  },
+
   emitSocketError: function (error) {
-    if (!io) {
-      throw new Error('Socket.io no initialized')
-    }
+    if (!io) throw new CustomError('Socket.io no initialized', 500)
     io.emit('socketError', error)
   }
 }
