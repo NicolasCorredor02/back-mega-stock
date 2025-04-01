@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
 
 const addressSchema = new mongoose.Schema(
   {
@@ -36,5 +37,8 @@ const addressSchema = new mongoose.Schema(
     timestamps: true // Se agrega automaticamente el create_at y updated_at
   }
 )
+
+// Se agrega el plugin de mongoose paginate aggregate
+addressSchema.plugin(aggregatePaginate)
 
 export default mongoose.model('Address', addressSchema)

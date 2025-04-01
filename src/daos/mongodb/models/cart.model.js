@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import mongoose from 'mongoose'
-import Address from 'root/models/address.model.js'
-import PaymentMethod from 'root/models/paymentMethod.model.js'
+import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
 
 const cartSchema = new mongoose.Schema(
   {
@@ -92,4 +91,8 @@ cartSchema.pre('findOne', function () {
 cartSchema.pre('findById', function () {
   this.populate('address').populate('payment_method').populate({ path: 'products.product' })
 })
+
+// Se agrega el plugin de mongoose paginate aggregate
+cartSchema.plugin(aggregatePaginate)
+
 export default mongoose.model('Cart', cartSchema)

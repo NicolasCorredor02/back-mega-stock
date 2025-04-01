@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
 
 const paymentMethodSchema = new mongoose.Schema(
   {
@@ -39,5 +40,8 @@ const paymentMethodSchema = new mongoose.Schema(
     timestamps: true // Se agrega automaticamente el create_at y updated_at
   }
 )
+
+// Se agrega el plugin de mongoose paginate aggregate
+paymentMethodSchema.plugin(aggregatePaginate)
 
 export default mongoose.model('PaymentMethod', paymentMethodSchema)
