@@ -8,7 +8,7 @@ import handlebarsConfig from 'root/config/handlebars.js'
 import path from 'path'
 import { rootPath } from 'root/utils/paths.js'
 import { socketModule } from 'root/sockets/socket.js'
-import connectDB from 'root/daos/mongodb/connection.js'
+import connectDB from 'root/db/connection.js'
 
 const serverUp = async () => {
   const app = express()
