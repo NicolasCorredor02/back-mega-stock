@@ -1,8 +1,5 @@
 /* eslint-disable no-unused-vars */
 import mongoose from 'mongoose'
-import Cart from 'root/models/cart.model.js'
-import Address from 'root/models/address.model.js'
-import PaymentMethod from 'root/models/paymentMethod.model.js'
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
 
 const userSchema = new mongoose.Schema(
