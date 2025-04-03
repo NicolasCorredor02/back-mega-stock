@@ -1,7 +1,8 @@
 import { Router } from 'express'
 import { productController } from 'root/controller/admin/product.controller.js'
 import { cartController } from 'root/controller/admin/cart.controller.js'
-import { uploadProductImages } from 'root/config/multer.js'
+import { userController } from 'root/controller/admin/user.controller.js'
+import { uploadProductImages, uploadUserImages } from 'root/config/multer.js'
 import handleErrorUploads from 'root/middlewares/handleErrorUploads.js'
 
 const router = Router()
@@ -51,8 +52,31 @@ router.get('/carts/cart/:cid', cartController.getById)
 // Get all Carts
 router.get('/carts', cartController.getAll)
 
-// Get all CartsJSON
-// router.get('/carts/JSON', CartsController.getAllCartsJSON)
+//* --------------- Admin users ------------------------
+// POST create user
+router.post('/users/user/create',
+  uploadUserImages,
+  handleErrorUploads,
+  userController.create)
+
+// PUT update user
+router.put('/users/user/update/:uid',
+  uploadUserImages,
+  handleErrorUploads,
+  userController.update
+)
+
+// Change user's status
+// router.delete('/users/user/delete', userController.changeStatus)
+
+// Delete user
+router.delete('/users/user/delete', userController.delete)
+
+// Get User by ID
+router.get('/users/user/:uid', userController.getById)
+
+// Get all users
+router.get('/users', userController.getAll)
 
 // Get admin settings
 router.get('/', (req, res, next) => {
