@@ -9,7 +9,13 @@ const rootPath = resolve(__dirname, '..')
 // Path de imagenes para productos
 const pathImagesProducts = 'MegaStock/uploads/products'
 
+// Path de imagenes para usuarios
+const pathImagesUsers = 'MegaStock/uploads/users'
+
 // Path de url para imagenes default de productos
 const productUrlImageDefault = 'https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781423/default-product_j5jikm.webp'
 
-export { rootPath, pathImagesProducts, productUrlImageDefault }
+// Path de url para imagenes default de usuarios
+const userUrlImageDefault = 'https://res.cloudinary.com/dz6rq4bae/image/upload/v1740781419/default-user_dhx4rw.webp'
+
+export { rootPath, pathImagesProducts, pathImagesUsers, productUrlImageDefault, userUrlImageDefault }
