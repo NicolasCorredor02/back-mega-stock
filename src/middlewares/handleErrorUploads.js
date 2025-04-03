@@ -11,7 +11,7 @@ export default function handleErrorUploads (error, req, res, next) {
     }
     if (error.code === 'LIMIT_UNEXPECTED_FILE') {
       return next(
-        new CustomError("Only the 'thumbnails' field is allowed for image uploads", 400))
+        new CustomError("Only the 'thumbnails' or 'profileImage' field is allowed for image uploads", 400))
     }
     if (error.code === 'LIMIT_UNEXPECTED_FILE') {
       return next(
