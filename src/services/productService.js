@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import CustomError from 'root/utils/customError.js'
 import { productDao } from 'root/daos/mongodb/productDao.js'
 import { socketModule } from 'root/sockets/socket.js'

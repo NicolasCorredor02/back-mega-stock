@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import CustomError from 'root/utils/customError.js'
 import { paymentMethodDao } from 'root/daos/mongodb/paymentMethodDao.js'
 
