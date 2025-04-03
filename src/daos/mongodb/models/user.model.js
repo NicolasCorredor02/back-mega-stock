@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
+      required: [true, 'Phone number is required'],
       trim: true
     },
     id_number: {
@@ -34,30 +35,56 @@ const userSchema = new mongoose.Schema(
       unique: true,
       required: [true, 'DNI is required']
     },
-    addresses: [
-      {
-        address: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Address'
+    image_profile: {
+      type: String,
+      trim: true
+    },
+    addresses: {
+      _id: false,
+      default: [],
+      validate: {
+        validator: function (arr) {
+          return arr.length <= 5 // Limita a 5 elementos máximo
         },
-        is_default: {
-          type: Boolean,
-          default: false
+        message: 'The user cannot have more than 5 addresses'
+      },
+      type: [
+        {
+          _id: false,
+          address: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Address'
+          },
+          is_default: {
+            type: Boolean,
+            default: false
+          }
         }
-      }
-    ],
-    payment_methods: [
-      {
-        payment_method: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'PaymentMethod'
+      ]
+    },
+    payment_methods: {
+      _id: false,
+      default: [],
+      validate: {
+        validator: function (arr) {
+          return arr.length <= 5 // Limita a 5 elementos máximo
         },
-        is_default: {
-          type: Boolean,
-          default: false
+        message: 'The user cannot have more than 5 paymentMethods'
+      },
+      type: [
+        {
+          _id: false,
+          payment_method: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'PaymentMethod'
+          },
+          is_default: {
+            type: Boolean,
+            default: false
+          }
         }
-      }
-    ],
+      ]
+    },
     security: {
       failed_login_attempts: {
         type: Number,
@@ -66,20 +93,25 @@ const userSchema = new mongoose.Schema(
       }
     },
     commerce_data: {
-      carts: [
-        {
+      carts: {
+        _id: false,
+        default: [],
+        type: [{
+          _id: false,
           cart: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Cart'
           }
-        }],
+        }]
+      },
       total_spent: {
         type: Number,
         default: 0,
-        min: 0.1
+        min: 0
       },
       last_order_date: {
-        type: String
+        type: String,
+        default: ' '
       },
       customer_tier: {
         type: String,
@@ -87,6 +119,10 @@ const userSchema = new mongoose.Schema(
         enum: ['regular', 'vip'],
         default: 'regular'
       }
+    },
+    status: {
+      type: Boolean,
+      default: true
     }
   },
   {
