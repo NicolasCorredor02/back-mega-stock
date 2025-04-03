@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import CustomError from 'root/utils/customError.js'
 import { cartDao } from 'root/daos/mongodb/cartDao.js'
 import { addressService } from 'root/services/addressService.js'
@@ -129,11 +130,12 @@ class CartService {
       ]
 
       // Construccion de los parametros para el paginate
-      const { page = 1, limit = 10 } = reqQuerys
+      const { page, limit } = reqQuerys
 
       const paginateParams = {
-        page: parseInt(page),
-        limit: parseInt(limit)
+        page: parseInt(page) || 1,
+        limit: parseInt(limit) || 10,
+        ...reqQuerys
       }
 
       const pipelineValue = pipeline.length > 0 ? pipeline : [{ $match: {} }]
