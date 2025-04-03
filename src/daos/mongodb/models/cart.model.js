@@ -54,8 +54,9 @@ const cartSchema = new mongoose.Schema(
       enum: ['active', 'completed', 'abandoned', 'cancelled'],
       default: 'active'
     },
-    products: [
-      {
+    products: {
+      _id: false,
+      type: [{
         _id: false,
         product: {
           type: mongoose.Schema.Types.ObjectId,
@@ -67,8 +68,8 @@ const cartSchema = new mongoose.Schema(
           min: [1, 'Quantity must be at least 1'],
           required: [true, "Product's quantity is required"]
         }
-      }
-    ],
+      }]
+    },
     sub_total: {
       type: Number,
       required: [true, "Cart's sub total is required"]
