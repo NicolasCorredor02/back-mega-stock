@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import path from 'path'
 import { cloudinary } from 'root/config/cloudinary.js'
 import { CloudinaryStorage } from 'multer-storage-cloudinary'
+import { pathImagesProducts, pathImagesUsers } from 'root/utils/paths.js'
 
 // Configuracion de folders dinamicos para users y products
 const generateCloudinaryParams = (folderPath) => (req, file) => ({
@@ -15,13 +16,13 @@ const generateCloudinaryParams = (folderPath) => (req, file) => ({
 // Configuración de almacenamiento de uploads para users
 const userStorage = new CloudinaryStorage({
   cloudinary,
-  params: generateCloudinaryParams('MegaStock/uploads/users')
+  params: generateCloudinaryParams(pathImagesUsers)
 })
 
 // Configuracion de almacenamiento de uplodas para products
 const productStorage = new CloudinaryStorage({
   cloudinary,
-  params: generateCloudinaryParams('MegaStock/uploads/products')
+  params: generateCloudinaryParams(pathImagesProducts)
 })
 
 // Tipos de archivos permitidos
