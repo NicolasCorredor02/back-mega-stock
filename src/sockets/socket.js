@@ -47,6 +47,21 @@ export const socketModule = {
     io.emit('cartDeleted', cartDeleted)
   },
 
+  emitAddUser: function (userAdded) {
+    if (!io) throw new CustomError('Socket.io not initilized', 500)
+    io.emit('cartAdded', userAdded)
+  },
+
+  emitUpdatedUser: function (userUpdated) {
+    if (!io) throw new CustomError('Socket.io not initilized', 500)
+    io.emit('cartUpdated', userUpdated)
+  },
+
+  emitDeletedUser: function (userDeleted) {
+    if (!io) throw new CustomError('Socket.io not initilized', 500)
+    io.emit('cartDeleted', userDeleted)
+  },
+
   emitSocketError: function (error) {
     if (!io) throw new CustomError('Socket.io no initialized', 500)
     io.emit('socketError', error)
