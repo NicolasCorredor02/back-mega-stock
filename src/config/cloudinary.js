@@ -31,4 +31,21 @@ const deleteCloudinaryImages = async (folder, images) => {
   await Promise.all(deletePromises)
 }
 
-export { cloudinary, deleteCloudinaryImages }
+const deleteCloudinaryImage = async (folder, image) => {
+  if (!folder || !image) return
+
+  console.log('Intentando eliminar imágen de Cloudinary:', image)
+
+  const publicId = image.split('/MegaStock/')[1].split('.')[0]
+  console.log('Public ID a eliminar:', publicId)
+
+  try {
+    const result = await cloudinary.uploader.destroy(`MegaStock/${publicId}`)
+    console.log('Resultado de eliminación:', result)
+  } catch (error) {
+    console.error(`Error deleting Cloudinary image: ${image}`, error)
+    return null
+  }
+}
+
+export { cloudinary, deleteCloudinaryImages, deleteCloudinaryImage }
