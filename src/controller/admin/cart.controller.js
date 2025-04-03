@@ -11,7 +11,12 @@ export class CartsController {
     try {
       const body = req.body
 
-      const response = await this.service.create(body)
+      const formatedData = {
+        ...body,
+        paymentMethod: body.payment_method
+      }
+
+      const response = await this.service.create(formatedData)
 
       res.status(201).json(response)
     } catch (error) {
