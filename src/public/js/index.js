@@ -679,8 +679,6 @@ function resetFormCartAdmin () {
 }
 
 async function handleUpdateCartSubmit () {
-  console.log('Entra a funcion handle')
-
   const { _id } = getShoppingCartByAmountAdmin()
 
   console.log('Current cart to update:', _id)
@@ -1078,6 +1076,57 @@ async function handleCreateCartSubmit (event) {
 
     // Se resetea el formualario
     resetFormCartClient()
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: `An error has occurred: ${error.message}`
+    })
+  }
+}
+
+// * ---------------------- FUNCION PARA INICIO DE SESION PARA EL ADMIN ------------------
+async function loginAdminSubmit () {
+  const adminCredentials = {
+    email: document.getElementById('emailAdminLogin').value,
+    password: document.getElementById('passwordAdminLogin').value
+  }
+
+  try {
+    Swal.fire({
+      title: 'Loading...',
+      text: 'Please wait while we process your request',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading()
+      }
+    })
+
+    const response = await fetch('http://localhost:8080/api/admin/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(adminCredentials)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || 'Error processing the request')
+    }
+
+    Swal.fire({
+      position: 'top-end',
+      title: 'Log in successfully',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1500
+    })
+
+    document.getElementById('adminLoginForm').reset()
+
+    window.location.href = response.url
   } catch (error) {
     Swal.fire({
       icon: 'error',
