@@ -48,6 +48,26 @@ class UserService {
     }
   }
 
+  login = async (email, password) => {
+    try {
+      const response = await this.dao.login(email, password)
+      if (!response) throw new CustomError("User's credentials not accepted or user not found", 404)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
+  loginAdmin = async (email, password) => {
+    try {
+      const response = await this.dao.loginAdmin(email, password)
+      if (!response) throw new CustomError("User's credentials not accepted or user not found", 404)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
   getAll = async (reqQuerys) => {
     try {
       const pipeline = [
