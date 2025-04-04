@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import MongoStore from 'connect-mongo'
 
 dotenv.config() // Se cargan las variables de entorno a traves de dotenv
 
@@ -17,4 +18,19 @@ const connectDB = async () => {
   }
 }
 
-export default connectDB
+const ttlSeconds = 180
+
+const StoreOptions = {
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    ttl: ttlSeconds
+  }),
+  secret: process.env.MONGO_STORE_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * ttlSeconds
+  }
+}
+
+export { connectDB, StoreOptions }

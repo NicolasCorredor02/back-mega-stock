@@ -1,6 +1,8 @@
 import express from 'express'
 import { Server } from 'socket.io'
 import { createServer } from 'node:http'
+import cookieParser from 'cookie-parser'
+import session from 'express-session'
 import routes from 'root/routes/index.js'
 import logger from 'morgan'
 import { errorHandler } from 'root/middlewares/errorHandler.js'
@@ -8,7 +10,7 @@ import handlebarsConfig from 'root/config/handlebars.js'
 import path from 'path'
 import { rootPath } from 'root/utils/paths.js'
 import { socketModule } from 'root/sockets/socket.js'
-import connectDB from 'root/db/connection.js'
+import { connectDB, StoreOptions } from 'root/db/connection.js'
 
 const serverUp = async () => {
   const app = express()
@@ -24,6 +26,8 @@ const serverUp = async () => {
   //* Middlewares
   app.use(express.json()) // Ingreso de data por el body de HTTP
   app.use(express.urlencoded({ extended: true })) // Ingreso de data de forms que sean extensos y requieran una inspeccion profunda
+  app.use(cookieParser()) // Middleware para el manejo de cookies
+  app.use(session(StoreOptions))
   app.use(logger('dev'))
 
   //* Middlewares para archivos static
