@@ -49,7 +49,7 @@ class UsersController {
       if (!response) res.status(401).json({ message: 'Unauthorized credentials' })
 
       if (response) {
-        req.session.loggedAdminIn = true
+        req.session.isAdmin = true
         req.session.email = email
         req.session.password = password
         return res.redirect('/api/admin/settings')
