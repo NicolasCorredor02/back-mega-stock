@@ -7,17 +7,10 @@ class UsersController {
 
   register = async (req, res, next) => {
     try {
-      const body = req.body
-      const uploadFile = req.file ? req.file.path : null
-
-      const userData = {
-        body,
-        uploadFile
-      }
-
-      const response = await this.service.register(userData)
-
-      res.status(201).json(response)
+      res.json({
+        message: 'User registered successfuly',
+        session: req.session
+      })
     } catch (error) {
       next(error)
     }
@@ -25,14 +18,13 @@ class UsersController {
 
   login = async (req, res, next) => {
     try {
-      const body = req.body
-      const email = body.email ? body.email : null
-      const password = body.password ? body.password : null
-
-      const response = await this.service.login(email, password)
-      if (!response) res.status(400).json({ message: 'Incorrect credentials' })
-
-      // TODO: terminar session para user
+      const id = req.session.passport.user
+      const user = await this.service.getById(id)
+      res.json({
+        message: 'Login success',
+        session: req.session,
+        user
+      })
     } catch (error) {
       next(error)
     }

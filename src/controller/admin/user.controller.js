@@ -7,17 +7,10 @@ class UsersController {
 
   register = async (req, res, next) => {
     try {
-      const body = req.body
-      const uploadFile = req.file ? req.file.path : null
-
-      const userData = {
-        body,
-        uploadFile
-      }
-
-      const response = await this.service.register(userData)
-
-      res.status(201).json(response)
+      res.json({
+        message: 'User registered',
+        session: req.session
+      })
     } catch (error) {
       next(error)
     }
