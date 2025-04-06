@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import passport from 'passport'
 import { productController } from 'root/controller/admin/product.controller.js'
 import { cartController } from 'root/controller/admin/cart.controller.js'
 import { userController } from 'root/controller/admin/user.controller.js'
@@ -56,11 +57,12 @@ router.get('/carts/cart/:cid', isAuthAdmin, cartController.getById)
 router.get('/carts', isAuthAdmin, cartController.getAll)
 
 //* --------------- Admin users ------------------------
-// POST create user
+// POST register user
 router.post('/users/user/register',
   isAuthAdmin,
   uploadUserImages,
   handleErrorUploads,
+  passport.authenticate('register'), // Implementacion del middleware de strategy para validar la session
   userController.register)
 
 // PUT update user

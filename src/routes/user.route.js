@@ -11,7 +11,7 @@ router.post(
   '/register',
   uploadUserImages,
   handleErrorUploads,
-  passport.authenticate('register'),
+  passport.authenticate('register'), // Implementacion del middleware de strategy para validar la session
   userController.register
 )
 
@@ -29,7 +29,11 @@ router.delete('/delete', userController.changeStatus)
 router.get('/:uid', userController.getById)
 
 // User login
-router.post('/login', passport.authenticate('login'), userController.login)
+router.post(
+  '/login',
+  passport.authenticate('login'), // Implementacion del middleware de strategy para validar la session
+  userController.login
+)
 
 // Get by email
 router.get('/', userController.getByEmail)
