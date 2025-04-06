@@ -57,11 +57,11 @@ router.get('/carts', isAuthAdmin, cartController.getAll)
 
 //* --------------- Admin users ------------------------
 // POST create user
-router.post('/users/user/create',
+router.post('/users/user/register',
   isAuthAdmin,
   uploadUserImages,
   handleErrorUploads,
-  userController.create)
+  userController.register)
 
 // PUT update user
 router.put('/users/user/update/:uid',

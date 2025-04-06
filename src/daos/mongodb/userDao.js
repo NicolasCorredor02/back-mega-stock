@@ -8,9 +8,9 @@ class UserDao extends MongoDao {
     this.model = model
   }
 
-  login = async (email, password) => {
+  getByEmail = async (email) => {
     try {
-      return await this.model.findOne({ email, password })
+      return await this.model.findOne({ email })
     } catch (error) {
       throw new Error(error)
     }

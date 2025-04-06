@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import CustomError from 'root/utils/customError.js'
 import mongoose from 'mongoose'
 
@@ -41,7 +42,7 @@ export default class MongoDao {
 
       return await this.model.findByIdAndUpdate(id, { $set: data }, { new: true, runValidators: true })
     } catch (error) {
-      throw new Error(error)
+      throw error
     }
   }
 
@@ -52,7 +53,7 @@ export default class MongoDao {
 
       return await this.model.findByIdAndDelete(id)
     } catch (error) {
-      throw new Error(error)
+      throw error
     }
   }
 }
