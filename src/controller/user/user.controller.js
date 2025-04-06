@@ -23,59 +23,16 @@ class UsersController {
     }
   }
 
-  // login = async (req, res, next) => {
-  //   try {
-  //     const body = req.body
-  //     const email = body.email ? body.email : null
-  //     const password = body.password ? body.password : null
-
-  //     const response = await this.service.login(email, password)
-  //     if (!response) res.status(400).json({ message: 'Incorrect credentials' })
-
-  //     // TODO: terminar session para user
-  //   } catch (error) {
-  //     next(error)
-  //   }
-  // }
-
-  loginAdmin = async (req, res, next) => {
+  login = async (req, res, next) => {
     try {
       const body = req.body
       const email = body.email ? body.email : null
       const password = body.password ? body.password : null
 
-      const response = await this.service.loginAdmin(email, password)
+      const response = await this.service.login(email, password)
+      if (!response) res.status(400).json({ message: 'Incorrect credentials' })
 
-      if (!response) res.status(401).json({ message: 'Unauthorized credentials' })
-
-      if (response) {
-        req.session.isAdmin = true
-        req.session.email = email
-        req.session.password = password
-        return res.redirect('/api/admin/settings')
-      }
-
-      return res.redirect('/api')
-      // req.session.info = {
-      //   loggedAdminIn: true,
-      //   email,
-      //   password
-      // }
-      // res.json({ message: 'Welcome admin!' })
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  getAll = async (req, res, next) => {
-    try {
-      const reqQuerys = req.query
-
-      const context = {
-        users: await this.service.getAll(reqQuerys)
-      }
-
-      res.status(200).json(context)
+      // TODO: terminar session para user
     } catch (error) {
       next(error)
     }
@@ -86,6 +43,19 @@ class UsersController {
       const { uid } = req.params
 
       const response = await this.service.getById(uid)
+
+      res.status(200).json(response)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  getByEmail = async (req, res, next) => {
+    try {
+      const body = req.body
+      const email = body.email ? body.email : null
+
+      const response = await this.service.getByEmail(email)
 
       res.status(200).json(response)
     } catch (error) {
@@ -130,17 +100,6 @@ class UsersController {
     try {
       const { uid } = req.query
       const response = await this.service.changeStatus(uid)
-
-      res.status(200).json(response)
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  delete = async (req, res, next) => {
-    try {
-      const { uid } = req.query
-      const response = await this.service.delete(uid)
 
       res.status(200).json(response)
     } catch (error) {

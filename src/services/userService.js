@@ -6,13 +6,14 @@ import { addressService } from 'root/services/addressService.js'
 import { paymentMethodService } from 'root/services/paymentMethodService.js'
 import { deleteCloudinaryImage } from 'root/config/cloudinary.js'
 import { pathImagesUsers, userUrlImageDefault } from 'root/utils/paths.js'
+import { createHash, isValidPassword } from 'root/utils/users.js'
 
 class UserService {
   constructor (dao) {
     this.dao = dao
   }
 
-  create = async (data) => {
+  register = async (data) => {
     try {
       const { body, uploadFile } = data
 
@@ -20,9 +21,11 @@ class UserService {
         if (uploadFile !== '' || uploadFile !== null) {
           await deleteCloudinaryImage(pathImagesUsers, uploadFile)
         }
-        throw new CustomError("User's details is required", 404)
+        throw new CustomError("User's details is required", 400)
       }
 
+      const userExist = await this.dao.getByEmail(body.email)
+      if (userExist) throw new CustomError('User already exist', 400)
       //   if (uploadFile || uploadFile !== ' ') {
       //     await deleteCloudinaryImage(pathImagesUsers, uploadFile)
       //     throw new CustomError('Maximum 1 image allowed', 404)
@@ -30,6 +33,7 @@ class UserService {
 
       const userData = {
         ...body,
+        password: createHash(body.password),
         image_profile: uploadFile !== ' ' ? userUrlImageDefault : uploadFile
       }
 
@@ -50,9 +54,11 @@ class UserService {
 
   login = async (email, password) => {
     try {
-      const response = await this.dao.login(email, password)
-      if (!response) throw new CustomError("User's credentials not accepted or user not found", 404)
-      return response
+      const userExist = await this.dao.getByEmail(email)
+      if (!userExist) throw new CustomError("User's credentials incorrect", 400)
+      const passValid = isValidPassword(password, userExist.password)
+      if (!passValid) throw new CustomError("User's credentials incorrect", 400)
+      return userExist
     } catch (error) {
       throw error
     }
@@ -61,7 +67,7 @@ class UserService {
   loginAdmin = async (email, password) => {
     try {
       const response = await this.dao.loginAdmin(email, password)
-      if (!response) throw new CustomError("User's credentials not accepted or user not found", 404)
+      if (!response) throw new CustomError("User's credentials not accepted", 400)
       return response
     } catch (error) {
       throw error
@@ -326,6 +332,20 @@ class UserService {
       return await this.dao.getAll(pipelineValue, paginateParams)
     } catch (error) {
       throw new Error(error)
+    }
+  }
+
+  getByEmail = async (email) => {
+    try {
+      if (!email || email.trim() === '') throw new CustomError('Email is required', 400)
+
+      const response = await this.dao.getByEmail(email)
+
+      if (!response) throw new CustomError('User not found', 400)
+
+      return response
+    } catch (error) {
+      throw error
     }
   }
 
