@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import passport from 'passport'
 import { productController } from 'root/controller/admin/product.controller.js'
 import { cartController } from 'root/controller/admin/cart.controller.js'
 import { userController } from 'root/controller/admin/user.controller.js'
 import { uploadProductImages, uploadUserImages } from 'root/config/multer.js'
 import handleErrorUploads from 'root/middlewares/handleErrorUploads.js'
 import { isAuthAdmin, isNotAuthAdmin } from 'root/middlewares/authAdmin.js'
+import { passportCall } from 'root/middlewares/passportCall.js'
 
 const router = Router()
 
@@ -62,7 +62,7 @@ router.post('/users/user/register',
   isAuthAdmin,
   uploadUserImages,
   handleErrorUploads,
-  passport.authenticate('register'), // Implementacion del middleware de strategy para validar la session
+  passportCall('register'), // Implementacion del middleware de strategy para validar la session
   userController.register)
 
 // PUT update user
@@ -97,9 +97,12 @@ router.get('/settings', isAuthAdmin, (req, res, next) => {
 // Post para iniciar sesion como admin
 router.post(
   '/login',
-  passport.authenticate('loginAdmin'), // Implementacion del middleware de strategy para validar el inicio de sesion
+  passportCall('loginAdmin'), // Implementacion del middleware de strategy para validar el inicio de sesion
   userController.loginAdmin
 )
+
+// Get para cerrar session
+router.get('/logout', isAuthAdmin, userController.logOut)
 
 // Validator for admin
 router.get('/', isNotAuthAdmin, (req, res, next) => {

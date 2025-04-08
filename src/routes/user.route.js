@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import passport from 'passport'
 import { userController } from 'root/controller/user/user.controller.js'
 import { uploadUserImages } from 'root/config/multer.js'
 import handleErrorUploads from 'root/middlewares/handleErrorUploads.js'
 import { isAuth, isNotAuth } from 'root/middlewares/authUsers.js'
+import { passportCall } from 'root/middlewares/passportCall.js'
 
 const router = Router()
 
@@ -12,7 +12,7 @@ router.post(
   '/register',
   uploadUserImages,
   handleErrorUploads,
-  passport.authenticate('register'), // Implementacion del middleware de strategy para validar la session
+  passportCall('register'), // Implementacion del middleware de strategy para validar la session
   userController.register
 )
 
@@ -33,15 +33,25 @@ router.get('/profile/:uid', isAuth, userController.getById)
 // User login
 router.post(
   '/login',
-  passport.authenticate('login'), // Implementacion del middleware de strategy para validar la session
+  passportCall('login'), // Implementacion del middleware de strategy para validar la session
   userController.login
 )
 
 router.get(
   '/login/auth/google',
-  passport.authenticate('registerOrLoginGoogle') // Implementacion del middleware de strategy para validar la session con Google
+  passportCall('google', { scope: ['profile', 'email'] }) // Implementacion del middleware de strategy para validar la session con Google
   // userController.login
 )
+
+// Log out session
+router.get('/logout', (req, res) => {
+  try {
+    req.session.destroy()
+    res.redirect('/api/clients/user')
+  } catch (error) {
+    
+  }
+})
 
 // Get by email
 router.get('/', isNotAuth, (req, res, next) => {
