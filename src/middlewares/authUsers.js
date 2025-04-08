@@ -3,7 +3,7 @@ export function isAuth (req, res, next) {
   if (req.isAuthenticated()) {
     return next()
   }
-  return res.redirect('/api/user')
+  return res.redirect('/api/clients/user')
 }
 
 export function isNotAuth (req, res, next) {
@@ -11,5 +11,5 @@ export function isNotAuth (req, res, next) {
     return next()
   }
 
-  res.redirect(`/api/user/profile/${req.user._id}`)
+  res.redirect(`/api/clients/user/profile/${req.user._id}`)
 }

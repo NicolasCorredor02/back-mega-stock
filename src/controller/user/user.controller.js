@@ -7,10 +7,7 @@ class UsersController {
 
   register = async (req, res, next) => {
     try {
-      res.json({
-        message: 'User registered successfuly',
-        session: req.session
-      })
+      res.redirect('/api/clients/user')
     } catch (error) {
       next(error)
     }
@@ -21,11 +18,7 @@ class UsersController {
       // const id = req.session.passport.user
       // const user = await this.service.getById(id)
       const user = req.user
-      res.json({
-        message: 'Login success',
-        session: req.session,
-        user
-      })
+      res.redirect(`/api/clients/user/profile/${user._id}`)
     } catch (error) {
       next(error)
     }
