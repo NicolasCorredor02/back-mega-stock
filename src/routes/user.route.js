@@ -44,14 +44,7 @@ router.get(
 )
 
 // Log out session
-router.get('/logout', (req, res) => {
-  try {
-    req.session.destroy()
-    res.redirect('/api/clients/user')
-  } catch (error) {
-    
-  }
-})
+router.get('/logout', isAuth, userController.logOut)
 
 // Get by email
 router.get('/', isNotAuth, (req, res, next) => {
