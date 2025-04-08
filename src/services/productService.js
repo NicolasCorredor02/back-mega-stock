@@ -139,7 +139,7 @@ class ProductService {
 
   getById = async (id) => {
     try {
-      if (!id || id.trim() === '') throw new CustomError('Id is required', 404)
+      if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
       const response = await this.dao.getById(id)
 
@@ -156,7 +156,7 @@ class ProductService {
       const { body, files, deleteImages } = data
 
       // Validación del ID
-      if (!id || id.trim() === '') throw new CustomError("Product's ID is required", 404)
+      if (!id || id.trim === '') throw new CustomError("Product's ID is required", 404)
 
       // Validacion si el producto viene con id para actualizar
       if (body._id) throw new CustomError('Error, product ID can not be updated', 404)
@@ -254,7 +254,7 @@ class ProductService {
 
   changeStatus = async (id) => {
     try {
-      if (!id || id.trim() === '') throw new CustomError("Product's ID is required", 404)
+      if (!id || id.trim === '') throw new CustomError("Product's ID is required", 404)
 
       const response = await this.dao.update(id, { status: false })
 
@@ -275,7 +275,7 @@ class ProductService {
 
   delete = async (id) => {
     try {
-      if (!id || id.trim() === '') throw new CustomError("Product's ID is required", 404)
+      if (!id || id.trim === '') throw new CustomError("Product's ID is required", 404)
 
       const response = await this.dao.delete(id)
 
