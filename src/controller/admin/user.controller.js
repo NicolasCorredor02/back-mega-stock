@@ -33,22 +33,7 @@ class UsersController {
 
   loginAdmin = async (req, res, next) => {
     try {
-      const body = req.body
-      const email = body.email ? body.email : null
-      const password = body.password ? body.password : null
-
-      const response = await this.service.loginAdmin(email, password)
-
-      if (!response) res.status(401).json({ message: 'Unauthorized credentials' })
-
-      if (response) {
-        req.session.isAdmin = true
-        req.session.email = email
-        req.session.password = password
-        return res.redirect('/api/admin/settings')
-      }
-
-      return res.redirect('/api')
+      return res.redirect('/api/admin/settings')
       // req.session.info = {
       //   loggedAdminIn: true,
       //   email,
