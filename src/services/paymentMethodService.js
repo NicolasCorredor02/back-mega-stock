@@ -47,7 +47,7 @@ class PaymentMethodService {
 
   getById = async (id) => {
     try {
-      if (!id || id.trim() === '') throw new CustomError('Id is required', 404)
+      if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
       const response = await this.dao.getById(id)
       if (!response) throw new CustomError('PaymentMethod not found', 404)
@@ -59,7 +59,7 @@ class PaymentMethodService {
 
   update = async (id, data) => {
     try {
-      if (!id || id.trim() === '') throw new CustomError('Id is required', 404)
+      if (!id || id.trim === '') throw new CustomError('Id is required', 404)
       if (data._id) throw new CustomError('Error, product ID can not be updated')
 
       const currentPaymentMethod = await this.dao.getById(id)
@@ -76,7 +76,7 @@ class PaymentMethodService {
 
   delete = async (id) => {
     try {
-      if (!id || id.trim() === '') throw new CustomError('Id is required', 404)
+      if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
       const response = await this.dao.delete(id)
       if (!response) throw new CustomError('PaymentMethod not deleted', 404)

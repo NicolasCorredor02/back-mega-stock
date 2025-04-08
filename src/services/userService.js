@@ -34,7 +34,7 @@ class UserService {
       const userData = {
         ...body,
         password: createHash(body.password),
-        image_profile: uploadFile !== ' ' ? userUrlImageDefault : uploadFile
+        image_profile: uploadFile || userUrlImageDefault
       }
 
       const response = await this.dao.create(userData)
@@ -337,7 +337,7 @@ class UserService {
 
   getByEmail = async (email) => {
     try {
-      if (!email || email.trim() === '') throw new CustomError('Email is required', 400)
+      if (!email || email.trim === '') throw new CustomError('Email is required', 400)
 
       const response = await this.dao.getByEmail(email)
 
@@ -351,7 +351,7 @@ class UserService {
 
   getById = async (id) => {
     try {
-      if (!id || id.trim() === '') throw new CustomError('Id is required', 404)
+      if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
       const response = await this.dao.getById(id)
 
@@ -375,7 +375,7 @@ class UserService {
         paymentMethodsToDelete
       } = data
 
-      if (!id || id.trim() === '') {
+      if (!id || id.trim === '') {
         throw new CustomError("User's ID is required", 404)
       }
 
@@ -485,7 +485,7 @@ class UserService {
 
   changeStatus = async (id) => {
     try {
-      if (!id || id.trim() === '') {
+      if (!id || id.trim === '') {
         throw new CustomError("User's ID is required", 404)
       }
 
@@ -506,7 +506,7 @@ class UserService {
 
   delete = async (id) => {
     try {
-      if (!id || id.trim() === '') {
+      if (!id || id.trim === '') {
         throw new CustomError("User's ID is required", 404)
       }
 

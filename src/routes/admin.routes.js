@@ -5,7 +5,7 @@ import { cartController } from 'root/controller/admin/cart.controller.js'
 import { userController } from 'root/controller/admin/user.controller.js'
 import { uploadProductImages, uploadUserImages } from 'root/config/multer.js'
 import handleErrorUploads from 'root/middlewares/handleErrorUploads.js'
-import { isAuthAdmin, isNotAuthAdmin } from 'root/middlewares/authAdminLogin.js'
+import { isAuthAdmin, isNotAuthAdmin } from 'root/middlewares/authAdmin.js'
 
 const router = Router()
 
@@ -95,7 +95,11 @@ router.get('/settings', isAuthAdmin, (req, res, next) => {
 })
 
 // Post para iniciar sesion como admin
-router.post('/login', userController.loginAdmin)
+router.post(
+  '/login',
+  passport.authenticate('loginAdmin'), // Implementacion del middleware de strategy para validar el inicio de sesion
+  userController.loginAdmin
+)
 
 // Validator for admin
 router.get('/', isNotAuthAdmin, (req, res, next) => {

@@ -1,13 +1,13 @@
 export function isAuthAdmin (req, res, next) {
   console.log(req.session)
-  if (req.session && req.session.isAdmin) {
+  if (req.isAuthenticated() && req.user.isAdmin) {
     return next()
   }
   return res.redirect('/api/admin')
 }
 
 export function isNotAuthAdmin (req, res, next) {
-  if (!req.session || !req.session.isAdmin) {
+  if (!req.isAuthenticated() || !req.user.isAdmin) {
     return next()
   }
 

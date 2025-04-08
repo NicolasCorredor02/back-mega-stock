@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import CustomError from 'root/utils/customError.js'
 import { addressDao } from 'root/daos/mongodb/addressDao.js'
 
@@ -61,7 +62,7 @@ class AddressService {
 
   update = async (id, data) => {
     try {
-      if (!id || id.trim() === '') throw new CustomError('Id is required', 404)
+      if (!id || id.trim === '') throw new CustomError('Id is required', 404)
       if (data._id) throw new CustomError('Error, product ID can not be updated')
 
       const currentAddress = await this.dao.getById(id)
@@ -78,7 +79,7 @@ class AddressService {
 
   delete = async (id) => {
     try {
-      if (!id || id.trim() === '') throw new CustomError('Id is required', 404)
+      if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
       const response = await this.dao.delete(id)
       if (!response) throw new CustomError('Address not deleted', 404)

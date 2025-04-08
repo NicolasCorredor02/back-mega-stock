@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
+      default: ' ',
       required: [true, 'Password is required']
     },
     first_name: {
@@ -27,13 +28,14 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
+      default: ' ',
       required: [true, 'Phone number is required'],
       trim: true
     },
     id_number: {
       type: Number,
-      unique: true,
-      required: [true, 'DNI is required']
+      unique: true
+      // required: [true, 'DNI is required']
     },
     image_profile: {
       type: String,

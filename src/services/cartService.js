@@ -148,7 +148,7 @@ class CartService {
 
   getById = async (id) => {
     try {
-      if (!id || id.trim() === '') throw new CustomError('Id is required', 404)
+      if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
       const response = await this.dao.getById(id)
 
@@ -162,7 +162,7 @@ class CartService {
 
   update = async (id, data) => {
     try {
-      if (!id || id.trim() === '') throw new CustomError('Id is required', 404)
+      if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
       if (!data) throw new CustomError('Cart details are required')
 
@@ -194,7 +194,7 @@ class CartService {
 
   delete = async (id) => {
     try {
-      if (!id || id.trim() === '') throw new CustomError('Id is required', 404)
+      if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
       const response = await this.dao.delete(id)
       if (!response) throw new CustomError('Cart not deleted', 404)
