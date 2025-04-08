@@ -45,6 +45,15 @@ class UsersController {
     }
   }
 
+  logOut = (req, res, next) => {
+    try {
+      req.session.destroy()
+      res.redirect('/api/admin')
+    } catch (error) {
+      next(error)
+    }
+  }
+
   getAll = async (req, res, next) => {
     try {
       const reqQuerys = req.query

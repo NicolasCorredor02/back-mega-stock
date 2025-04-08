@@ -18,13 +18,23 @@ class UsersController {
 
   login = async (req, res, next) => {
     try {
-      const id = req.session.passport.user
-      const user = await this.service.getById(id)
+      // const id = req.session.passport.user
+      // const user = await this.service.getById(id)
+      const user = req.user
       res.json({
         message: 'Login success',
         session: req.session,
         user
       })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  logOut = (req, res, next) => {
+    try {
+      req.session.destroy()
+      res.redirect('/api/clients/user')
     } catch (error) {
       next(error)
     }
