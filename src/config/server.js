@@ -13,6 +13,7 @@ import { rootPath } from 'root/utils/paths.js'
 import { socketModule } from 'root/sockets/socket.js'
 import { connectDB, StoreOptions } from 'root/db/connection.js'
 import { localStrategy } from 'root/config/passport/localStrategy.js'
+import { googleStrategy } from 'root/config/passport/googleStrategy.js'
 
 const serverUp = async () => {
   const app = express()
@@ -31,6 +32,7 @@ const serverUp = async () => {
   app.use(cookieParser()) // Middleware para el manejo de cookies
   app.use(session(StoreOptions)) // Middleware para inicializar el almacenamiento de las sessiones
   localStrategy() // Middleware que contiene la logica para la gestion de las sessiones de forma local con Strategy
+  googleStrategy() // Middleware que contiene la logica para la gestion de inicio de sesion o registro por medio de Google
   app.use(passport.initialize()) // Inicializar passport para trabajar en todas las rutas
   app.use(passport.session()) // Enlazar passport con express-session
   app.use(logger('dev'))
