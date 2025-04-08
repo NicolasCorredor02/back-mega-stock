@@ -125,6 +125,11 @@ const userSchema = new mongoose.Schema(
     status: {
       type: Boolean,
       default: true
+    },
+    platform: {
+      type: String,
+      default: 'none',
+      enum: ['google', 'x', 'facebook']
     }
   },
   {
