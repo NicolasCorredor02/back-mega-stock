@@ -1,5 +1,4 @@
 export function isAuthAdmin (req, res, next) {
-  console.log(req.session)
   if (req.isAuthenticated() && req.user.isAdmin) {
     return next()
   }

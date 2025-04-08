@@ -1,5 +1,4 @@
 export function isAuth (req, res, next) {
-  console.log(req.session)
   if (req.isAuthenticated()) {
     return next()
   }

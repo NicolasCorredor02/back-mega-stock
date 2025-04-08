@@ -10,8 +10,11 @@ export const passportCall = (strategy, options = {}) => {
           message: info.message ? info.message : info.toString()
         })
       }
-      req.user = user
-      next()
+      req.login(user, (err) => {
+        if (err) return next(err)
+        req.user = user
+        next()
+      })
     })(req, res, next)
   }
 }
