@@ -29,8 +29,7 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
       default: ' ',
-      required: [true, 'Phone number is required'],
-      trim: true
+      required: [true, 'Phone number is required']
     },
     id_number: {
       type: Number,
@@ -129,7 +128,7 @@ const userSchema = new mongoose.Schema(
     platform: {
       type: String,
       default: 'none',
-      enum: ['google', 'x', 'facebook']
+      enum: ['none', 'google', 'x', 'facebook']
     }
   },
   {

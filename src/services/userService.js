@@ -341,7 +341,7 @@ class UserService {
 
       const response = await this.dao.getByEmail(email)
 
-      if (!response) throw new CustomError('User not found', 400)
+      // if (!response) return new CustomError('User not found', 400)
 
       return response
     } catch (error) {

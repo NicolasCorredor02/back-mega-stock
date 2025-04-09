@@ -8,12 +8,11 @@ dotenv.config()
 const strategyConfig = {
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: '/api/clients/user/login/auth/google'
+  callbackURL: 'http://localhost:8080/api/clients/user/login/auth/google'
 }
 
 export const googleStrategy = () => {
   const registerOrLogin = async (accessToken, refreshToke, profile, done) => {
-    console.log('profile:', profile)
     try {
       const email = profile._json.email
       const user = await userService.getByEmail(email)
