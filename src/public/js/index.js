@@ -1118,7 +1118,7 @@ async function loginAdminSubmit () {
 
     Swal.fire({
       position: 'top-end',
-      title: 'Log in successfully',
+      title: 'Log as admin in successfully',
       icon: 'success',
       showConfirmButton: false,
       timer: 1500
@@ -1126,6 +1126,109 @@ async function loginAdminSubmit () {
 
     document.getElementById('adminLoginForm').reset()
 
+    window.location.href = response.url
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: `An error has occurred: ${error.message}`
+    })
+  }
+}
+
+// * ----------------------- FUNCION PARA EL INICIO DE SESION COMO USUARIO NORMAL ------------
+async function loginUserSubmit () {
+  const adminCredentials = {
+    email: document.getElementById('emailUserLogin').value,
+    password: document.getElementById('passwordUserLogin').value
+  }
+
+  try {
+    Swal.fire({
+      title: 'Loading...',
+      text: 'Please wait while we process your request',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading()
+      }
+    })
+
+    const response = await fetch('http://localhost:8080/api/clients/user/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(adminCredentials)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || 'Error processing the request')
+    }
+
+    Swal.fire({
+      position: 'top-end',
+      title: 'Login successfully',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1500
+    })
+
+    document.getElementById('userLoginForm').reset()
+
+    window.location.href = response.url
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: `An error has occurred: ${error.message}`
+    })
+  }
+}
+
+// * -------------------- FUNCION PARA EL REGISTRO DE USUARIO NORMAL ----------
+async function registerUserSubmit () {
+  const formUserData = new FormData()
+
+  formUserData.append('email', document.getElementById('userEmail').value)
+  formUserData.append('password', document.getElementById('userPassword').value)
+  formUserData.append('first_name', document.getElementById('userFirstName').value)
+  formUserData.append('last_name', document.getElementById('userLastName').value)
+  formUserData.append('phone', document.getElementById('userPhone').value)
+  formUserData.append('id_number', document.getElementById('userIdNumber').value)
+  formUserData.append('profileImage', document.getElementById('userProfileImage').file)
+
+  try {
+    Swal.fire({
+      title: 'Loading...',
+      text: 'Please wait while we process your request',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading()
+      }
+    })
+
+    const response = await fetch('http://localhost:8080/api/clients/user/register', {
+      method: 'POST',
+      body: formUserData
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || 'Error procesing the request')
+    }
+
+    Swal.fire({
+      position: 'top-end',
+      title: 'User successfully created',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1500
+    })
+
+    document.getElementById('userRegisterForm').reset()
     window.location.href = response.url
   } catch (error) {
     Swal.fire({
