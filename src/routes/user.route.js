@@ -39,17 +39,26 @@ router.post(
 
 router.get(
   '/login/auth/google',
-  passportCall('google', { scope: ['profile', 'email'] }) // Implementacion del middleware de strategy para validar la session con Google
-  // userController.login
+  passportCall('google', { scope: ['profile', 'email'] }), // Implementacion del middleware de strategy para validar la session con Google
+  userController.login
 )
 
 // Log out session
 router.get('/logout', isAuth, userController.logOut)
 
+// Get para render de form para register
+router.get('/register', isNotAuth, (req, res, next) => {
+  try {
+    return res.render('userRegister')
+  } catch (error) {
+    next(error)
+  }
+})
+
 // Get by email
 router.get('/', isNotAuth, (req, res, next) => {
   try {
-    return res.render()
+    return res.render('userLogin')
   } catch (error) {
     next(error)
   }
