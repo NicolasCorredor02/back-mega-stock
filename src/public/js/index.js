@@ -1197,7 +1197,7 @@ async function registerUserSubmit () {
   formUserData.append('last_name', document.getElementById('userLastName').value)
   formUserData.append('phone', document.getElementById('userPhone').value)
   formUserData.append('id_number', document.getElementById('userIdNumber').value)
-  formUserData.append('profileImage', document.getElementById('userProfileImage').file)
+  formUserData.append('profileImage', document.getElementById('userProfileImage').files[0])
 
   try {
     Swal.fire({
