@@ -1,4 +1,6 @@
 /* eslint-disable no-useless-catch */
+import jwt from 'jsonwebtoken'
+import 'dotenv/config'
 import CustomError from 'root/utils/customError.js'
 import { userDao } from 'root/daos/mongodb/userDao.js'
 import { socketModule } from 'root/sockets/socket.js'
@@ -72,6 +74,16 @@ class UserService {
     } catch (error) {
       throw error
     }
+  }
+
+  generateToken = (user) => {
+    const payload = {
+      ...user
+    }
+
+    return jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: '30m'
+    })
   }
 
   getAll = async (reqQuerys) => {
