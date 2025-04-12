@@ -1,6 +1,6 @@
 import MongoDao from 'root/daos/mongodb/mongoDao.js'
 import User from 'root/daos/mongodb/models/user.model.js'
-import dotenv from 'dotenv'
+import 'dotenv/config'
 
 class UserDao extends MongoDao {
   constructor (model) {
@@ -17,9 +17,8 @@ class UserDao extends MongoDao {
   }
 
   loginAdmin = (email, password) => {
-    dotenv.config()
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-      return true
+      return ({ _id: 'admin-id' })
     }
     return false
   }
