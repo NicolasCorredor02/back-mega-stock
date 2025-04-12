@@ -1,4 +1,5 @@
 import { userService } from 'root/services/userService.js'
+import 'dotenv/config'
 
 class UsersController {
   constructor (service) {
@@ -7,9 +8,17 @@ class UsersController {
 
   register = async (req, res, next) => {
     try {
-      res.json({
+      const body = req.body
+      const uploadFile = req.file ? req.file.path : null
+      const userData = {
+        body,
+        uploadFile
+      }
+      const response = await this.service.register(userData)
+
+      res.status(201).json({
         message: 'User registered',
-        session: req.session
+        user: response
       })
     } catch (error) {
       next(error)
@@ -33,13 +42,16 @@ class UsersController {
 
   loginAdmin = async (req, res, next) => {
     try {
+      const { email, password } = req.body
+      const { _id } = await this.service.loginAdmin(email, password)
+      const token = this.service.generateToken({ _id, isAdmin: true })
+      res.cookie('tokenAdmin', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000
+      })
       return res.redirect('/api/admin/settings')
-      // req.session.info = {
-      //   loggedAdminIn: true,
-      //   email,
-      //   password
-      // }
-      // res.json({ message: 'Welcome admin!' })
     } catch (error) {
       next(error)
     }
@@ -47,7 +59,10 @@ class UsersController {
 
   logOut = (req, res, next) => {
     try {
-      req.session.destroy()
+      req.cookie('tokenAdmin', '', {
+        httpOnly: true,
+        expires: new Date(0)
+      })
       res.redirect('/api/admin')
     } catch (error) {
       next(error)

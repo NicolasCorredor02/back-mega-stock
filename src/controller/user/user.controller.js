@@ -1,4 +1,7 @@
 import { userService } from 'root/services/userService.js'
+import 'dotenv/config'
+
+// TODO: revisar para no tener que recibir los datos del id por params o query
 
 class UsersController {
   constructor (service) {
@@ -7,6 +10,13 @@ class UsersController {
 
   register = async (req, res, next) => {
     try {
+      const body = req.body
+      const uploadFile = req.file ? req.file.path : null
+      const userData = {
+        body,
+        uploadFile
+      }
+      await this.service.register(userData)
       res.redirect('/api/clients/user')
     } catch (error) {
       next(error)
@@ -15,10 +25,33 @@ class UsersController {
 
   login = async (req, res, next) => {
     try {
-      // const id = req.session.passport.user
-      // const user = await this.service.getById(id)
-      const user = req.user
-      res.redirect(`/api/clients/user/profile/${user._id}`)
+      const { email, password } = req.body
+      const { _id } = await this.service.login(email, password)
+      const token = this.service.generateToken({ _id })
+      res.cookie('tokenUser', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000
+      })
+      return res.redirect('/api/clients/user/profile')
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  loginGoogle = async (req, res, next) => {
+    try {
+      const { _id } = await req.user
+      // Genera el token para el user auth con Google
+      const token = this.service.generateToken({ _id })
+      res.cookie('tokenUser', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000
+      })
+      return res.redirect('/api/clients/user/profile')
     } catch (error) {
       next(error)
     }
@@ -26,7 +59,10 @@ class UsersController {
 
   logOut = (req, res, next) => {
     try {
-      req.session.destroy()
+      req.cookie('tokenUser', '', {
+        httpOnly: true,
+        expires: new Date(0)
+      })
       res.redirect('/api/clients/user')
     } catch (error) {
       next(error)
@@ -35,9 +71,9 @@ class UsersController {
 
   getById = async (req, res, next) => {
     try {
-      const { uid } = req.params
+      const { _id } = await req.user
 
-      const response = await this.service.getById(uid)
+      const response = await this.service.getById(_id)
 
       res.status(200).json(response)
     } catch (error) {
