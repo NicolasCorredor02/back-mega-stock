@@ -2,7 +2,6 @@ import express from 'express'
 import { Server } from 'socket.io'
 import { createServer } from 'node:http'
 import cookieParser from 'cookie-parser'
-import session from 'express-session'
 import routes from 'root/routes/index.js'
 import passport from 'passport'
 import path from 'path'
@@ -11,9 +10,10 @@ import { errorHandler } from 'root/middlewares/errorHandler.js'
 import handlebarsConfig from 'root/config/handlebars.js'
 import { rootPath } from 'root/utils/paths.js'
 import { socketModule } from 'root/sockets/socket.js'
-import { connectDB, StoreOptions } from 'root/db/connection.js'
-import { localStrategy } from 'root/config/passport/localStrategy.js'
-import { googleStrategy } from 'root/config/passport/googleStrategy.js'
+import { connectDB } from 'root/db/connection.js'
+// Strategies
+import 'root/config/passport/googleStrategy.js'
+import 'root/config/passport/jwtStrategy.js'
 
 const serverUp = async () => {
   const app = express()
@@ -30,11 +30,7 @@ const serverUp = async () => {
   app.use(express.json()) // Ingreso de data por el body de HTTP
   app.use(express.urlencoded({ extended: true })) // Ingreso de data de forms que sean extensos y requieran una inspeccion profunda
   app.use(cookieParser()) // Middleware para el manejo de cookies
-  app.use(session(StoreOptions)) // Middleware para inicializar el almacenamiento de las sessiones
-  localStrategy() // Middleware que contiene la logica para la gestion de las sessiones de forma local con Strategy
-  googleStrategy() // Middleware que contiene la logica para la gestion de inicio de sesion o registro por medio de Google
   app.use(passport.initialize()) // Inicializar passport para trabajar en todas las rutas
-  app.use(passport.session()) // Enlazar passport con express-session
   app.use(logger('dev'))
 
   //* Middlewares para archivos static
