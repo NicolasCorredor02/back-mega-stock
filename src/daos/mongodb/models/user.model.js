@@ -23,8 +23,7 @@ const userSchema = new mongoose.Schema(
     },
     last_name: {
       type: String,
-      required: [true, 'Last name is required'],
-      trim: true
+      required: [true, 'Last name is required']
     },
     phone: {
       type: String,
@@ -33,8 +32,8 @@ const userSchema = new mongoose.Schema(
     },
     id_number: {
       type: Number,
-      unique: true
-      // required: [true, 'DNI is required']
+      unique: true,
+      required: [true, 'DNI is required']
     },
     image_profile: {
       type: String,
