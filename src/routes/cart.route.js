@@ -1,15 +1,10 @@
-import { Router } from "express";
-import { CartsController } from "root/controller/cart.controller.js";
+import { Router } from 'express'
+import { cartController } from 'root/controller/user/cart.controller.js'
 
-const router = Router();
-
-// Post create a cart
-router.post("/", CartsController.createCart);
-
+const router = Router()
 // Get cart by id
-router.get("/cart/:cid", CartsController.getCart);
+router.get('/:cid', cartController.getById)
 
-// Post add product to cart by id
-router.post("/add/:cid/product", CartsController.addProductCart);
+router.get('/', cartController.getById)
 
-export default router;
+export default router

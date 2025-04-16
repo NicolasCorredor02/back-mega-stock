@@ -1,0 +1,230 @@
+<div class="flex flex-col mx-auto p-6 gap-8">
+    <div class="flex gap-8">
+        <div class="bg-white w-1/4 h-max p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-6">Products</h2>
+            <article class="flex flex-col h-125 gap-4 overflow-scroll">
+                {{#each products.docs}}
+                    <div class="bg-white rounded-lg h-max shadow hover:shadow-lg transition-shadow duration-300">
+                        <div class="aspect-[10 / 16] w-full relative flex overflow-scroll snap-x">
+                            {{#each thumbnails}}
+                                <img src={{this}} alt={{../title}} class="w-full left-[0] sticky object-cover rounded-sm snap-center">
+                            {{/each}}
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-semibold text-gray-800 truncate">{{title}}</h3>
+                            <p class="text-green-600 font-bold mt-2">${{price}}</p>
+                            <p class="text-gray-600 text-sm mt-2 line-clamp-2">{{description}}</p>
+                            <p class="text-gray-600 text-sm mt-2 line-clamp-2">{{category}}</p>
+                            <button
+                            onclick='addToShoppingCartAdmin({{{toJSON this}}})'
+                            class="w-full mt-4 bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            >Add to Cart</button>
+                        </div>
+                    </div>
+                {{/each}}
+            </article>
+        </div>
+        <div class="flex-1 bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-6">Cart details</h2>
+            <form class="space-y-4" id="cartAdminForm">
+                <fieldset>
+                  <legend class="text-xl font-semibold mb-4">Personal Information</legend>
+                  <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700" for="firstNameAdmin">First name</label>
+                        <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="firstNameAdmin" type="text" maxlength="50" required>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700" for="lastNameAdmin">Last name</label>
+                        <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="lastNameAdmin" type="text" maxlength="50" required>
+                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700" for="emailAdmin">Email</label>
+                      <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="emailAdmin" type="email" required>  
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700" for="phoneAdmin">Phone number</label>
+                        <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="phoneAdmin" type="text" maxlength="13" required>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700" for="idNumberAdmin">DNI</label>
+                        <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="idNumberAdmin" type="number" min="0" required>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+                <fieldset>
+                    <legend class="text-xl font-semibold mb-4">Cart status</legend>
+                    <div>
+                        <select
+                          id="statusAdmin"
+                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                          required
+                        >
+                          <option value="active" selected>Active</option>
+                          <option value="completed">Completed</option>
+                          <option value="abandoned">Abandoned</option>
+                          <option value="cancelled">Cancelled</option>
+                        </select>
+                      </div>
+                </fieldset>
+                <fieldset>
+                    <legend class="text-xl font-semibold mb-4">Current cart's products</legend>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th
+                                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >Image</th>
+                                    <th
+                                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >Title</th>
+                                    <th
+                                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >Price</th>
+                                    <th
+                                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >Category</th>
+                                    <th
+                                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                    >Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shoppingCartListAdmin" class="bg-white divide-y divide-gray-200 overflow-scroll">
+                  
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+                <div class="flex flex-col gap-4 mt-10">
+                  <div class="flex items-center gap-4">
+                    <p class="text-2xl">Sub Total:</p>
+                    <p class="text-2xl" id="shoppingCartSubTotalAdmin"></p>
+                  </div>
+                    <button
+                    onclick="handleUpdateCartSubmit()"
+                    type="button"
+                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >Update Cart</button>
+                    <button onclick="resetFormCartAdmin()" type="button" class="mt-2 w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Product Table Section -->
+    <div class="bg-white p-6 rounded-lg shadow-lg overflow-scroll">
+      <h2 class="text-2xl font-bold mb-6">Cart's list</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                class="border-r border-slate-300 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >Id</th>
+              <th
+                class="border-r border-slate-300 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >User type</th>
+              <th
+                colspan="5" class="border-r border-slate-300 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >User info</th>
+              <th
+                colspan="7" class="border-r border-slate-300 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >Address</th>
+              <th
+               colspan="6"  class="border-r border-slate-300 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >Payment method</th>
+              <th
+                class="border-r border-slate-300 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >Status</th>
+              <th
+                class="border-r border-slate-300 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >Products</th>
+              <th
+                class="border-r border-slate-300 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >Sub total</th>
+              <th
+                class="border-r border-slate-300 px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >Actions</th>
+            </tr>
+            <tr>
+              <th class="border-r border-slate-300"></th>
+              <th class="border-r border-slate-300"></th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">First name</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Last name</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">DNI</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Street</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">City</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">State</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Postal code</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Country</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Is saved</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Provider</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Last four</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry date</th>
+              <th class="border-r border-slate-300 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Is saved</th>
+              <th class="border-r border-slate-300"></th>
+              <th class="border-r border-slate-300"></th>
+              <th class="border-r border-slate-300"></th>
+              <th class="border-r border-slate-300"></th>
+            </tr>
+          </thead>
+          <tbody id="productsList" class="bg-white divide-y divide-gray-200 overflow-scroll">
+            {{#each carts.docs}}
+              <tr id={{_id}} class="hover:bg-gray-50">
+                <td class="border-r border-slate-300 px-6 py-4">{{_id}}</td>
+                <td class="border-r border-slate-300 px-6 py-4">{{user_type}}</td>
+                <td class="px-6 py-4">{{user_info.first_name}}</td>
+                <td class="px-6 py-4">{{user_info.last_name}}</td>
+                <td class="px-6 py-4">{{user_info.email}}</td>
+                <td class="px-6 py-4">{{user_info.phone}}</td>
+                <td class="border-r border-slate-300 px-6 py-4">{{user_info.id_number}}</td>
+                <td class="px-6 py-4">{{address._id}}</td>
+                <td class="px-6 py-4">{{address.street}}</td>
+                <td class="px-6 py-4">{{address.city}}</td>
+                <td class="px-6 py-4">{{address.state}}</td>
+                <td class="px-6 py-4">{{address.postal_code}}</td>
+                <td class="px-6 py-4">{{address.country}}</td>
+                <td class="border-r border-slate-300 px-6 py-4">{{address.is_saved}}</td>
+                <td class="px-6 py-4">{{payment_method._id}}</td>
+                <td class="px-6 py-4">{{payment_method.type}}</td>
+                <td class="px-6 py-4">{{payment_method.provider}}</td>
+                <td class="px-6 py-4">{{payment_method.last_four}}</td>
+                <td class="px-6 py-4">{{payment_method.expiry_date}}</td>
+                <td class="border-r border-slate-300 px-6 py-4">{{payment_method.is_saved}}</td>
+                <td class="border-r border-slate-300 px-6 py-4">{{status}}</td>
+                <td class="border-r border-slate-300 flex px-6 py-4 gap-4 w-80 overflow-scroll snap-x">
+                  {{#each products}}
+                      <div class="flex flex-col bg-green-100 px-2 py-4 gap-2">
+                           <img
+                              src={{this.product.thumbnails.[0]}}
+                              alt={{this.product.title}}
+                              class="h-10 w-10 rounded-full"
+                          />
+                          <p class="text-sm">{{this.product.title}}</p>
+                          <p class="text-sm">Code: {{this.product.code}}</p>
+                          <p class="text-sm">Price: ${{this.product.price}}</p>
+                          <p class="text-sm">Quantity: {{this.quantity}}</p>
+                      </div>
+                  {{/each}}
+                </td>
+                <td class="border-r border-slate-300 px-6 py-4">${{sub_total}}</td>
+                <td class="px-6 py-4">
+                  <button onclick="updateCart('{{_id}}')" class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
+                  <button onclick="handleDeleteCartSubmit('{{_id}}')" class="text-red-600 hover:text-red-900">Delete</button>
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+</div>

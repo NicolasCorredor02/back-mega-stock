@@ -1,8 +1,8 @@
-import createServer from "root/config/server.js";
+import serverUp from 'root/config/server.js'
 
-const app = createServer();
-const PORT = 8080;
+const server = await serverUp()
+const PORT = 8080
 
-app.listen(PORT, () => {
-    console.log(`Server listening on port http://localhost:${PORT}`);
-});
+server.listen(PORT, () => {
+  console.log(`Server listening on port http://localhost:${PORT}`)
+})

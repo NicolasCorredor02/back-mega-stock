@@ -1,19 +1,23 @@
-import createHttpError from "http-errors";
-import multer from "multer";
+import multer from 'multer'
+import CustomError from 'root/utils/customError.js'
 
-export default function handleErrorUploads(error, req, res, next) {
+export default function handleErrorUploads (error, req, res, next) {
   if (error instanceof multer.MulterError) {
-    if (error.code === "LIMIT_FILE_COUNT") {
-      return next(createHttpError(413, "Maximum 5 images per product"));
+    if (error.code === 'LIMIT_FILE_COUNT') {
+      return next(new CustomError('Maximum 5 images per product', 413))
     }
-    if (error.code === "LIMIT_FILE_SIZE") {
-      return next(createHttpError(413, "Maximum size per image is 5MB"));
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return next(new CustomError('Maximum size per image is 5MB', 413))
     }
-    if (error.code === "LIMIT_UNEXPECTED_FILE") {
+    if (error.code === 'LIMIT_UNEXPECTED_FILE') {
       return next(
-        createHttpError(400, "Only the 'thumbnails' field is allowed for image uploads"));
+        new CustomError("Only the 'thumbnails' or 'profileImage' field is allowed for image uploads", 400))
+    }
+    if (error.code === 'LIMIT_UNEXPECTED_FILE') {
+      return next(
+        new CustomError("Only the 'newThumbnails' field is allowed for image uploads", 400))
     }
   }
 
-  next(error);
+  next(error)
 }

@@ -1,14 +1,8 @@
-import createHttpError from "http-errors";
-
-export default function errorHandler(error, req, res, next) {
-  console.error(error);
-  let errorMessage = "An unknow error ocurred";
-  let statusCode = 500;
-  if (createHttpError.isHttpError(error)) {
-    statusCode = error.status;
-    errorMessage = error.message;
-  }
+export const errorHandler = (error, req, res, next) => {
+  console.error(error.message)
+  const errorMessage = error.message || 'An unknow error ocurred'
+  const statusCode = error.status || 500
   res.status(statusCode).json({
-    error: errorMessage,
-  });
+    message: errorMessage
+  })
 }

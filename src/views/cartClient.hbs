@@ -1,0 +1,144 @@
+<div class="p-6">
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 grid-rows-2 md:grid-rows-1 justify-items-stretch gap-4"
+  >
+
+  {{#if response}}
+    <p>Exite carrito, aca se muestra la informacion del carrito</p>
+    {{else}}
+        <div class="md:row-span-2">
+          <div class="bg-white p-6 rounded-lg shadow-lg overflow-scroll">
+            <h2 class="text-2xl font-bold mb-6">Shopping cart</h2>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >Image</th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >Title</th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >Price</th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >Category</th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >Quantity</th>
+                  </tr>
+                </thead>
+                <tbody id="shoppingCartList" class="bg-white divide-y divide-gray-200 overflow-scroll">
+                  
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    <form class="bg-white p-6 rounded-lg shadow-lg space-y-4" id="cartClientForm">
+      <fieldset>
+        <legend class="text-xl font-semibold mb-4">Personal Information</legend>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="firstNameClient">First name</label>
+              <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="firstNameClient" type="text" maxlength="50" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="lastNameClient">Last name</label>
+              <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="lastNameClient" type="text" maxlength="50" required>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700" for="emailClient">Email</label>
+            <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="emailClient" type="email" required>  
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="phoneClient">Phone number</label>
+              <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="phoneClient" type="text" maxlength="13" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="idNumberClient">DNI</label>
+              <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="idNumberClient" type="number" min="0" required>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend class="text-xl font-semibold mb-4">Delivery information</legend>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700" for="streetClient">Street</label>
+            <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="streetClient" type="text" maxlength="100" required>  
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="countryClient">Country</label>
+              <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="countryClient" type="text" maxlength="80" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="stateClient">State</label>
+              <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="stateClient" type="text" maxlength="80" required>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="cityClient">City</label>
+              <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="cityClient" type="text" maxlength="80" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="postalCodeClient">Postal Code</label>
+              <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="postalCodeClient" type="text" maxlength="11" required>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+       <fieldset>
+        <legend class="text-xl font-semibold mb-4">Payment information</legend>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="payTypeClient">Payment method</label>
+              <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="payTypeClient" id="payTypeClient" required>
+                <option value="card">Card</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="payProviderClient">Provider</label>
+              <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" name="payProviderClient" id="payProviderClient" required>
+                <option value="visa">Visa</option>
+                <option value="master">Master Card</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="cardNumberClient">Card number</label>
+              <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="cardNumberClient" type="number" min="1000000000000000" max="9999999999999999" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="lastFourCardNumberCLient">Last 4 card's number</label>
+              <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="lastFourCardNumberCLient" type="number" min="1000" max="9999" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700" for="expiryDateClient">Expiry date (MM/YY)</label>
+              <input class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="expiryDateClient" type="text" required>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+      <div class="flex flex-col gap-4 mt-10">
+        <div class="flex items-center gap-4">
+          <p class="text-2xl">Sub Total:</p>
+          <p class="text-2xl" id="shoppingCartSubTotal"></p>
+        </div>
+        <button type="submit" class="bg-lime-300 hover:bg-lime-600 py-4 px-2 rounded-xl relative font-semibold text-lime-600 hover:text-lime-50 duration-300 cursor-pointer">Buy cart</button>
+        <button onclick="clearShoppingCart()" class="bg-red-200 hover:bg-red-600 py-4 px-2 rounded-xl relative font-semibold text-red-600 hover:text-red-50 duration-300 cursor-pointer">Clear cart</button>
+      </div>
+    </form>
+  {{/if}}
+  </div>
+</div>

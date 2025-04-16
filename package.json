@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./src/index.js",
+    "dev": "node --watch ./src/index.js",
     "setup-alias": "link-module-alias"
   },
   "_moduleAliases": {
@@ -32,11 +32,29 @@
   },
   "homepage": "https://github.com/NicolasCorredor02/back-mega-stock#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cloudinary": "1.41.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
     "express": "^5.0.1",
-    "http-errors": "^2.0.0",
+    "express-handlebars": "^8.0.1",
+    "jsonwebtoken": "^9.0.2",
     "link-module-alias": "^1.2.0",
+    "mongoose": "^8.11.0",
+    "mongoose-aggregate-paginate-v2": "^1.1.4",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "multer-storage-cloudinary": "^4.0.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth": "^2.0.0",
+    "passport-jwt": "^4.0.1",
+    "socket.io": "^4.8.1",
     "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "standard": "^17.1.2"
+  },
+  "eslintConfig": {
+    "extends": "standard"
   }
 }
