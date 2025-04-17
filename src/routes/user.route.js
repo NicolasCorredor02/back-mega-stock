@@ -7,35 +7,24 @@ import { passportCall } from 'root/middlewares/passportCall.js'
 
 const router = Router()
 
-// Post to create a user
-router.post(
-  '/register',
-  uploadUserImages,
-  handleErrorUploads,
-  userController.register
-)
+router.route('/')
+  .post(uploadUserImages, handleErrorUploads, userController.register)
 
-// Put to update a user
-router.put('/update/:uid',
-  passportCall('jwt-cookies'),
-  isAuth,
-  uploadUserImages,
-  handleErrorUploads,
-  userController.update
-)
+router.route('/:uid')
+  .put(passportCall('jwt-cookies'), isAuth, uploadUserImages, handleErrorUploads, userController.update)
+  .delete(passportCall('jwt-cookies'), isAuth, userController.changeStatus)
 
-// Delete to soft delete of user
-router.delete('/delete', passportCall('jwt-cookies'), isAuth, userController.changeStatus)
+router.route('/profile')
+  .get(passportCall('jwt-cookies'), isAuth, userController.getById)
 
-// Get by Id
-router.get('/profile', passportCall('jwt-cookies'), isAuth, userController.getById)
-
+// * ------------------ Login with token generate --------------------
 // User login
 router.post(
   '/login',
   userController.login
 )
 
+// * ------------------ Login or register with Google and Callback function ---------
 router.get(
   '/login/auth/google',
   passportCall('google', { scope: ['profile', 'email'] }) // Implementacion del middleware de strategy para iniciar el flujo de session con Google
@@ -48,10 +37,7 @@ router.get(
   userController.loginGoogle
 )
 
-// Log out
-router.get('/logout', passportCall('jwt-cookies'), isAuth, userController.logOut)
-
-// Get para render de form para register
+// * ----------------- Render user register form ---------------------
 router.get('/register', passportCall('jwt-cookies'), isNotAuth, (req, res, next) => {
   try {
     return res.render('userRegister')
@@ -60,7 +46,7 @@ router.get('/register', passportCall('jwt-cookies'), isNotAuth, (req, res, next)
   }
 })
 
-// Get by email
+// * ------------------- Render user login form -------------------------
 router.get('/', passportCall('jwt-cookies'), isNotAuth, (req, res, next) => {
   try {
     return res.render('userLogin')

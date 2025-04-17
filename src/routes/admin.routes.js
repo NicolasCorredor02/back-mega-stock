@@ -10,84 +10,36 @@ import { passportCall } from 'root/middlewares/passportCall.js'
 const router = Router()
 
 //* --------------- Admin products ------------------------
-// Post product into DB
-router.post(
-  '/products/product/add',
-  passportCall('jwt-cookies'),
-  isAuthAdmin, // Middleware para validar si el usuario en session actual corresponde al admin
-  uploadProductImages, // Se añade el middleware de upload de la configuraion de multer para trabajar con las imagenes de los productos
-  handleErrorUploads, // Se agrega el middleware para validar los files que se suben como imagen del producto
-  productController.create
-)
+router.route('/products')
+  .post(passportCall('jwt-cookies'), isAuthAdmin, uploadProductImages, handleErrorUploads, productController.create)
+  .get(passportCall('jwt-cookies'), isAuthAdmin, productController.getAll)
 
-// Put product to update
-router.put(
-  '/products/product/update/:pid',
-  passportCall('jwt-cookies'),
-  isAuthAdmin,
-  uploadProductImages, // Se añade el middleware de upload de la configuraion de multer para trabajar con las imagenes de los productos (max 5)
-  handleErrorUploads, // Se agrega el middleware para validar los files que se suben como imagen del producto
-  productController.update
-)
-
-// Change product's status from DB
-// router.delete('/products/product/delete', productController.changeStatus)
-
-// Delete product from DB
-router.delete('/products/product/delete', passportCall('jwt-cookies'), isAuthAdmin, productController.delete)
-
-// Get product by ID
-router.get('/products/product/:pid', passportCall('jwt-cookies'), isAuthAdmin, productController.getById)
-
-// Get all products
-router.get('/products', passportCall('jwt-cookies'), isAuthAdmin, productController.getAll)
+router.route('/products/:pid')
+  .put(passportCall('jwt-cookies'), isAuthAdmin, uploadProductImages, handleErrorUploads, productController.update)
+  .delete(passportCall('jwt-cookies'), isAuthAdmin, productController.delete)
+  .get(passportCall('jwt-cookies'), isAuthAdmin, productController.getById)
 
 //* --------------- Admin carts ------------------------
-// Post create a cart
-router.post('/carts/cart/create', passportCall('jwt-cookies'), isAuthAdmin, cartController.create)
+router.route('/carts')
+  .post(passportCall('jwt-cookies'), isAuthAdmin, cartController.create)
+  .get(passportCall('jwt-cookies'), isAuthAdmin, cartController.getAll)
 
-// Put para actualizar la data de un carrito
-router.put('/carts/cart/update/:cid', passportCall('jwt-cookies'), isAuthAdmin, cartController.update)
-
-// Delete cart by id
-router.delete('/carts/cart/delete', passportCall('jwt-cookies'), isAuthAdmin, cartController.delete)
-
-// Get cart by ID
-router.get('/carts/cart/:cid', passportCall('jwt-cookies'), isAuthAdmin, cartController.getById)
-
-// Get all Carts
-router.get('/carts', passportCall('jwt-cookies'), isAuthAdmin, cartController.getAll)
+router.route('/carts/:cid')
+  .put(passportCall('jwt-cookies'), isAuthAdmin, cartController.update)
+  .delete(passportCall('jwt-cookies'), isAuthAdmin, cartController.delete)
+  .get(passportCall('jwt-cookies'), isAuthAdmin, cartController.getById)
 
 //* --------------- Admin users ------------------------
-// POST register user
-router.post('/users/user/register',
-  passportCall('jwt-cookies'),
-  isAuthAdmin,
-  uploadUserImages,
-  handleErrorUploads,
-  userController.register)
+router.route('/users')
+  .post(passportCall('jwt-cookies'), isAuthAdmin, uploadUserImages, handleErrorUploads, userController.register)
+  .get(passportCall('jwt-cookies'), isAuthAdmin, userController.getAll)
 
-// PUT update user
-router.put('/users/user/update/:uid',
-  passportCall('jwt-cookies'),
-  isAuthAdmin,
-  uploadUserImages,
-  handleErrorUploads,
-  userController.update
-)
+router.route('/users/:uid')
+  .put(passportCall('jwt-cookies'), isAuthAdmin, uploadUserImages, handleErrorUploads, userController.update)
+  .delete(passportCall('jwt-cookies'), isAuthAdmin, userController.delete)
+  .get(passportCall('jwt-cookies'), isAuthAdmin, userController.getById)
 
-// Change user's status
-// router.delete('/users/user/delete', isAuthAdminLogin, userController.changeStatus)
-
-// Delete user
-router.delete('/users/user/delete', passportCall('jwt-cookies'), isAuthAdmin, userController.delete)
-
-// Get User by ID
-router.get('/users/user/:uid', passportCall('jwt-cookies'), isAuthAdmin, userController.getById)
-
-// Get all users
-router.get('/users', passportCall('jwt-cookies'), isAuthAdmin, userController.getAll)
-
+// * -------------------- Render settings -------------------
 // Get admin settings
 router.get('/settings', passportCall('jwt-cookies'), isAuthAdmin, (req, res, next) => {
   try {
@@ -97,6 +49,7 @@ router.get('/settings', passportCall('jwt-cookies'), isAuthAdmin, (req, res, nex
   }
 })
 
+// * ------------------- Admin login and logout----------------------
 // Post para iniciar sesion como admin
 router.post(
   '/login',
@@ -106,6 +59,7 @@ router.post(
 // Get para cerrar session
 router.get('/logout', passportCall('jwt-cookies'), isAuthAdmin, userController.logOut)
 
+// * --------------------- Render login form --------------------
 // Validator for admin
 router.get('/', passportCall('jwt-cookies'), isNotAuthAdmin, (req, res, next) => {
   try {

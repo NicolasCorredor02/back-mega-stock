@@ -12,9 +12,9 @@ const router = Router()
  */
 router.get('/', productController.getAll)
 
-router.use('/api/clients/products', products)
-router.use('/api/clients/cart', carts)
-router.use('/api/clients/user', user)
+router.use('/api/products', products)
+router.use('/api/cart', carts)
+router.use('/api/user', user)
 router.use('/api/admin', admin)
 
 export default router
