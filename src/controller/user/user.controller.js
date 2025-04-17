@@ -34,7 +34,7 @@ class UsersController {
         sameSite: 'strict',
         maxAge: 24 * 60 * 60 * 1000
       })
-      return res.redirect('/api/clients/user/profile')
+      return res.redirect('/api/user/profile')
     } catch (error) {
       next(error)
     }
@@ -51,7 +51,7 @@ class UsersController {
         sameSite: 'strict',
         maxAge: 24 * 60 * 60 * 1000
       })
-      return res.redirect('/api/clients/user/profile')
+      return res.redirect('/api/user/profile')
     } catch (error) {
       next(error)
     }
@@ -129,7 +129,7 @@ class UsersController {
 
   changeStatus = async (req, res, next) => {
     try {
-      const { uid } = req.query
+      const { uid } = req.params
       const response = await this.service.changeStatus(uid)
 
       res.status(200).json(response)

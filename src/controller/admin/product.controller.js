@@ -89,7 +89,7 @@ class ProductsController {
 
   changeStatus = async (req, res, next) => {
     try {
-      const { pid } = req.query
+      const { pid } = req.params
       const response = await this.service.changeStatus(pid)
       // res.status(200).json({
       //   success: true,
@@ -103,7 +103,7 @@ class ProductsController {
 
   delete = async (req, res, next) => {
     try {
-      const { pid } = req.query
+      const { pid } = req.params
       const response = await this.service.delete(pid)
       // res.status(200).json({
       //   success: true,

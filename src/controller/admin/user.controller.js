@@ -130,7 +130,7 @@ class UsersController {
 
   changeStatus = async (req, res, next) => {
     try {
-      const { uid } = req.query
+      const { uid } = req.params
       const response = await this.service.changeStatus(uid)
 
       res.status(200).json(response)
@@ -141,7 +141,7 @@ class UsersController {
 
   delete = async (req, res, next) => {
     try {
-      const { uid } = req.query
+      const { uid } = req.params
       const response = await this.service.delete(uid)
 
       res.status(200).json(response)

@@ -68,7 +68,7 @@ export class CartsController {
 
   delete = async (req, res, next) => {
     try {
-      const { cid } = req.query
+      const { cid } = req.params
       const response = await this.service.delete(cid)
 
       res.status(200).json(response)
