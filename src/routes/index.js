@@ -12,6 +12,13 @@ const router = Router()
  */
 router.get('/', productController.getAll)
 
+/**
+ * Get para rutas no existentes
+ */
+router.get('*', (req, res) => {
+  res.json({ message: 'Rute not founded' })
+})
+
 router.use('/api/products', products)
 router.use('/api/cart', carts)
 router.use('/api/user', user)

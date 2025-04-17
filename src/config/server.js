@@ -52,8 +52,6 @@ const serverUp = async () => {
   //* Routes o endpoints
   app.use('/', routes)
 
-  // todo Route not found
-
   app.use(errorHandler) // Middleware propio para el manejo global de errores
 
   return server
