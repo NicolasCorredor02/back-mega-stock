@@ -154,7 +154,7 @@ async function updateProduct (pid) {
 
   try {
     const response = await fetch(
-      `http://localhost:8080/api/admin/products/product/${pid}`
+      `http://localhost:8080/api/admin/products/${pid}`
     )
 
     if (!response.ok) {
@@ -162,6 +162,7 @@ async function updateProduct (pid) {
     }
 
     const product = await response.json()
+    console.log('Response para obtener el producto:', product)
 
     // Carga de los datos del producto en el formulario
     document.getElementById('productTitle').value = product.title
@@ -272,8 +273,8 @@ function updateFileInputStatus (currentImagesCount) {
 }
 
 // Funcion para manejar el envio del formulario
-async function handleFormSubmit (event) {
-  event.preventDefault()
+async function handleFormSubmit () {
+  // event.preventDefault()
 
   // Se crea un objeto FormData para mostrar cómo se podrían preparar los datos
   const formData = new FormData()
@@ -309,9 +310,11 @@ async function handleFormSubmit (event) {
   // Determinar si un create product o update product
   const isUpdate = currentProductId !== null
   const url = isUpdate
-    ? `http://localhost:8080/api/admin/products/product/update/${currentProductId}`
-    : 'http://localhost:8080/api/admin/products/product/add'
+    ? `http://localhost:8080/api/admin/products/${currentProductId}`
+    : 'http://localhost:8080/api/admin/products'
   const method = isUpdate ? 'PUT' : 'POST'
+
+  console.log('Current product ID:', currentProductId)
 
   try {
     Swal.fire({
@@ -328,6 +331,8 @@ async function handleFormSubmit (event) {
       method,
       body: formData
     })
+
+    console.log('Response:', response)
 
     if (!response.ok) {
       const errorData = await response.json()
@@ -346,7 +351,7 @@ async function handleFormSubmit (event) {
 
 // eslint-disable-next-line no-unused-vars
 async function handleDeletedProduct (productId) {
-  const url = `http://localhost:8080/api/admin/products/product/delete?pid=${productId}`
+  const url = `http://localhost:8080/api/admin/products/${productId}`
   const method = 'DELETE'
 
   try {
@@ -592,7 +597,7 @@ function clearShoppingCartAdmin () {
 
 async function updateCart (cid) {
   try {
-    const response = await fetch(`http://localhost:8080/api/admin/carts/cart/${cid}`)
+    const response = await fetch(`http://localhost:8080/api/admin/carts/${cid}`)
 
     if (!response.ok) {
       throw new Error('Error processing the request')
@@ -733,7 +738,7 @@ async function handleUpdateCartSubmit () {
       }
     })
 
-    const response = await fetch(`http://localhost:8080/api/admin/carts/cart/update/${_id}`, {
+    const response = await fetch(`http://localhost:8080/api/admin/carts/${_id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -767,7 +772,7 @@ async function handleUpdateCartSubmit () {
 
 //* ------------------ LOGICA PARA BORRAR EL CARRITO EL LA DB -------------
 async function handleDeleteCartSubmit (cartId) {
-  const url = `http://localhost:8080/api/admin/carts/cart/delete?cid=${cartId}`
+  const url = `http://localhost:8080/api/admin/carts/${cartId}`
   const method = 'DELETE'
 
   try {
@@ -1050,7 +1055,7 @@ async function handleCreateCartSubmit (event) {
       }
     })
 
-    const response = await fetch('http://localhost:8080/api/admin/carts/cart/create', {
+    const response = await fetch('http://localhost:8080/api/admin/carts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json' // ¡Este header es clave!
@@ -1154,13 +1159,15 @@ async function loginUserSubmit () {
       }
     })
 
-    const response = await fetch('http://localhost:8080/api/clients/user/login', {
+    const response = await fetch('http://localhost:8080/api/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(adminCredentials)
     })
+
+    console.log('Response:', response)
 
     if (!response.ok) {
       const errorData = await response.json()
@@ -1210,7 +1217,7 @@ async function registerUserSubmit () {
       }
     })
 
-    const response = await fetch('http://localhost:8080/api/clients/user/register', {
+    const response = await fetch('http://localhost:8080/api/user', {
       method: 'POST',
       body: formUserData
     })
@@ -1258,9 +1265,9 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('cancelUpdateCardForm').addEventListener('click', resetFormCartAdmin)
   //* ------------- EVENTOS PARA PRODUCTOS ADMIN -------------------
   // Envio de fomulario para crear productos
-  document
-    .getElementById('productForm')
-    .addEventListener('submit', handleFormSubmit)
+  // document
+  //   .getElementById('productForm')
+  //   .addEventListener('submit', handleFormSubmit)
 
   // Cambio para el input de files
   document
