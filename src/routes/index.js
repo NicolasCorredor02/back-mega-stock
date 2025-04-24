@@ -15,9 +15,10 @@ router.get('/', productController.getAll)
 /**
  * Get para rutas no existentes
  */
-router.get('*', (req, res) => {
-  res.json({ message: 'Rute not founded' })
-})
+// TODO: Revisar la ruta para not founded ya que no me esta sirviendo
+// router.get('*', (req, res) => {
+//   res.json({ message: 'Rute not founded' })
+// })
 
 router.use('/api/products', products)
 router.use('/api/cart', carts)
