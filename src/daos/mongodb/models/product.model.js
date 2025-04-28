@@ -3,6 +3,11 @@ import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
 
 const productSchema = new mongoose.Schema(
   {
+    id: {
+      type: String,
+      required: [true, 'ID is required'],
+      unique: true
+    },
     title: {
       type: String,
       required: [true, 'Title is required'],
@@ -48,8 +53,18 @@ const productSchema = new mongoose.Schema(
     }
   },
   {
+    id: true,
+    versionKey: false,
     timestamps: true // Se agrega automaticamente el create_at y updated_at
   })
+
+productSchema.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+})
 
 productSchema.index({ title: 'text', description: 'text', code: 'text', category: 1, status: 1 })
 

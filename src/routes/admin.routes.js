@@ -10,14 +10,23 @@ import { passportCall } from 'root/middlewares/passportCall.js'
 const router = Router()
 
 //* --------------- Admin products ------------------------
+// router.route('/products')
+//   .post(passportCall('jwt-cookies'), isAuthAdmin, uploadProductImages, handleErrorUploads, productController.create)
+//   .get(passportCall('jwt-cookies'), isAuthAdmin, productController.getAll)
+
+// router.route('/products/:pid')
+//   .put(passportCall('jwt-cookies'), isAuthAdmin, uploadProductImages, handleErrorUploads, productController.update)
+//   .delete(passportCall('jwt-cookies'), isAuthAdmin, productController.delete)
+//   .get(passportCall('jwt-cookies'), isAuthAdmin, productController.getById)
+
 router.route('/products')
-  .post(passportCall('jwt-cookies'), isAuthAdmin, uploadProductImages, handleErrorUploads, productController.create)
-  .get(passportCall('jwt-cookies'), isAuthAdmin, productController.getAll)
+  .post(uploadProductImages, handleErrorUploads, productController.create)
+  .get(productController.getAll)
 
 router.route('/products/:pid')
-  .put(passportCall('jwt-cookies'), isAuthAdmin, uploadProductImages, handleErrorUploads, productController.update)
-  .delete(passportCall('jwt-cookies'), isAuthAdmin, productController.delete)
-  .get(passportCall('jwt-cookies'), isAuthAdmin, productController.getById)
+  .put(uploadProductImages, handleErrorUploads, productController.update)
+  .delete(productController.delete)
+  .get(productController.getById)
 
 //* --------------- Admin carts ------------------------
 router.route('/carts')

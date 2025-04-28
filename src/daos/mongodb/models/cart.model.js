@@ -4,6 +4,11 @@ import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
 
 const cartSchema = new mongoose.Schema(
   {
+    id: {
+      type: String,
+      required: [true, 'ID is required'],
+      unique: true
+    },
     user_type: {
       type: String,
       required: [true, 'User type required'],
@@ -39,12 +44,12 @@ const cartSchema = new mongoose.Schema(
       }
     },
     address: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: 'Address',
       required: [true, 'Address is required']
     },
     payment_method: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: 'PaymentMethod',
       required: [true, 'Payment method is required']
     },
@@ -59,7 +64,7 @@ const cartSchema = new mongoose.Schema(
       type: [{
         _id: false,
         product: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: String,
           ref: 'Product',
           requiered: [true, 'Product reference is required']
         },
@@ -76,9 +81,19 @@ const cartSchema = new mongoose.Schema(
     }
   },
   {
+    id: true,
+    versionKey: false,
     timestamps: true // Se agrega automaticamente el create_at y updated_at
   }
 )
+
+cartSchema.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+})
 
 // Middleware para aplicar populates a los datos que se consulten
 cartSchema.pre('find', function () {

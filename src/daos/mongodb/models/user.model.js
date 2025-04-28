@@ -1,9 +1,14 @@
 /* eslint-disable no-unused-vars */
-import mongoose from 'mongoose'
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
+import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema(
   {
+    id: {
+      type: String,
+      required: [true, 'ID is required'],
+      unique: true
+    },
     email: {
       type: String,
       required: [true, 'email is required'],
@@ -52,7 +57,7 @@ const userSchema = new mongoose.Schema(
         {
           _id: false,
           address: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: 'Address'
           },
           is_default: {
@@ -75,7 +80,7 @@ const userSchema = new mongoose.Schema(
         {
           _id: false,
           payment_method: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: 'PaymentMethod'
           },
           is_default: {
@@ -99,7 +104,7 @@ const userSchema = new mongoose.Schema(
         type: [{
           _id: false,
           cart: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: 'Cart'
           }
         }]
@@ -131,9 +136,20 @@ const userSchema = new mongoose.Schema(
     }
   },
   {
+    id: true, // Se establece el id como campo por defecto
+    versionKey: false,
     timestamps: true // Se agrega automaticamente el create_at y updated_at
   }
 )
+
+// Asegurar que monggose use id como identificador por defecto
+userSchema.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+})
 
 // Middleware para aplicar populates a los datos que se consulten
 userSchema.pre('find', function () {

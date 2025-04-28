@@ -3,6 +3,11 @@ import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
 
 const paymentMethodSchema = new mongoose.Schema(
   {
+    id: {
+      type: String,
+      required: [true, 'ID is required'],
+      unique: true
+    },
     type: {
       type: String,
       required: [true, 'Payment method is required'],
@@ -37,9 +42,19 @@ const paymentMethodSchema = new mongoose.Schema(
     }
   },
   {
+    id: true,
+    versionKey: false,
     timestamps: true // Se agrega automaticamente el create_at y updated_at
   }
 )
+
+paymentMethodSchema.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id
+  }
+})
 
 // Se agrega el plugin de mongoose paginate aggregate
 paymentMethodSchema.plugin(aggregatePaginate)

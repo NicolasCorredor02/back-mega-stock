@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-constructor */
 import MongoDao from 'root/daos/mongodb/mongoDao.js'
 import PaymentMethod from 'root/daos/mongodb/models/paymentMethod.model.js'
 

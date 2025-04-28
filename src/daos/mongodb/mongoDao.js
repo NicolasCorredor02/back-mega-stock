@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-catch */
-import CustomError from 'root/utils/customError.js'
-import mongoose from 'mongoose'
+// import CustomError from 'root/utils/customError.js'
+// import mongoose from 'mongoose'
 
 export default class MongoDao {
   constructor (model) {
@@ -27,9 +27,9 @@ export default class MongoDao {
   getById = async (id) => {
     try {
       // Validación del ID
-      if (!mongoose.Types.ObjectId.isValid(id)) throw new CustomError('Invalid ID format', 400)
+      // if (!mongoose.Types.ObjectId.isValid(id)) throw new CustomError('Invalid ID format', 400)
 
-      return await this.model.findById(id)
+      return await this.model.findOne({ id })
     } catch (error) {
       throw error
     }
@@ -38,9 +38,9 @@ export default class MongoDao {
   update = async (id, data) => {
     try {
       // Validación del ID
-      if (!mongoose.Types.ObjectId.isValid(id)) throw new CustomError('Invalid ID format', 400)
+      // if (!mongoose.Types.ObjectId.isValid(id)) throw new CustomError('Invalid ID format', 400)
 
-      return await this.model.findByIdAndUpdate(id, { $set: data }, { new: true, runValidators: true })
+      return await this.model.findOneAndUpdate({ id }, { $set: data }, { new: true, runValidators: true })
     } catch (error) {
       throw error
     }
@@ -49,9 +49,9 @@ export default class MongoDao {
   delete = async (id) => {
     try {
       // Validación del ID
-      if (!mongoose.Types.ObjectId.isValid(id)) throw new CustomError('Invalid ID format', 400)
+      // if (!mongoose.Types.ObjectId.isValid(id)) throw new CustomError('Invalid ID format', 400)
 
-      return await this.model.findByIdAndDelete(id)
+      return await this.model.findOneAndDelete({ id })
     } catch (error) {
       throw error
     }
