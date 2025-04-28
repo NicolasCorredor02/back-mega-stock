@@ -175,8 +175,8 @@
         </thead>
         <tbody id="productsList" class="bg-white divide-y divide-gray-200 overflow-scroll">
           {{#each products.docs}}
-            <tr id={{_id}} class="hover:bg-gray-50">
-              <td class="px-6 py-4">{{_id}}</td>
+            <tr id={{id}} class="hover:bg-gray-50">
+              <td class="px-6 py-4">{{id}}</td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <img
                   src={{thumbnails.[0]}}
@@ -191,8 +191,8 @@
               <td class="px-6 py-4">{{stock}}</td>
               <td class="px-6 py-4">{{category}}</td>
               <td class="px-6 py-4">
-                <button onclick="updateProduct('{{_id}}')" class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
-                <button onclick="handleDeletedProduct('{{_id}}')" class="text-red-600 hover:text-red-900">Delete</button>
+                <button onclick="updateProduct('{{id}}')" class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
+                <button onclick="handleDeletedProduct('{{id}}')" class="text-red-600 hover:text-red-900">Delete</button>
               </td>
             </tr>
           {{/each}}

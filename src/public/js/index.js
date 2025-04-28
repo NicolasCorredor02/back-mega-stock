@@ -38,14 +38,14 @@ function addToShoppingCart (object) {
   console.log('Object to add cart:', object)
   const currentCart = getShoppingCartByAmount()
 
-  if (currentCart.some((item) => item._id === object._id)) {
+  if (currentCart.some((item) => item.id === object.id)) {
     /**
        * Actualizar la cantidad del alimento en el carrito
        * 1. Se busca el indice del objeto que se quiere agregar al carrito, ya que, existe
        * 2. Se actualiza la cantidad en una unidad de este objeto del carrito
        * 3. Finalmente se actualiza el carrito del localStorage
       */
-    const index = currentCart.findIndex((element) => element._id === object._id)
+    const index = currentCart.findIndex((element) => element.id === object.id)
     currentCart[index].quantity++
     localStorage.setItem(shoppingCart, JSON.stringify(currentCart))
 
@@ -78,14 +78,14 @@ function addToShoppingCart (object) {
 function sumAmountCart (id) {
   const currentCart = getShoppingCartByAmount()
 
-  if (currentCart.some((item) => item._id === id)) {
+  if (currentCart.some((item) => item.id === id)) {
     /**
        * Actualizar la cantidad del alimento en el carrito
        * 1. Se busca el indice del objeto que se quiere remover del carrito, ya que, existe
        * 2. Se actualiza la cantidad en una unidad de este objeto del carrito
        * 3. Finalmente se actualiza el carrito del localStorage
       */
-    const index = currentCart.findIndex((element) => element._id === id)
+    const index = currentCart.findIndex((element) => element.id === id)
     currentCart[index].quantity++
     localStorage.setItem(shoppingCart, JSON.stringify(currentCart))
     cartLogic()
@@ -100,14 +100,14 @@ function sumAmountCart (id) {
 function reduceAmountCart (id) {
   const currentCart = getShoppingCartByAmount()
 
-  if (currentCart.some((item) => item._id === id)) {
+  if (currentCart.some((item) => item.id === id)) {
     /**
        * Actualizar la cantidad del alimento en el carrito
        * 1. Se busca el indice del objeto que se quiere remover del carrito, ya que, existe
        * 2. Se actualiza la cantidad en una unidad de este objeto del carrito
        * 3. Finalmente se actualiza el carrito del localStorage
       */
-    const index = currentCart.findIndex((element) => element._id === id)
+    const index = currentCart.findIndex((element) => element.id === id)
     currentCart[index].quantity--
     localStorage.setItem(shoppingCart, JSON.stringify(currentCart))
     cartLogic()
@@ -121,7 +121,7 @@ function reduceAmountCart (id) {
 */
 function removeFromShoppingCart (idItem) {
   const currentCart = getShoppingCartByAmount()
-  const updateCart = currentCart.filter((object) => object._id !== idItem)
+  const updateCart = currentCart.filter((object) => object.id !== idItem)
   localStorage.setItem(shoppingCart, JSON.stringify(updateCart))
   cartLogic()
 }
@@ -497,14 +497,14 @@ function addToShoppingCartAdmin (object) {
   const currentCart = getShoppingCartByAmountAdmin()
   const { products } = getShoppingCartByAmountAdmin()
 
-  if (products.some(({ product }) => product._id === object._id)) {
+  if (products.some(({ product }) => product.id === object.id)) {
     /**
        * Actualizar la cantidad del alimento en el carrito
        * 1. Se busca el indice del objeto que se quiere agregar al carrito, ya que, existe
        * 2. Se actualiza la cantidad en una unidad de este objeto del carrito
        * 3. Finalmente se actualiza el carrito del localStorage
       */
-    const index = products.findIndex(({ product }) => product._id === object._id)
+    const index = products.findIndex(({ product }) => product.id === object.id)
     products[index].quantity++
     localStorage.setItem(shoppingCartAdmin, JSON.stringify({ ...currentCart, products }))
 
@@ -540,14 +540,14 @@ function sumAmountCartAdmin (id) {
   const currentCart = getShoppingCartByAmountAdmin()
   const { products } = getShoppingCartByAmountAdmin()
 
-  if (products.some(({ product }) => product._id === id)) {
+  if (products.some(({ product }) => product.id === id)) {
     /**
        * Actualizar la cantidad del alimento en el carrito
        * 1. Se busca el indice del objeto que se quiere remover del carrito, ya que, existe
        * 2. Se actualiza la cantidad en una unidad de este objeto del carrito
        * 3. Finalmente se actualiza el carrito del localStorage
       */
-    const index = products.findIndex(({ product }) => product._id === id)
+    const index = products.findIndex(({ product }) => product.id === id)
     products[index].quantity++
     localStorage.setItem(shoppingCartAdmin, JSON.stringify({ ...currentCart, products }))
     cartLogicAdmin()
@@ -560,14 +560,14 @@ function reduceAmountCartAdmin (id) {
   const currentCart = getShoppingCartByAmountAdmin()
   const { products } = getShoppingCartByAmountAdmin()
 
-  if (products.some(({ product }) => product._id === id)) {
+  if (products.some(({ product }) => product.id === id)) {
     /**
        * Actualizar la cantidad del alimento en el carrito
        * 1. Se busca el indice del objeto que se quiere remover del carrito, ya que, existe
        * 2. Se actualiza la cantidad en una unidad de este objeto del carrito
        * 3. Finalmente se actualiza el carrito del localStorage
       */
-    const index = products.findIndex(({ product }) => product._id === id)
+    const index = products.findIndex(({ product }) => product.id === id)
     products[index].quantity--
     localStorage.setItem(shoppingCartAdmin, JSON.stringify({ ...currentCart, products }))
     cartLogicAdmin()
@@ -579,7 +579,7 @@ function reduceAmountCartAdmin (id) {
 function removeFromShoppingCartAdmin (idItem) {
   const currentCart = getShoppingCartByAmountAdmin()
   const { products } = getShoppingCartByAmountAdmin()
-  const updateProducts = products.filter(({ product }) => product._id !== idItem)
+  const updateProducts = products.filter(({ product }) => product.id !== idItem)
   localStorage.setItem(shoppingCartAdmin, JSON.stringify({ ...currentCart, products: updateProducts }))
   cartLogicAdmin()
 }
@@ -661,10 +661,10 @@ function cartLogicAdmin () {
           <td class="px-6 py-4">$${product.price}</td>
           <td class="px-6 py-4">${product.category}</td>
           <td class="flex items-center gap-3 px-2 py-4">
-            <button onclick="reduceAmountCartAdmin('${product._id}')" class="w-10 h-10 bg-red-600 text-white text-lg font-semibold rounded-lg cursor-pointer">-</button>
+            <button onclick="reduceAmountCartAdmin('${product.id}')" class="w-10 h-10 bg-red-600 text-white text-lg font-semibold rounded-lg cursor-pointer">-</button>
             <p>${quantity}</p>
-            <button onclick="sumAmountCartAdmin('${product._id}')" class="w-10 h-10 bg-green-600 text-white text-lg font-semibold rounded-lg cursor-pointer">+</button>
-            <button onclick="removeFromShoppingCartAdmin('${product._id}')" class="h-10 bg-red-600 px-2 font-semibold text-white rounded-lg cursor-pointer">Remove</button>
+            <button onclick="sumAmountCartAdmin('${product.id}')" class="w-10 h-10 bg-green-600 text-white text-lg font-semibold rounded-lg cursor-pointer">+</button>
+            <button onclick="removeFromShoppingCartAdmin('${product.id}')" class="h-10 bg-red-600 px-2 font-semibold text-white rounded-lg cursor-pointer">Remove</button>
           </td>
         `
       shoppingCartList.appendChild(productContainer)
@@ -684,9 +684,9 @@ function resetFormCartAdmin () {
 }
 
 async function handleUpdateCartSubmit () {
-  const { _id } = getShoppingCartByAmountAdmin()
+  const { id } = getShoppingCartByAmountAdmin()
 
-  console.log('Current cart to update:', _id)
+  console.log('Current cart to update:', id)
 
   const userInfo = {
     first_name: document.getElementById('firstNameAdmin').value,
@@ -697,7 +697,7 @@ async function handleUpdateCartSubmit () {
   }
 
   const currentShoppingCart = getShoppingCartByAmountAdmin() // Obtener el cart del localStorage
-  const propRequired = ['_id'] // Campo que se tomaran de cada product del cart
+  const propRequired = ['id'] // Campo que se tomaran de cada product del cart
 
   // Array de products para crear el cart al cliente
   const shoppingCartFormated = currentShoppingCart.products.map(({ product, quantity }) => {
@@ -709,7 +709,7 @@ async function handleUpdateCartSubmit () {
       formatedProduct[prop] = product[prop]
     })
     return formatedProduct
-  }).map(({ _id: value, ...rest }) => ({
+  }).map(({ id: value, ...rest }) => ({
     ...rest,
     product: value
   }))
@@ -738,7 +738,7 @@ async function handleUpdateCartSubmit () {
       }
     })
 
-    const response = await fetch(`http://localhost:8080/api/admin/carts/${_id}`, {
+    const response = await fetch(`http://localhost:8080/api/admin/carts/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -823,8 +823,8 @@ function socketEvents () {
   const productsList = document.getElementById('productsList')
   socket.on('addProduct', (product) => {
     const newProductHTML = `
-        <tr id=${product._id} class="hover:bg-gray-50">
-                <td class="px-6 py-4">${product._id}</td>
+        <tr id=${product.id} class="hover:bg-gray-50">
+                <td class="px-6 py-4">${product.id}</td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <img
                     src=${product.thumbnails[0]}
@@ -858,10 +858,10 @@ function socketEvents () {
 
   //* ------------- ESCUCHAR EVENTO DE ACTUALIZACION DE PRODUCTO -----------
   socket.on('productUpdated', (updatedProduct) => {
-    const productToUpdate = document.getElementById(`${updatedProduct._id}`)
+    const productToUpdate = document.getElementById(`${updatedProduct.id}`)
 
-    const productUpdated = `<tr id=${updatedProduct._id} class="hover:bg-gray-50">
-    <td class="px-6 py-4">${updatedProduct._id}</td>
+    const productUpdated = `<tr id=${updatedProduct.id} class="hover:bg-gray-50">
+    <td class="px-6 py-4">${updatedProduct.id}</td>
     <td class="px-6 py-4 whitespace-nowrap">
     <img
     src=${updatedProduct.thumbnails[0]}
@@ -966,10 +966,10 @@ function cartLogic () {
           <td class="px-6 py-4">$${product.price}</td>
           <td class="px-6 py-4">${product.category}</td>
           <td class="flex items-center gap-3 px-2 py-4">
-            <button onclick="reduceAmountCart('${product._id}')" class="w-10 h-10 bg-red-600 text-white text-lg font-semibold rounded-lg cursor-pointer">-</button>
+            <button onclick="reduceAmountCart('${product.id}')" class="w-10 h-10 bg-red-600 text-white text-lg font-semibold rounded-lg cursor-pointer">-</button>
             <p>${product.quantity}</p>
-            <button onclick="sumAmountCart('${product._id}')" class="w-10 h-10 bg-green-600 text-white text-lg font-semibold rounded-lg cursor-pointer">+</button>
-            <button onclick="removeFromShoppingCart('${product._id}')" class="h-10 bg-red-600 px-2 font-semibold text-white rounded-lg cursor-pointer">Remove</button>
+            <button onclick="sumAmountCart('${product.id}')" class="w-10 h-10 bg-green-600 text-white text-lg font-semibold rounded-lg cursor-pointer">+</button>
+            <button onclick="removeFromShoppingCart('${product.id}')" class="h-10 bg-red-600 px-2 font-semibold text-white rounded-lg cursor-pointer">Remove</button>
           </td>
         `
       shoppingCartList.appendChild(productContainer)
@@ -1015,7 +1015,7 @@ async function handleCreateCartSubmit (event) {
   }
 
   const currentShoppingCart = getShoppingCartByAmount() // Obtener el cart del localStorage
-  const propsRequired = ['_id', 'quantity'] // Campos que se tomaran de cada product del cart
+  const propsRequired = ['id', 'quantity'] // Campos que se tomaran de cada product del cart
 
   // Array de products para crear el cart al cliente
   const shoppingCartFormated = currentShoppingCart.map((product) => {
@@ -1025,7 +1025,7 @@ async function handleCreateCartSubmit (event) {
       formatedProduct[prop] = product[prop]
     })
     return formatedProduct
-  }).map(({ _id: value, ...rest }) => ({
+  }).map(({ id: value, ...rest }) => ({
     ...rest,
     product: value
   }))
