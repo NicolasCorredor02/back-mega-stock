@@ -3,6 +3,7 @@ import CustomError from 'root/utils/customError.js'
 import { productDao } from 'root/daos/mongodb/productDao.js'
 import { socketModule } from 'root/sockets/socket.js'
 import { deleteCloudinaryImages } from 'root/config/cloudinary.js'
+import { v4 as uuidv4 } from 'uuid'
 import {
   pathImagesProducts,
   productUrlImageDefault
@@ -33,6 +34,7 @@ class ProductService {
 
       let productData = {
         ...body,
+        id: uuidv4(),
         price: parseFloat(body.price),
         stock: parseInt(body.stock)
       }

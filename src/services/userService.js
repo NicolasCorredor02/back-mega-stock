@@ -9,6 +9,7 @@ import { paymentMethodService } from 'root/services/paymentMethodService.js'
 import { deleteCloudinaryImage } from 'root/config/cloudinary.js'
 import { pathImagesUsers, userUrlImageDefault } from 'root/utils/paths.js'
 import { createHash, isValidPassword } from 'root/utils/users.js'
+import { v4 as uuidv4 } from 'uuid'
 
 class UserService {
   constructor (dao) {
@@ -35,6 +36,7 @@ class UserService {
 
       const userData = {
         ...body,
+        id: uuidv4(),
         password: createHash(body.password),
         image_profile: uploadFile || userUrlImageDefault
       }

@@ -4,6 +4,7 @@ import { cartDao } from 'root/daos/mongodb/cartDao.js'
 import { addressService } from 'root/services/addressService.js'
 import { paymentMethodService } from 'root/services/paymentMethodService.js'
 import { socketModule } from 'root/sockets/socket.js'
+import { v4 as uuidv4 } from 'uuid'
 
 class CartService {
   constructor (dao) {
@@ -22,26 +23,27 @@ class CartService {
       // Se crea el payment_method que viene por data
       const paymenMethodResponse = await paymentMethodService.create(paymentMethod)
       if (!paymenMethodResponse) {
-        await addressService.delete(addressResponse._id)
+        await addressService.delete(addressResponse.id)
         throw new CustomError('Error creating payment method', 404)
       }
 
       const cartData = {
         ...data,
+        id: uuidv4(),
         user_type: data.user_type || 'guest',
         user_info: {
           ...data.user_info,
           id_number: parseInt(data.user_info.id_number)
         },
-        address: addressResponse._id,
-        payment_method: paymenMethodResponse._id,
+        address: addressResponse.id,
+        payment_method: paymenMethodResponse.id,
         sub_total: parseFloat(data.sub_total)
       }
 
       const response = await this.dao.create(cartData)
       if (!response) {
-        await addressService.delete(addressResponse._id)
-        await paymentMethodService.delete(paymenMethodResponse._id)
+        await addressService.delete(addressResponse.id)
+        await paymentMethodService.delete(paymenMethodResponse.id)
         throw new CustomError('Cart not created', 404)
       }
 

@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-catch */
 import CustomError from 'root/utils/customError.js'
 import { paymentMethodDao } from 'root/daos/mongodb/paymentMethodDao.js'
+import { v4 as uuidv4 } from 'uuid'
 
 class PaymentMethodService {
   constructor (dao) {
@@ -13,6 +14,7 @@ class PaymentMethodService {
 
       const paymentMethodData = {
         ...data,
+        id: uuidv4(),
         is_saved: data.is_saved || false
       }
 

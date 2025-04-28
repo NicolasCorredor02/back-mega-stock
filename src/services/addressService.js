@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-catch */
 import CustomError from 'root/utils/customError.js'
 import { addressDao } from 'root/daos/mongodb/addressDao.js'
+import { v4 as uuidv4 } from 'uuid'
 
 class AddressService {
   constructor (dao) {
@@ -13,6 +14,7 @@ class AddressService {
 
       const addressData = {
         ...data,
+        id: uuidv4(),
         is_saved: data.is_saved || false
       }
 
