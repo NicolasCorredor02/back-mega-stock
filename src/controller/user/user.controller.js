@@ -26,8 +26,8 @@ class UsersController {
   login = async (req, res, next) => {
     try {
       const { email, password } = req.body
-      const { _id } = await this.service.login(email, password)
-      const token = this.service.generateToken({ _id })
+      const { id } = await this.service.login(email, password)
+      const token = this.service.generateToken({ id })
       res.cookie('tokenUser', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -42,9 +42,9 @@ class UsersController {
 
   loginGoogle = async (req, res, next) => {
     try {
-      const { _id } = await req.user
+      const { id } = await req.user
       // Genera el token para el user auth con Google
-      const token = this.service.generateToken({ _id })
+      const token = this.service.generateToken({ id })
       res.cookie('tokenUser', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

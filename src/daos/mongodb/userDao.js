@@ -18,7 +18,7 @@ class UserDao extends MongoDao {
 
   loginAdmin = (email, password) => {
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-      return ({ _id: 'admin-id' })
+      return ({ id: 'admin-id' })
     }
     return false
   }

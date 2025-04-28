@@ -43,8 +43,8 @@ class UsersController {
   loginAdmin = async (req, res, next) => {
     try {
       const { email, password } = req.body
-      const { _id } = await this.service.loginAdmin(email, password)
-      const token = this.service.generateToken({ _id, isAdmin: true })
+      const { id } = await this.service.loginAdmin(email, password)
+      const token = this.service.generateToken({ id, isAdmin: true })
       res.cookie('tokenAdmin', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
