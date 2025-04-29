@@ -96,7 +96,7 @@ class UserService {
           $lookup: {
             from: 'addresses',
             localField: 'addresses.address',
-            foreignField: '_id',
+            foreignField: 'id',
             as: 'joinedAddresses'
           }
         },
@@ -117,7 +117,7 @@ class UserService {
                           as: 'joinedAddress',
                           cond: {
                             $eq: [
-                              '$$joinedAddress._id',
+                              '$$joinedAddress.id',
                               '$$addressItem.address'
                             ]
                           }
@@ -138,7 +138,7 @@ class UserService {
           $lookup: {
             from: 'paymentmethods',
             localField: 'payment_methods.payment_method',
-            foreignField: '_id',
+            foreignField: 'id',
             as: 'joinedPaymentMethods'
           }
         },
@@ -159,7 +159,7 @@ class UserService {
                           as: 'joinedPayment',
                           cond: {
                             $eq: [
-                              '$$joinedPayment._id',
+                              '$$joinedPayment.id',
                               '$$paymentItem.payment_method'
                             ]
                           }
@@ -181,7 +181,7 @@ class UserService {
           $lookup: {
             from: 'carts',
             localField: 'commerce_data.carts.cart',
-            foreignField: '_id',
+            foreignField: 'id',
             as: 'joinedCarts'
           }
         },
@@ -201,7 +201,7 @@ class UserService {
                           input: '$joinedCarts',
                           as: 'joinedCart',
                           cond: {
-                            $eq: ['$$joinedCart._id', '$$cartItem.cart']
+                            $eq: ['$$joinedCart.id', '$$cartItem.cart']
                           }
                         }
                       },
@@ -219,7 +219,7 @@ class UserService {
           $lookup: {
             from: 'addresses',
             localField: 'joinedCarts.address',
-            foreignField: '_id',
+            foreignField: 'id',
             as: 'cartAddresses'
           }
         },
@@ -228,7 +228,7 @@ class UserService {
           $lookup: {
             from: 'paymentmethods',
             localField: 'joinedCarts.payment_method',
-            foreignField: '_id',
+            foreignField: 'id',
             as: 'cartPaymentMethods'
           }
         },
@@ -237,7 +237,7 @@ class UserService {
           $lookup: {
             from: 'products',
             localField: 'joinedCarts.products.product',
-            foreignField: '_id',
+            foreignField: 'id',
             as: 'cartProducts'
           }
         },
@@ -262,7 +262,7 @@ class UserService {
                                 as: 'addr',
                                 cond: {
                                   $eq: [
-                                    '$$addr._id',
+                                    '$$addr.id',
                                     '$$cartItem.cart.address'
                                   ]
                                 }
@@ -279,7 +279,7 @@ class UserService {
                                 as: 'pm',
                                 cond: {
                                   $eq: [
-                                    '$$pm._id',
+                                    '$$pm.id',
                                     '$$cartItem.cart.payment_method'
                                   ]
                                 }
@@ -301,7 +301,7 @@ class UserService {
                                       input: '$cartProducts',
                                       as: 'p',
                                       cond: {
-                                        $eq: ['$$p._id', '$$prod.product']
+                                        $eq: ['$$p.id', '$$prod.product']
                                       }
                                     }
                                   },

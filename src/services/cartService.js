@@ -103,7 +103,7 @@ class CartService {
           $lookup: {
             from: 'addresses', // Asume que tu colección se llama 'addresses'
             localField: 'address',
-            foreignField: '_id',
+            foreignField: 'id',
             as: 'address'
           }
         },
@@ -114,7 +114,7 @@ class CartService {
           $lookup: {
             from: 'paymentmethods', // Asume que tu colección se llama 'paymentmethods'
             localField: 'payment_method',
-            foreignField: '_id',
+            foreignField: 'id',
             as: 'payment_method'
           }
         },
@@ -130,7 +130,7 @@ class CartService {
           $lookup: {
             from: 'products',
             localField: 'products.product',
-            foreignField: '_id',
+            foreignField: 'id',
             as: 'joinedProducts'
           }
         },
@@ -152,7 +152,7 @@ class CartService {
                           as: 'joinedProduct',
                           cond: {
                             $eq: [
-                              '$$joinedProduct._id',
+                              '$$joinedProduct.id',
                               '$$productItem.product'
                             ]
                           }
