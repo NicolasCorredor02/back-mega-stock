@@ -3,6 +3,7 @@ import CustomError from 'root/utils/customError.js'
 import { cartDao } from 'root/daos/mongodb/cartDao.js'
 import { addressService } from 'root/services/addressService.js'
 import { paymentMethodService } from 'root/services/paymentMethodService.js'
+import { productService } from 'root/services/productService.js'
 import { socketModule } from 'root/sockets/socket.js'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -12,8 +13,11 @@ class CartService {
   }
 
   create = async (data) => {
+    let addressRollBack = ''
+    let payMethodRollBack = ''
+
     try {
-      const { address, paymentMethod } = data
+      const { address, paymentMethod, products } = data
       if (!data) throw new CustomError("Cart's details is required", 404)
 
       let addressId = null
@@ -24,6 +28,7 @@ class CartService {
         const { id } = await addressService.create(address)
         if (!id) throw new CustomError('Error creating address', 404)
         addressId = id
+        addressRollBack = id
       } else {
         addressId = address.id
       }
@@ -37,9 +42,14 @@ class CartService {
         const { id } = await paymentMethodService.create(paymentMethod)
         if (!id) throw new CustomError('Error creating payment method', 404)
         paymentMethodId = id
+        payMethodRollBack = id
       } else {
         paymentMethodId = paymentMethod.id
       }
+
+      // Proceso para realizar la actualizacion del stock de los productos que se quieren comprar
+      const updateStockProducts = await productService.changeStock(products)
+      if (!updateStockProducts) { throw new CustomError('Error, updating the units in stock of the products', 404) }
 
       const cartData = {
         ...data,
@@ -68,22 +78,16 @@ class CartService {
 
       return response
     } catch (error) {
-      const { address, paymentMethod } = data
-
-      if (!address.id || address.id.trim() === '' || address.id === undefined) {
+      if (addressRollBack || addressRollBack.trim() !== '') {
         // Se crea el address que llegan por data
-        const { id } = await addressService.create(address)
-        if (!id) throw new CustomError('Error in catch deleting address', 404)
+        const response = await addressService.delete(addressRollBack)
+        if (!response) throw new CustomError('Error in catch deleting address', 404)
       }
 
-      if (
-        !paymentMethod.id ||
-        paymentMethod.id.trim() === '' ||
-        paymentMethod.id === undefined
-      ) {
+      if (payMethodRollBack || payMethodRollBack.trim() !== '') {
         // Se crea el payment_method que viene por data
-        const { id } = await paymentMethodService.create(paymentMethod)
-        if (!id) { throw new CustomError('Error in catch deleting payment method', 404) }
+        const response = await paymentMethodService.delete(payMethodRollBack)
+        if (!response) { throw new CustomError('Error in catch deleting payment method', 404) }
       }
 
       throw error
