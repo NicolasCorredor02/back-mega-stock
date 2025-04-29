@@ -1042,8 +1042,6 @@ async function handleCreateCartSubmit (event) {
 
   const cartDataJSON = JSON.stringify(formCartClient)
 
-  console.log('Form data:', cartDataJSON)
-
   try {
     Swal.fire({
       title: 'Loading...',
@@ -1055,7 +1053,7 @@ async function handleCreateCartSubmit (event) {
       }
     })
 
-    const response = await fetch('http://localhost:8080/api/admin/carts', {
+    const response = await fetch('http://localhost:8080/api/cart/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json' // ¡Este header es clave!

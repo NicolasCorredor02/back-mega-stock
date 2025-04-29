@@ -8,5 +8,6 @@ router.route('/:cid')
 
 router.route('/')
   .get(cartController.getById)
+  .post(cartController.create)
 
 export default router

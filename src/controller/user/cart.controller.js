@@ -5,6 +5,18 @@ export class CartsController {
     this.service = service
   }
 
+  create = async (req, res, next) => {
+    try {
+      const body = req.body
+
+      const response = await this.service.create(body)
+
+      res.status(201).json(response)
+    } catch (error) {
+      next(error)
+    }
+  }
+
   getById = async (req, res, next) => {
     try {
       const { cid } = req.params

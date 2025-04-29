@@ -16,15 +16,29 @@ class CartService {
       const { address, paymentMethod } = data
       if (!data) throw new CustomError("Cart's details is required", 404)
 
-      // Se crea el address que llegan por data
-      const addressResponse = await addressService.create(address)
-      if (!addressResponse) throw new CustomError('Error creating address', 404)
+      let addressId = null
+      let paymentMethodId = null
 
-      // Se crea el payment_method que viene por data
-      const paymenMethodResponse = await paymentMethodService.create(paymentMethod)
-      if (!paymenMethodResponse) {
-        await addressService.delete(addressResponse.id)
-        throw new CustomError('Error creating payment method', 404)
+      if (!address.id || address.id.trim() === '' || address.id === undefined) {
+        // Se crea el address que llegan por data
+        const { id } = await addressService.create(address)
+        if (!id) throw new CustomError('Error creating address', 404)
+        addressId = id
+      } else {
+        addressId = address.id
+      }
+
+      if (
+        !paymentMethod.id ||
+        paymentMethod.id.trim() === '' ||
+        paymentMethod.id === undefined
+      ) {
+        // Se crea el payment_method que viene por data
+        const { id } = await paymentMethodService.create(paymentMethod)
+        if (!id) throw new CustomError('Error creating payment method', 404)
+        paymentMethodId = id
+      } else {
+        paymentMethodId = paymentMethod.id
       }
 
       const cartData = {
@@ -35,15 +49,13 @@ class CartService {
           ...data.user_info,
           id_number: parseInt(data.user_info.id_number)
         },
-        address: addressResponse.id,
-        payment_method: paymenMethodResponse.id,
+        address: addressId,
+        payment_method: paymentMethodId,
         sub_total: parseFloat(data.sub_total)
       }
 
       const response = await this.dao.create(cartData)
       if (!response) {
-        await addressService.delete(addressResponse.id)
-        await paymentMethodService.delete(paymenMethodResponse.id)
         throw new CustomError('Cart not created', 404)
       }
 
@@ -56,6 +68,24 @@ class CartService {
 
       return response
     } catch (error) {
+      const { address, paymentMethod } = data
+
+      if (!address.id || address.id.trim() === '' || address.id === undefined) {
+        // Se crea el address que llegan por data
+        const { id } = await addressService.create(address)
+        if (!id) throw new CustomError('Error in catch deleting address', 404)
+      }
+
+      if (
+        !paymentMethod.id ||
+        paymentMethod.id.trim() === '' ||
+        paymentMethod.id === undefined
+      ) {
+        // Se crea el payment_method que viene por data
+        const { id } = await paymentMethodService.create(paymentMethod)
+        if (!id) { throw new CustomError('Error in catch deleting payment method', 404) }
+      }
+
       throw error
     }
   }
@@ -84,7 +114,12 @@ class CartService {
             as: 'payment_method'
           }
         },
-        { $unwind: { path: '$payment_method', preserveNullAndEmptyArrays: true } },
+        {
+          $unwind: {
+            path: '$payment_method',
+            preserveNullAndEmptyArrays: true
+          }
+        },
 
         // Etapa para vincular los productos dentro del array de productos
         {
@@ -111,7 +146,12 @@ class CartService {
                         $filter: {
                           input: '$joinedProducts',
                           as: 'joinedProduct',
-                          cond: { $eq: ['$$joinedProduct._id', '$$productItem.product'] }
+                          cond: {
+                            $eq: [
+                              '$$joinedProduct._id',
+                              '$$productItem.product'
+                            ]
+                          }
                         }
                       },
                       0
@@ -168,14 +208,21 @@ class CartService {
 
       if (!data) throw new CustomError('Cart details are required')
 
-      if (data._id || data.user_type || data.address || data.payment_method) throw new CustomError('Error, fields Id, user_type, address and payment_method can not be updated', 404)
+      if (data._id || data.user_type || data.address || data.payment_method) {
+        throw new CustomError(
+          'Error, fields Id, user_type, address and payment_method can not be updated',
+          404
+        )
+      }
 
       const currentCart = await this.dao.getById(id)
       if (!currentCart) throw new CustomError('Cart not founded', 404)
 
       const cartUpdated = {
         ...data,
-        sub_total: data.sub_total ? parseFloat(data.sub_total) : currentCart.sub_total
+        sub_total: data.sub_total
+          ? parseFloat(data.sub_total)
+          : currentCart.sub_total
       }
 
       const response = await this.dao.update(id, cartUpdated)
