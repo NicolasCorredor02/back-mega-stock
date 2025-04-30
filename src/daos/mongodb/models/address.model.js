@@ -31,7 +31,8 @@ const addressSchema = new mongoose.Schema(
     },
     country: {
       type: String,
-      required: [true, 'Country is required'],
+      default: 'colombia',
+      enum: ['colombia'],
       trim: true
     },
     is_saved: {
