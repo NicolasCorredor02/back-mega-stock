@@ -9,7 +9,6 @@ import { paymentMethodService } from 'root/services/paymentMethodService.js'
 import { deleteCloudinaryImage } from 'root/config/cloudinary.js'
 import { pathImagesUsers, userUrlImageDefault } from 'root/utils/paths.js'
 import { createHash, isValidPassword } from 'root/utils/users.js'
-import { v4 as uuidv4 } from 'uuid'
 
 class UserService {
   constructor (dao) {
@@ -36,7 +35,6 @@ class UserService {
 
       const userData = {
         ...body,
-        id: uuidv4(),
         password: createHash(body.password),
         image_profile: uploadFile || userUrlImageDefault
       }
@@ -393,7 +391,7 @@ class UserService {
         throw new CustomError("User's ID is required", 404)
       }
 
-      if (body._id) {
+      if (body.id) {
         throw new CustomError('Error, user ID can not be updated', 404)
       }
 
@@ -426,7 +424,7 @@ class UserService {
         if (!newAddressResponse) {
           throw new CustomError('The new Addres could not be created', 404)
         }
-        addresses.push({ address: newAddressResponse._id, is_default: false })
+        addresses.push({ address: newAddressResponse.id, is_default: false })
       }
 
       if (newPaymentMethod && paymentMethods.length < 5) {
@@ -441,7 +439,7 @@ class UserService {
           )
         }
         paymentMethods.push({
-          payment_method: newPaymentMethodResponse._id,
+          payment_method: newPaymentMethodResponse.id,
           is_default: false
         })
       }
@@ -508,8 +506,8 @@ class UserService {
       if (!response) throw new CustomError("Statu's user not changed", 404)
 
       try {
-        const { _id } = await response
-        socketModule.emitDeletedUser(_id)
+        const { id } = await response
+        socketModule.emitDeletedUser(id)
       } catch (error) {
         socketModule.emitSocketError(error)
       }
@@ -538,8 +536,8 @@ class UserService {
       }
 
       try {
-        const { _id } = await response
-        socketModule.emitDeletedUser(_id)
+        const { id } = await response
+        socketModule.emitDeletedUser(id)
       } catch (error) {
         socketModule.emitSocketError(error)
       }
