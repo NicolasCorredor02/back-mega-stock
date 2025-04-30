@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-catch */
 import CustomError from 'root/utils/customError.js'
 import { addressDao } from 'root/daos/mongodb/addressDao.js'
-import { v4 as uuidv4 } from 'uuid'
 
 class AddressService {
   constructor (dao) {
@@ -14,7 +13,6 @@ class AddressService {
 
       const addressData = {
         ...data,
-        id: uuidv4(),
         is_saved: data.is_saved || false
       }
 
@@ -65,7 +63,7 @@ class AddressService {
   update = async (id, data) => {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
-      if (data._id) throw new CustomError('Error, product ID can not be updated')
+      if (data.id) throw new CustomError('Error, product ID can not be updated')
 
       const currentAddress = await this.dao.getById(id)
       if (!currentAddress) throw new CustomError('Address not founded', 404)

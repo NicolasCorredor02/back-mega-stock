@@ -1,11 +1,12 @@
 import mongoose from 'mongoose'
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
+import { v4 as uuidv4 } from 'uuid'
 
 const addressSchema = new mongoose.Schema(
   {
     id: {
       type: String,
-      required: [true, 'ID is required'],
+      default: () => uuidv4(),
       unique: true
     },
     street: {

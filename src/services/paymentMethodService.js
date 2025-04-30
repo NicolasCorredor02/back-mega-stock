@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-catch */
 import CustomError from 'root/utils/customError.js'
 import { paymentMethodDao } from 'root/daos/mongodb/paymentMethodDao.js'
-import { v4 as uuidv4 } from 'uuid'
 
 class PaymentMethodService {
   constructor (dao) {
@@ -14,7 +13,6 @@ class PaymentMethodService {
 
       const paymentMethodData = {
         ...data,
-        id: uuidv4(),
         is_saved: data.is_saved || false
       }
 
@@ -62,7 +60,7 @@ class PaymentMethodService {
   update = async (id, data) => {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
-      if (data._id) throw new CustomError('Error, product ID can not be updated')
+      if (data.id) throw new CustomError('Error, product ID can not be updated')
 
       const currentPaymentMethod = await this.dao.getById(id)
       if (!currentPaymentMethod) throw new CustomError('PaymentMethod not founded', 404)

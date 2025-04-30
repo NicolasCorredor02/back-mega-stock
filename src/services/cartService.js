@@ -5,7 +5,6 @@ import { addressService } from 'root/services/addressService.js'
 import { paymentMethodService } from 'root/services/paymentMethodService.js'
 import { productService } from 'root/services/productService.js'
 import { socketModule } from 'root/sockets/socket.js'
-import { v4 as uuidv4 } from 'uuid'
 
 class CartService {
   constructor (dao) {
@@ -53,7 +52,6 @@ class CartService {
 
       const cartData = {
         ...data,
-        id: uuidv4(),
         user_type: data.user_type || 'guest',
         user_info: {
           ...data.user_info,
@@ -212,7 +210,7 @@ class CartService {
 
       if (!data) throw new CustomError('Cart details are required')
 
-      if (data._id || data.user_type || data.address || data.payment_method) {
+      if (data.id || data.user_type || data.address || data.payment_method) {
         throw new CustomError(
           'Error, fields Id, user_type, address and payment_method can not be updated',
           404
@@ -253,8 +251,8 @@ class CartService {
       if (!response) throw new CustomError('Cart not deleted', 404)
 
       try {
-        const { _id } = await response
-        socketModule.emitDeletedCart(_id)
+        const { id } = await response
+        socketModule.emitDeletedCart(id)
       } catch (error) {
         socketModule.emitSocketError(error)
       }

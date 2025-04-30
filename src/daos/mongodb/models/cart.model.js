@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-vars */
 import mongoose from 'mongoose'
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
+import { v4 as uuidv4 } from 'uuid'
 
 const cartSchema = new mongoose.Schema(
   {
     id: {
       type: String,
-      required: [true, 'ID is required'],
+      default: () => uuidv4(),
       unique: true
     },
     user_type: {

@@ -3,7 +3,6 @@ import CustomError from 'root/utils/customError.js'
 import { productDao } from 'root/daos/mongodb/productDao.js'
 import { socketModule } from 'root/sockets/socket.js'
 import { deleteCloudinaryImages } from 'root/config/cloudinary.js'
-import { v4 as uuidv4 } from 'uuid'
 import {
   pathImagesProducts,
   productUrlImageDefault
@@ -34,7 +33,6 @@ class ProductService {
 
       let productData = {
         ...body,
-        id: uuidv4(),
         price: parseFloat(body.price),
         stock: parseInt(body.stock)
       }
@@ -168,7 +166,7 @@ class ProductService {
       }
 
       // Validacion si el producto viene con id para actualizar
-      if (body._id) {
+      if (body.id) {
         throw new CustomError('Error, product ID can not be updated', 404)
       }
 
@@ -336,8 +334,8 @@ class ProductService {
       }
 
       try {
-        const { _id } = await response
-        socketModule.emitDeletedProduct(_id)
+        const { id } = await response
+        socketModule.emitDeletedProduct(id)
       } catch (error) {
         socketModule.emitSocketError(error)
       }
@@ -371,8 +369,8 @@ class ProductService {
       }
 
       try {
-        const { _id } = await response
-        socketModule.emitDeletedProduct(_id)
+        const { id } = await response
+        socketModule.emitDeletedProduct(id)
       } catch (error) {
         socketModule.emitSocketError()
       }
