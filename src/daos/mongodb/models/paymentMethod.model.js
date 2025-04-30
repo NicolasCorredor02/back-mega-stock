@@ -16,7 +16,9 @@ const paymentMethodSchema = new mongoose.Schema(
     },
     provider: {
       type: String,
-      required: [true, "Payment's provider is required"],
+      required: function () {
+        return this.type === 'card'
+      },
       trim: true
     },
     card_number: {
@@ -36,6 +38,11 @@ const paymentMethodSchema = new mongoose.Schema(
       type: String,
       trim: true,
       match: [/^(0[1-9]|1[0-2])\/\d{2}$/, 'The date format must be MM/YY']
+    },
+    reference: {
+      type: String,
+      trim: true,
+      default: ''
     },
     is_saved: {
       type: Boolean,
