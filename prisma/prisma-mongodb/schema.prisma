@@ -1,0 +1,144 @@
+// // This is your Prisma schema file,
+// // learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// // MongoDB configuration
+// datasource db {
+//     provider = "mongodb"
+//     url      = env("DATABASE_URL_MONGODB")
+// }
+
+// generator client {
+//     provider = "prisma-client-js"
+// }
+
+// // Definición de modelos
+
+// model Product {
+//     id          String            @id @default(uuid()) @map("_id") @db.ObjectId
+//     title       String
+//     price       Float
+//     description String
+//     code        String            @unique
+//     thumbnails  Json // Array en MongoDB
+//     stock       Int
+//     status      Boolean           @default(true)
+//     category    String
+//     carts       ProductsOnCarts[]
+
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+
+//     @@map("products")
+// }
+
+// model Address {
+//     id          String  @id @default(uuid()) @map("_id") @db.ObjectId
+//     street      String
+//     city        String
+//     state       String
+//     country     String
+//     postal_code String
+//     is_saved    Boolean @default(false)
+
+//     // Relaciones
+//     user   User?   @relation(fields: [userId], references: [id])
+//     userId String? @db.ObjectId
+//     carts  Cart[]
+
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+
+//     @@map("addresses")
+// }
+
+// model PaymentMethod {
+//     id          String  @id @default(uuid()) @map("_id") @db.ObjectId
+//     type        String // card, paypal, transfer
+//     provider    String? // Solo para tarjetas
+//     card_number String? // Solo para tarjetas
+//     last_four   String? // Solo para tarjetas
+//     expiry_date String? // Solo para tarjetas
+//     reference   String? // Para paypal o transfer
+//     is_saved    Boolean @default(false)
+
+//     // Relaciones
+//     user   User?   @relation(fields: [userId], references: [id])
+//     userId String? @db.ObjectId
+//     carts  Cart[]
+
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+
+//     @@map("payment_methods")
+// }
+
+// model User {
+//     id            String  @id @default(uuid()) @map("_id") @db.ObjectId
+//     email         String  @unique
+//     password      String
+//     first_name    String
+//     last_name     String
+//     phone         String
+//     id_number     BigInt
+//     security      Int     @default(0) // Intentos de inicio de sesión
+//     image_profile String? // URL de la imagen
+//     status        Boolean @default(true)
+
+//     // Relaciones integradas
+//     addresses       Address[]
+//     payment_methods PaymentMethod[]
+//     carts           Cart[]
+
+//     // Datos de comercio
+//     total_spent     Float     @default(0)
+//     last_order_date DateTime?
+//     custom_tier     String    @default("regular")
+
+//     @@map("users")
+// }
+
+// model Cart {
+//     id        String @id @default(uuid()) @map("_id") @db.ObjectId
+//     user_type String // guest o registered
+
+//     // Datos de usuario guest
+//     guest_first_name String?
+//     guest_last_name  String?
+//     guest_email      String?
+//     guest_phone      String?
+//     guest_id_number  BigInt?
+
+//     // Relaciones
+//     user   User?   @relation(fields: [userId], references: [id])
+//     userId String? @db.ObjectId
+
+//     address   Address? @relation(fields: [addressId], references: [id])
+//     addressId String?  @db.ObjectId
+
+//     paymentMethod   PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
+//     paymentMethodId String?        @db.ObjectId
+
+//     status    String            @default("active") // active, completed, canceled, pending
+//     sub_total Float             @default(0)
+//     products  ProductsOnCarts[]
+
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+
+//     @@map("carts")
+// }
+
+// // Tabla de relación para productos en carritos
+// model ProductsOnCarts {
+//     id        String  @id @default(uuid()) @map("_id") @db.ObjectId
+//     product   Product @relation(fields: [productId], references: [id])
+//     productId String  @db.ObjectId
+//     cart      Cart    @relation(fields: [cartId], references: [id])
+//     cartId    String  @db.ObjectId
+//     quantity  Int
+
+//     @@map("products_on_carts")
+// }
