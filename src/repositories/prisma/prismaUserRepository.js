@@ -1,5 +1,6 @@
 import { prisma } from '../../../prisma/config.js'
 import PrismaBaseRepository from 'root/repositories/prisma/prismaBaseRepository.js'
+import 'dotenv/config'
 
 export default class PrismaUserRepository extends PrismaBaseRepository {
   constructor () {
@@ -50,5 +51,12 @@ export default class PrismaUserRepository extends PrismaBaseRepository {
         carts: true
       }
     })
+  }
+
+  loginAdmin (email, password) {
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+      return ({ id: 'admin-id' })
+    }
+    return false
   }
 }
