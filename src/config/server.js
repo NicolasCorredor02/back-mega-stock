@@ -10,7 +10,7 @@ import { errorHandler } from 'root/middlewares/errorHandler.js'
 import handlebarsConfig from 'root/config/handlebars.js'
 import { rootPath } from 'root/utils/paths.js'
 import { socketModule } from 'root/sockets/socket.js'
-import { connectDB } from 'root/daos/mongodb/connection.js'
+// import { connectDB } from 'root/daos/mongodb/connection.js'
 // Strategies
 import 'root/config/passport/googleStrategy.js'
 import 'root/config/passport/jwtStrategy.js'
@@ -21,7 +21,7 @@ const serverUp = async () => {
   const io = new Server(server) // Creacion del io para el acceso al socket del server
 
   // Conexion a la base de datos
-  connectDB()
+  // connectDB()
 
   //* SETEO handlebars
   handlebarsConfig(app)
