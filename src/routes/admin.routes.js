@@ -11,33 +11,33 @@ const router = Router()
 
 //* --------------- Admin products ------------------------
 router.route('/products')
-  .post(passportCall('jwt-cookies'), isAuthAdmin, uploadProductImages, handleErrorUploads, productController.create)
-  .get(passportCall('jwt-cookies'), isAuthAdmin, productController.getAll)
+  .post(passportCall('jwt-cookies'), isAuthAdmin, uploadProductImages, handleErrorUploads, productController.create.bind(productController))
+  .get(passportCall('jwt-cookies'), isAuthAdmin, productController.getAll.bind(productController))
 
 router.route('/products/:pid')
-  .put(passportCall('jwt-cookies'), isAuthAdmin, uploadProductImages, handleErrorUploads, productController.update)
-  .delete(passportCall('jwt-cookies'), isAuthAdmin, productController.delete)
-  .get(passportCall('jwt-cookies'), isAuthAdmin, productController.getById)
+  .put(passportCall('jwt-cookies'), isAuthAdmin, uploadProductImages, handleErrorUploads, productController.update.bind(productController))
+  .delete(passportCall('jwt-cookies'), isAuthAdmin, productController.delete.bind(productController))
+  .get(passportCall('jwt-cookies'), isAuthAdmin, productController.getById.bind(productController))
 
 //* --------------- Admin carts ------------------------
 router.route('/carts')
-  .post(passportCall('jwt-cookies'), isAuthAdmin, cartController.create)
-  .get(passportCall('jwt-cookies'), isAuthAdmin, cartController.getAll)
+  .post(passportCall('jwt-cookies'), isAuthAdmin, cartController.create.bind(cartController))
+  .get(passportCall('jwt-cookies'), isAuthAdmin, cartController.getAll.bind(cartController))
 
 router.route('/carts/:cid')
-  .put(passportCall('jwt-cookies'), isAuthAdmin, cartController.update)
-  .delete(passportCall('jwt-cookies'), isAuthAdmin, cartController.delete)
-  .get(passportCall('jwt-cookies'), isAuthAdmin, cartController.getById)
+  .put(passportCall('jwt-cookies'), isAuthAdmin, cartController.update.bind(cartController))
+  .delete(passportCall('jwt-cookies'), isAuthAdmin, cartController.delete.bind(cartController))
+  .get(passportCall('jwt-cookies'), isAuthAdmin, cartController.getById.bind(cartController))
 
 //* --------------- Admin users ------------------------
 router.route('/users')
-  .post(passportCall('jwt-cookies'), isAuthAdmin, uploadUserImages, handleErrorUploads, userController.register)
-  .get(passportCall('jwt-cookies'), isAuthAdmin, userController.getAll)
+  .post(passportCall('jwt-cookies'), isAuthAdmin, uploadUserImages, handleErrorUploads, userController.register.bind(userController))
+  .get(passportCall('jwt-cookies'), isAuthAdmin, userController.getAll.bind(userController))
 
 router.route('/users/:uid')
-  .put(passportCall('jwt-cookies'), isAuthAdmin, uploadUserImages, handleErrorUploads, userController.update)
-  .delete(passportCall('jwt-cookies'), isAuthAdmin, userController.delete)
-  .get(passportCall('jwt-cookies'), isAuthAdmin, userController.getById)
+  .put(passportCall('jwt-cookies'), isAuthAdmin, uploadUserImages, handleErrorUploads, userController.update.bind(userController))
+  .delete(passportCall('jwt-cookies'), isAuthAdmin, userController.delete.bind(userController))
+  .get(passportCall('jwt-cookies'), isAuthAdmin, userController.getById.bind(userController))
 
 // * -------------------- Render settings -------------------
 // Get admin settings
@@ -53,7 +53,7 @@ router.get('/settings', passportCall('jwt-cookies'), isAuthAdmin, (req, res, nex
 // Post para iniciar sesion como admin
 router.post(
   '/login',
-  userController.loginAdmin
+  userController.loginAdmin.bind(userController)
 )
 
 // Get para cerrar session

@@ -8,20 +8,20 @@ import { passportCall } from 'root/middlewares/passportCall.js'
 const router = Router()
 
 router.route('/')
-  .post(uploadUserImages, handleErrorUploads, userController.register)
+  .post(uploadUserImages, handleErrorUploads, userController.register.bind(userController))
 
 router.route('/:uid')
-  .put(passportCall('jwt-cookies'), isAuth, uploadUserImages, handleErrorUploads, userController.update)
-  .delete(passportCall('jwt-cookies'), isAuth, userController.changeStatus)
+  .put(passportCall('jwt-cookies'), isAuth, uploadUserImages, handleErrorUploads, userController.update.bind(userController))
+  .delete(passportCall('jwt-cookies'), isAuth, userController.changeStatus.bind(userController))
 
 router.route('/profile')
-  .get(passportCall('jwt-cookies'), isAuth, userController.getById)
+  .get(passportCall('jwt-cookies'), isAuth, userController.getById.bind(userController))
 
 // * ------------------ Login with token generate --------------------
 // User login
 router.post(
   '/login',
-  userController.login
+  userController.login.bind(userController)
 )
 
 // * ------------------ Login or register with Google and Callback function ---------
@@ -34,7 +34,7 @@ router.get(
 router.get(
   '/login/auth/google/callback',
   passportCall('google', { failureRedirect: '/' }), // Implementacion del middleware de strategy para validar la session con Google
-  userController.loginGoogle
+  userController.loginGoogle.bind(userController)
 )
 
 // * ----------------- Render user register form ---------------------
