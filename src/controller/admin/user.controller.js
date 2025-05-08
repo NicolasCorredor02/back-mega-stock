@@ -2,11 +2,11 @@ import { userService } from 'root/services/userService.js'
 import 'dotenv/config'
 
 class UsersController {
-  constructor (service) {
-    this.service = service
+  constructor () {
+    this.userService = userService
   }
 
-  register = async (req, res, next) => {
+  async register (req, res, next) {
     try {
       const body = req.body
       const uploadFile = req.file ? req.file.path : null
@@ -14,7 +14,7 @@ class UsersController {
         body,
         uploadFile
       }
-      const response = await this.service.register(userData)
+      const response = await this.userService.register(userData)
 
       res.status(201).json({
         message: 'User registered',
@@ -40,11 +40,11 @@ class UsersController {
   //   }
   // }
 
-  loginAdmin = async (req, res, next) => {
+  async loginAdmin (req, res, next) {
     try {
       const { email, password } = req.body
-      const { id } = await this.service.loginAdmin(email, password)
-      const token = this.service.generateToken({ id, isAdmin: true })
+      const { id } = await this.userService.loginAdmin(email, password)
+      const token = this.userService.generateToken({ id, isAdmin: true })
       res.cookie('tokenAdmin', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -57,7 +57,7 @@ class UsersController {
     }
   }
 
-  logOut = (req, res, next) => {
+  logOut (req, res, next) {
     try {
       req.cookie('tokenAdmin', '', {
         httpOnly: true,
@@ -69,12 +69,31 @@ class UsersController {
     }
   }
 
-  getAll = async (req, res, next) => {
+  async getAll (req, res, next) {
     try {
-      const reqQuerys = req.query
+      // Extraemos query params para filtrado y paginación
+      const {
+        limit = 10,
+        page = 1,
+        sort
+      } = req.query
+
+      // Creamos el objeto de filtros
+      const filter = {}
+
+      // Opciones de paginación y ordenamiento
+      const options = {
+        skip: (parseInt(page) - 1) * parseInt(limit),
+        take: parseInt(limit)
+      }
+
+      if (sort) {
+        const [field, order] = sort.split(':')
+        options.orderBy = { [field]: order === 'desc' ? 'desc' : 'asc' }
+      }
 
       const context = {
-        users: await this.service.getAll(reqQuerys)
+        products: await this.userService.getAll(filter, options)
       }
 
       res.status(200).json(context)
@@ -83,11 +102,11 @@ class UsersController {
     }
   }
 
-  getById = async (req, res, next) => {
+  async getById (req, res, next) {
     try {
       const { uid } = req.params
 
-      const response = await this.service.getById(uid)
+      const response = await this.userService.getById(uid)
 
       res.status(200).json(response)
     } catch (error) {
@@ -95,7 +114,7 @@ class UsersController {
     }
   }
 
-  update = async (req, res, next) => {
+  async update (req, res, next) {
     try {
       const { uid } = req.params
       const body = req.body
@@ -120,7 +139,7 @@ class UsersController {
         paymentMethodsToDelete
       }
 
-      const response = await this.service.update(uid, data)
+      const response = await this.userService.update(uid, data)
 
       res.status(200).json(response)
     } catch (error) {
@@ -128,10 +147,10 @@ class UsersController {
     }
   }
 
-  changeStatus = async (req, res, next) => {
+  async changeStatus (req, res, next) {
     try {
       const { uid } = req.params
-      const response = await this.service.changeStatus(uid)
+      const response = await this.userService.changeStatus(uid)
 
       res.status(200).json(response)
     } catch (error) {
@@ -139,10 +158,10 @@ class UsersController {
     }
   }
 
-  delete = async (req, res, next) => {
+  async delete (req, res, next) {
     try {
       const { uid } = req.params
-      const response = await this.service.delete(uid)
+      const response = await this.userService.delete(uid)
 
       res.status(200).json(response)
     } catch (error) {
@@ -151,4 +170,4 @@ class UsersController {
   }
 }
 
-export const userController = new UsersController(userService)
+export const userController = new UsersController()

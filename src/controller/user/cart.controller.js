@@ -1,15 +1,15 @@
 import { cartService } from 'root/services/cartService.js'
 
 export class CartsController {
-  constructor (service) {
-    this.service = service
+  constructor () {
+    this.cartService = cartService
   }
 
-  create = async (req, res, next) => {
+  async create (req, res, next) {
     try {
       const body = req.body
 
-      const response = await this.service.create(body)
+      const response = await this.cartService.create(body)
 
       res.status(201).json(response)
     } catch (error) {
@@ -17,13 +17,13 @@ export class CartsController {
     }
   }
 
-  getById = async (req, res, next) => {
+  async getById (req, res, next) {
     try {
       const { cid } = req.params
       let response = null
 
       if (cid) {
-        response = await this.service.getById(cid)
+        response = await this.cartService.getById(cid)
       }
 
       const context = {

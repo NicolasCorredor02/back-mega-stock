@@ -1,14 +1,12 @@
 import { userService } from 'root/services/userService.js'
 import 'dotenv/config'
 
-// TODO: revisar para no tener que recibir los datos del id por params o query
-
 class UsersController {
-  constructor (service) {
-    this.service = service
+  constructor () {
+    this.userService = userService
   }
 
-  register = async (req, res, next) => {
+  async register (req, res, next) {
     try {
       const body = req.body
       const uploadFile = req.file ? req.file.path : null
@@ -16,18 +14,18 @@ class UsersController {
         body,
         uploadFile
       }
-      await this.service.register(userData)
+      await this.userService.register(userData)
       res.redirect('/api/clients/user')
     } catch (error) {
       next(error)
     }
   }
 
-  login = async (req, res, next) => {
+  async login (req, res, next) {
     try {
       const { email, password } = req.body
-      const { id } = await this.service.login(email, password)
-      const token = this.service.generateToken({ id })
+      const { id } = await this.userService.login(email, password)
+      const token = this.userService.generateToken({ id })
       res.cookie('tokenUser', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -40,11 +38,11 @@ class UsersController {
     }
   }
 
-  loginGoogle = async (req, res, next) => {
+  async loginGoogle (req, res, next) {
     try {
       const { id } = await req.user
       // Genera el token para el user auth con Google
-      const token = this.service.generateToken({ id })
+      const token = this.userService.generateToken({ id })
       res.cookie('tokenUser', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -57,7 +55,7 @@ class UsersController {
     }
   }
 
-  logOut = (req, res, next) => {
+  logOut (req, res, next) {
     try {
       req.cookie('tokenUser', '', {
         httpOnly: true,
@@ -69,11 +67,11 @@ class UsersController {
     }
   }
 
-  getById = async (req, res, next) => {
+  async getById (req, res, next) {
     try {
-      const { _id } = await req.user
+      const { id } = await req.user
 
-      const response = await this.service.getById(_id)
+      const response = await this.userService.getById(id)
 
       res.status(200).json(response)
     } catch (error) {
@@ -81,12 +79,12 @@ class UsersController {
     }
   }
 
-  getByEmail = async (req, res, next) => {
+  async getByEmail (req, res, next) {
     try {
       const body = req.body
       const email = body.email ? body.email : null
 
-      const response = await this.service.getByEmail(email)
+      const response = await this.userService.getByEmail(email)
 
       res.status(200).json(response)
     } catch (error) {
@@ -94,7 +92,7 @@ class UsersController {
     }
   }
 
-  update = async (req, res, next) => {
+  async update (req, res, next) {
     try {
       const { uid } = req.params
       const body = req.body
@@ -119,7 +117,7 @@ class UsersController {
         paymentMethodsToDelete
       }
 
-      const response = await this.service.update(uid, data)
+      const response = await this.userService.update(uid, data)
 
       res.status(200).json(response)
     } catch (error) {
@@ -127,10 +125,10 @@ class UsersController {
     }
   }
 
-  changeStatus = async (req, res, next) => {
+  async changeStatus (req, res, next) {
     try {
       const { uid } = req.params
-      const response = await this.service.changeStatus(uid)
+      const response = await this.userService.changeStatus(uid)
 
       res.status(200).json(response)
     } catch (error) {
@@ -139,4 +137,4 @@ class UsersController {
   }
 }
 
-export const userController = new UsersController(userService)
+export const userController = new UsersController()
