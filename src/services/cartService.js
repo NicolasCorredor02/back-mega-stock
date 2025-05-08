@@ -1,17 +1,18 @@
 /* eslint-disable no-useless-catch */
 import CustomError from 'root/utils/customError.js'
-import { cartDao } from 'root/daos/mongodb/cartDao.js'
+import RepositoryFactory from 'root/repositories/factory.js'
 import { addressService } from 'root/services/addressService.js'
 import { paymentMethodService } from 'root/services/paymentMethodService.js'
 import { productService } from 'root/services/productService.js'
 import { socketModule } from 'root/sockets/socket.js'
 
 class CartService {
-  constructor (dao) {
-    this.dao = dao
+  constructor () {
+    // this.dao = dao
+    this.cartRepository = RepositoryFactory.getCartRepository()
   }
 
-  create = async (data) => {
+  async create (data) {
     let addressRollBack = ''
     let payMethodRollBack = ''
 
@@ -62,7 +63,7 @@ class CartService {
         sub_total: parseFloat(data.sub_total)
       }
 
-      const response = await this.dao.create(cartData)
+      const response = await this.cartRepository.create(cartData)
       if (!response) {
         throw new CustomError('Cart not created', 404)
       }
@@ -92,109 +93,117 @@ class CartService {
     }
   }
 
-  getAll = async (reqQuerys) => {
+  async getAll (filter = {}, options = {}) {
     try {
-      // Se define el pipeline de base
-      const pipeline = [
-        // Etapa para vincular la dirección
-        {
-          $lookup: {
-            from: 'addresses', // Asume que tu colección se llama 'addresses'
-            localField: 'address',
-            foreignField: 'id',
-            as: 'address'
-          }
-        },
-        { $unwind: { path: '$address', preserveNullAndEmptyArrays: true } },
-
-        // Etapa para vincular el método de pago
-        {
-          $lookup: {
-            from: 'paymentmethods', // Asume que tu colección se llama 'paymentmethods'
-            localField: 'payment_method',
-            foreignField: 'id',
-            as: 'payment_method'
-          }
-        },
-        {
-          $unwind: {
-            path: '$payment_method',
-            preserveNullAndEmptyArrays: true
-          }
-        },
-
-        // Etapa para vincular los productos dentro del array de productos
-        {
-          $lookup: {
-            from: 'products',
-            localField: 'products.product',
-            foreignField: 'id',
-            as: 'joinedProducts'
-          }
-        },
-
-        // Transformar el array de productos para incluir la información completa del producto
-        {
-          $addFields: {
-            products: {
-              $map: {
-                input: '$products',
-                as: 'productItem',
-                in: {
-                  quantity: '$$productItem.quantity',
-                  product: {
-                    $arrayElemAt: [
-                      {
-                        $filter: {
-                          input: '$joinedProducts',
-                          as: 'joinedProduct',
-                          cond: {
-                            $eq: [
-                              '$$joinedProduct.id',
-                              '$$productItem.product'
-                            ]
-                          }
-                        }
-                      },
-                      0
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        },
-
-        // Eliminar el campo temporal de productos unidos
-        {
-          $project: {
-            joinedProducts: 0
-          }
-        }
-      ]
-
-      // Construccion de los parametros para el paginate
-      const { page, limit } = reqQuerys
-
-      const paginateParams = {
-        page: parseInt(page) || 1,
-        limit: parseInt(limit) || 10,
-        ...reqQuerys
-      }
-
-      const pipelineValue = pipeline.length > 0 ? pipeline : [{ $match: {} }]
-
-      return await this.dao.getAll(pipelineValue, paginateParams)
+      return await this.cartRepository.getAll(filter, options)
     } catch (error) {
-      throw new Error(error)
+      throw new CustomError('Error, finding data', 500)
     }
   }
 
-  getById = async (id) => {
+  // getAll = async (reqQuerys) => {
+  //   try {
+  //     // Se define el pipeline de base
+  //     const pipeline = [
+  //       // Etapa para vincular la dirección
+  //       {
+  //         $lookup: {
+  //           from: 'addresses', // Asume que tu colección se llama 'addresses'
+  //           localField: 'address',
+  //           foreignField: 'id',
+  //           as: 'address'
+  //         }
+  //       },
+  //       { $unwind: { path: '$address', preserveNullAndEmptyArrays: true } },
+
+  //       // Etapa para vincular el método de pago
+  //       {
+  //         $lookup: {
+  //           from: 'paymentmethods', // Asume que tu colección se llama 'paymentmethods'
+  //           localField: 'payment_method',
+  //           foreignField: 'id',
+  //           as: 'payment_method'
+  //         }
+  //       },
+  //       {
+  //         $unwind: {
+  //           path: '$payment_method',
+  //           preserveNullAndEmptyArrays: true
+  //         }
+  //       },
+
+  //       // Etapa para vincular los productos dentro del array de productos
+  //       {
+  //         $lookup: {
+  //           from: 'products',
+  //           localField: 'products.product',
+  //           foreignField: 'id',
+  //           as: 'joinedProducts'
+  //         }
+  //       },
+
+  //       // Transformar el array de productos para incluir la información completa del producto
+  //       {
+  //         $addFields: {
+  //           products: {
+  //             $map: {
+  //               input: '$products',
+  //               as: 'productItem',
+  //               in: {
+  //                 quantity: '$$productItem.quantity',
+  //                 product: {
+  //                   $arrayElemAt: [
+  //                     {
+  //                       $filter: {
+  //                         input: '$joinedProducts',
+  //                         as: 'joinedProduct',
+  //                         cond: {
+  //                           $eq: [
+  //                             '$$joinedProduct.id',
+  //                             '$$productItem.product'
+  //                           ]
+  //                         }
+  //                       }
+  //                     },
+  //                     0
+  //                   ]
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       },
+
+  //       // Eliminar el campo temporal de productos unidos
+  //       {
+  //         $project: {
+  //           joinedProducts: 0
+  //         }
+  //       }
+  //     ]
+
+  //     // Construccion de los parametros para el paginate
+  //     const { page, limit } = reqQuerys
+
+  //     const paginateParams = {
+  //       page: parseInt(page) || 1,
+  //       limit: parseInt(limit) || 10,
+  //       ...reqQuerys
+  //     }
+
+  //     const pipelineValue = pipeline.length > 0 ? pipeline : [{ $match: {} }]
+
+  //     return await this.dao.getAll(pipelineValue, paginateParams)
+  //   } catch (error) {
+  //     throw new Error(error)
+  //   }
+  // }
+
+  async getById (id) {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
-      const response = await this.dao.getById(id)
+      const response = await this.cartRepository.getById(id)
 
       if (!response) throw new CustomError('Cart not founded', 404)
 
@@ -204,7 +213,7 @@ class CartService {
     }
   }
 
-  update = async (id, data) => {
+  async update (id, data) {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
@@ -217,7 +226,7 @@ class CartService {
         )
       }
 
-      const currentCart = await this.dao.getById(id)
+      const currentCart = await this.getById(id)
       if (!currentCart) throw new CustomError('Cart not founded', 404)
 
       const cartUpdated = {
@@ -227,7 +236,7 @@ class CartService {
           : currentCart.sub_total
       }
 
-      const response = await this.dao.update(id, cartUpdated)
+      const response = await this.cartRepository.update(id, cartUpdated)
 
       if (!response) throw new CustomError('Cart not updated', 404)
 
@@ -243,11 +252,11 @@ class CartService {
     }
   }
 
-  delete = async (id) => {
+  async delete (id) {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
-      const response = await this.dao.delete(id)
+      const response = await this.cartRepository.delete(id)
       if (!response) throw new CustomError('Cart not deleted', 404)
 
       try {
@@ -264,4 +273,4 @@ class CartService {
   }
 }
 
-export const cartService = new CartService(cartDao)
+export const cartService = new CartService()

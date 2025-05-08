@@ -2,20 +2,20 @@
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import CustomError from 'root/utils/customError.js'
-import { userDao } from 'root/daos/mongodb/userDao.js'
 import { socketModule } from 'root/sockets/socket.js'
 import { addressService } from 'root/services/addressService.js'
 import { paymentMethodService } from 'root/services/paymentMethodService.js'
 import { deleteCloudinaryImage } from 'root/config/cloudinary.js'
 import { pathImagesUsers, userUrlImageDefault } from 'root/utils/paths.js'
 import { createHash, isValidPassword } from 'root/utils/users.js'
+import RepositoryFactory from 'root/repositories/factory.js'
 
 class UserService {
-  constructor (dao) {
-    this.dao = dao
+  constructor () {
+    this.userRepository = RepositoryFactory.getUserRepository()
   }
 
-  register = async (data) => {
+  async register (data) {
     try {
       const { body, uploadFile } = data
 
@@ -26,7 +26,7 @@ class UserService {
         throw new CustomError("User's details is required", 400)
       }
 
-      const userExist = await this.dao.getByEmail(body.email)
+      const userExist = await this.getByEmail(body.email)
       if (userExist) throw new CustomError('User already exist', 400)
       //   if (uploadFile || uploadFile !== ' ') {
       //     await deleteCloudinaryImage(pathImagesUsers, uploadFile)
@@ -39,7 +39,7 @@ class UserService {
         image_profile: uploadFile || userUrlImageDefault
       }
 
-      const response = await this.dao.create(userData)
+      const response = await this.userRepository.create(userData)
       if (!response) throw new CustomError('User not created', 400)
 
       try {
@@ -54,9 +54,9 @@ class UserService {
     }
   }
 
-  login = async (email, password) => {
+  async login (email, password) {
     try {
-      const userExist = await this.dao.getByEmail(email)
+      const userExist = await this.getByEmail(email)
       if (!userExist) throw new CustomError("User's credentials incorrect", 400)
       const passValid = isValidPassword(password, userExist.password)
       if (!passValid) throw new CustomError("User's credentials incorrect", 400)
@@ -66,9 +66,9 @@ class UserService {
     }
   }
 
-  loginAdmin = async (email, password) => {
+  async loginAdmin (email, password) {
     try {
-      const response = await this.dao.loginAdmin(email, password)
+      const response = await this.userRepository.loginAdmin(email, password)
       if (!response) throw new CustomError("User's credentials not accepted", 400)
       return response
     } catch (error) {
@@ -76,7 +76,7 @@ class UserService {
     }
   }
 
-  generateToken = (user) => {
+  generateToken (user) {
     const payload = {
       ...user
     }
@@ -86,274 +86,282 @@ class UserService {
     })
   }
 
-  getAll = async (reqQuerys) => {
+  async getAll (filter = {}, options = {}) {
     try {
-      const pipeline = [
-        // lookup para las direcciones en el array de addresses
-        {
-          $lookup: {
-            from: 'addresses',
-            localField: 'addresses.address',
-            foreignField: 'id',
-            as: 'joinedAddresses'
-          }
-        },
-
-        // Transformacion del array de direcciones joinedAddresses
-        {
-          $addFields: {
-            addresses: {
-              $map: {
-                input: '$addresses',
-                as: 'addressItem',
-                in: {
-                  address: {
-                    $arrayElemAt: [
-                      {
-                        $filter: {
-                          input: '$joinedAddresses',
-                          as: 'joinedAddress',
-                          cond: {
-                            $eq: [
-                              '$$joinedAddress.id',
-                              '$$addressItem.address'
-                            ]
-                          }
-                        }
-                      },
-                      0
-                    ]
-                  },
-                  is_default: '$$addressItem.is_default'
-                }
-              }
-            }
-          }
-        },
-
-        // lookup para los metodos de pago del usuario
-        {
-          $lookup: {
-            from: 'paymentmethods',
-            localField: 'payment_methods.payment_method',
-            foreignField: 'id',
-            as: 'joinedPaymentMethods'
-          }
-        },
-
-        // Transformar el array de metodos de pago joinedPaymentMethods
-        {
-          $addFields: {
-            payment_methods: {
-              $map: {
-                input: '$payment_methods',
-                as: 'paymentItem',
-                in: {
-                  payment_method: {
-                    $arrayElemAt: [
-                      {
-                        $filter: {
-                          input: '$joinedPaymentMethods',
-                          as: 'joinedPayment',
-                          cond: {
-                            $eq: [
-                              '$$joinedPayment.id',
-                              '$$paymentItem.payment_method'
-                            ]
-                          }
-                        }
-                      },
-                      0
-                    ]
-                  },
-
-                  is_default: '$$paymentItem.is_default'
-                }
-              }
-            }
-          }
-        },
-
-        // Lookup para los carritos en commerce_data.carts
-        {
-          $lookup: {
-            from: 'carts',
-            localField: 'commerce_data.carts.cart',
-            foreignField: 'id',
-            as: 'joinedCarts'
-          }
-        },
-
-        // Transformar el array de carritos joinedCarts
-        {
-          $addFields: {
-            'commerce_data.carts': {
-              $map: {
-                input: '$commerce_data.carts',
-                as: 'cartItem',
-                in: {
-                  cart: {
-                    $arrayElemAt: [
-                      {
-                        $filter: {
-                          input: '$joinedCarts',
-                          as: 'joinedCart',
-                          cond: {
-                            $eq: ['$$joinedCart.id', '$$cartItem.cart']
-                          }
-                        }
-                      },
-                      0
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        },
-
-        // Se hace lookups adicionales para los datos dentro de cada carrito
-        {
-          $lookup: {
-            from: 'addresses',
-            localField: 'joinedCarts.address',
-            foreignField: 'id',
-            as: 'cartAddresses'
-          }
-        },
-
-        {
-          $lookup: {
-            from: 'paymentmethods',
-            localField: 'joinedCarts.payment_method',
-            foreignField: 'id',
-            as: 'cartPaymentMethods'
-          }
-        },
-
-        {
-          $lookup: {
-            from: 'products',
-            localField: 'joinedCarts.products.product',
-            foreignField: 'id',
-            as: 'cartProducts'
-          }
-        },
-
-        // Transformar cada carrito para incluir los datos completos
-        {
-          $addFields: {
-            'commerce_data.carts': {
-              $map: {
-                input: '$commerce_data.carts',
-                as: 'cartItem',
-                in: {
-                  cart: {
-                    $mergeObjects: [
-                      '$$cartItem.cart',
-                      {
-                        address: {
-                          $arrayElemAt: [
-                            {
-                              $filter: {
-                                input: '$cartAddresses',
-                                as: 'addr',
-                                cond: {
-                                  $eq: [
-                                    '$$addr.id',
-                                    '$$cartItem.cart.address'
-                                  ]
-                                }
-                              }
-                            },
-                            0
-                          ]
-                        },
-                        payment_method: {
-                          $arrayElemAt: [
-                            {
-                              $filter: {
-                                input: '$cartPaymentMethods',
-                                as: 'pm',
-                                cond: {
-                                  $eq: [
-                                    '$$pm.id',
-                                    '$$cartItem.cart.payment_method'
-                                  ]
-                                }
-                              }
-                            },
-                            0
-                          ]
-                        },
-                        products: {
-                          $map: {
-                            input: '$$cartItem.cart.products',
-                            as: 'prod',
-                            in: {
-                              quantity: '$$prod.quantity',
-                              product: {
-                                $arrayElemAt: [
-                                  {
-                                    $filter: {
-                                      input: '$cartProducts',
-                                      as: 'p',
-                                      cond: {
-                                        $eq: ['$$p.id', '$$prod.product']
-                                      }
-                                    }
-                                  },
-                                  0
-                                ]
-                              }
-                            }
-                          }
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        },
-
-        // Eliminar campos temporales
-        {
-          $project: {
-            joinedAddresses: 0,
-            joinedPaymentMethods: 0,
-            joinedCarts: 0,
-            cartAddresses: 0,
-            cartPaymentMethods: 0,
-            cartProducts: 0
-          }
-        }
-      ]
-
-      const { page, limit } = reqQuerys
-
-      const paginateParams = {
-        page: parseInt(page) || 1,
-        limit: parseInt(limit) || 10,
-        ...reqQuerys
-      }
-
-      const pipelineValue = pipeline.length > 0 ? pipeline : [{ $match: {} }]
-
-      return await this.dao.getAll(pipelineValue, paginateParams)
+      return await this.userRepository.getAll(filter, options)
     } catch (error) {
-      throw new Error(error)
+      throw new CustomError('Error finding data', 500)
     }
   }
 
-  getByEmail = async (email) => {
+  // getAll = async (reqQuerys) => {
+  //   try {
+  //     const pipeline = [
+  //       // lookup para las direcciones en el array de addresses
+  //       {
+  //         $lookup: {
+  //           from: 'addresses',
+  //           localField: 'addresses.address',
+  //           foreignField: 'id',
+  //           as: 'joinedAddresses'
+  //         }
+  //       },
+
+  //       // Transformacion del array de direcciones joinedAddresses
+  //       {
+  //         $addFields: {
+  //           addresses: {
+  //             $map: {
+  //               input: '$addresses',
+  //               as: 'addressItem',
+  //               in: {
+  //                 address: {
+  //                   $arrayElemAt: [
+  //                     {
+  //                       $filter: {
+  //                         input: '$joinedAddresses',
+  //                         as: 'joinedAddress',
+  //                         cond: {
+  //                           $eq: [
+  //                             '$$joinedAddress.id',
+  //                             '$$addressItem.address'
+  //                           ]
+  //                         }
+  //                       }
+  //                     },
+  //                     0
+  //                   ]
+  //                 },
+  //                 is_default: '$$addressItem.is_default'
+  //               }
+  //             }
+  //           }
+  //         }
+  //       },
+
+  //       // lookup para los metodos de pago del usuario
+  //       {
+  //         $lookup: {
+  //           from: 'paymentmethods',
+  //           localField: 'payment_methods.payment_method',
+  //           foreignField: 'id',
+  //           as: 'joinedPaymentMethods'
+  //         }
+  //       },
+
+  //       // Transformar el array de metodos de pago joinedPaymentMethods
+  //       {
+  //         $addFields: {
+  //           payment_methods: {
+  //             $map: {
+  //               input: '$payment_methods',
+  //               as: 'paymentItem',
+  //               in: {
+  //                 payment_method: {
+  //                   $arrayElemAt: [
+  //                     {
+  //                       $filter: {
+  //                         input: '$joinedPaymentMethods',
+  //                         as: 'joinedPayment',
+  //                         cond: {
+  //                           $eq: [
+  //                             '$$joinedPayment.id',
+  //                             '$$paymentItem.payment_method'
+  //                           ]
+  //                         }
+  //                       }
+  //                     },
+  //                     0
+  //                   ]
+  //                 },
+
+  //                 is_default: '$$paymentItem.is_default'
+  //               }
+  //             }
+  //           }
+  //         }
+  //       },
+
+  //       // Lookup para los carritos en commerce_data.carts
+  //       {
+  //         $lookup: {
+  //           from: 'carts',
+  //           localField: 'commerce_data.carts.cart',
+  //           foreignField: 'id',
+  //           as: 'joinedCarts'
+  //         }
+  //       },
+
+  //       // Transformar el array de carritos joinedCarts
+  //       {
+  //         $addFields: {
+  //           'commerce_data.carts': {
+  //             $map: {
+  //               input: '$commerce_data.carts',
+  //               as: 'cartItem',
+  //               in: {
+  //                 cart: {
+  //                   $arrayElemAt: [
+  //                     {
+  //                       $filter: {
+  //                         input: '$joinedCarts',
+  //                         as: 'joinedCart',
+  //                         cond: {
+  //                           $eq: ['$$joinedCart.id', '$$cartItem.cart']
+  //                         }
+  //                       }
+  //                     },
+  //                     0
+  //                   ]
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       },
+
+  //       // Se hace lookups adicionales para los datos dentro de cada carrito
+  //       {
+  //         $lookup: {
+  //           from: 'addresses',
+  //           localField: 'joinedCarts.address',
+  //           foreignField: 'id',
+  //           as: 'cartAddresses'
+  //         }
+  //       },
+
+  //       {
+  //         $lookup: {
+  //           from: 'paymentmethods',
+  //           localField: 'joinedCarts.payment_method',
+  //           foreignField: 'id',
+  //           as: 'cartPaymentMethods'
+  //         }
+  //       },
+
+  //       {
+  //         $lookup: {
+  //           from: 'products',
+  //           localField: 'joinedCarts.products.product',
+  //           foreignField: 'id',
+  //           as: 'cartProducts'
+  //         }
+  //       },
+
+  //       // Transformar cada carrito para incluir los datos completos
+  //       {
+  //         $addFields: {
+  //           'commerce_data.carts': {
+  //             $map: {
+  //               input: '$commerce_data.carts',
+  //               as: 'cartItem',
+  //               in: {
+  //                 cart: {
+  //                   $mergeObjects: [
+  //                     '$$cartItem.cart',
+  //                     {
+  //                       address: {
+  //                         $arrayElemAt: [
+  //                           {
+  //                             $filter: {
+  //                               input: '$cartAddresses',
+  //                               as: 'addr',
+  //                               cond: {
+  //                                 $eq: [
+  //                                   '$$addr.id',
+  //                                   '$$cartItem.cart.address'
+  //                                 ]
+  //                               }
+  //                             }
+  //                           },
+  //                           0
+  //                         ]
+  //                       },
+  //                       payment_method: {
+  //                         $arrayElemAt: [
+  //                           {
+  //                             $filter: {
+  //                               input: '$cartPaymentMethods',
+  //                               as: 'pm',
+  //                               cond: {
+  //                                 $eq: [
+  //                                   '$$pm.id',
+  //                                   '$$cartItem.cart.payment_method'
+  //                                 ]
+  //                               }
+  //                             }
+  //                           },
+  //                           0
+  //                         ]
+  //                       },
+  //                       products: {
+  //                         $map: {
+  //                           input: '$$cartItem.cart.products',
+  //                           as: 'prod',
+  //                           in: {
+  //                             quantity: '$$prod.quantity',
+  //                             product: {
+  //                               $arrayElemAt: [
+  //                                 {
+  //                                   $filter: {
+  //                                     input: '$cartProducts',
+  //                                     as: 'p',
+  //                                     cond: {
+  //                                       $eq: ['$$p.id', '$$prod.product']
+  //                                     }
+  //                                   }
+  //                                 },
+  //                                 0
+  //                               ]
+  //                             }
+  //                           }
+  //                         }
+  //                       }
+  //                     }
+  //                   ]
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       },
+
+  //       // Eliminar campos temporales
+  //       {
+  //         $project: {
+  //           joinedAddresses: 0,
+  //           joinedPaymentMethods: 0,
+  //           joinedCarts: 0,
+  //           cartAddresses: 0,
+  //           cartPaymentMethods: 0,
+  //           cartProducts: 0
+  //         }
+  //       }
+  //     ]
+
+  //     const { page, limit } = reqQuerys
+
+  //     const paginateParams = {
+  //       page: parseInt(page) || 1,
+  //       limit: parseInt(limit) || 10,
+  //       ...reqQuerys
+  //     }
+
+  //     const pipelineValue = pipeline.length > 0 ? pipeline : [{ $match: {} }]
+
+  //     return await this.dao.getAll(pipelineValue, paginateParams)
+  //   } catch (error) {
+  //     throw new Error(error)
+  //   }
+  // }
+
+  async getByEmail (email) {
     try {
       if (!email || email.trim === '') throw new CustomError('Email is required', 400)
 
-      const response = await this.dao.getByEmail(email)
+      const response = await this.userRepository.getByEmail(email)
 
-      // if (!response) return new CustomError('User not found', 400)
+      if (!response) return new CustomError('User not found', 400)
 
       return response
     } catch (error) {
@@ -361,11 +369,11 @@ class UserService {
     }
   }
 
-  getById = async (id) => {
+  async getById (id) {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
-      const response = await this.dao.getById(id)
+      const response = await this.userRepository.getById(id)
 
       if (!response) throw new CustomError('User not founded', 404)
 
@@ -375,7 +383,7 @@ class UserService {
     }
   }
 
-  update = async (id, data) => {
+  async update (id, data) {
     try {
       const {
         body,
@@ -395,7 +403,7 @@ class UserService {
         throw new CustomError('Error, user ID can not be updated', 404)
       }
 
-      const currentUser = await this.dao.getById(id)
+      const currentUser = await this.getById(id)
       if (!currentUser) throw new CustomError('User not found', 404)
 
       // Se agregan las direcciones y metodos de pago actuales y nuevos
@@ -480,7 +488,7 @@ class UserService {
         image_profile: updatedImageProfile
       }
 
-      const response = await this.dao.update(id, updatedData)
+      const response = await this.userRepository.update(id, updatedData)
       if (!response) throw new CustomError('User not updated', 404)
 
       try {
@@ -495,13 +503,13 @@ class UserService {
     }
   }
 
-  changeStatus = async (id) => {
+  async changeStatus (id) {
     try {
       if (!id || id.trim === '') {
         throw new CustomError("User's ID is required", 404)
       }
 
-      const response = await this.dao.update(id, { status: false })
+      const response = await this.update(id, { status: false })
 
       if (!response) throw new CustomError("Statu's user not changed", 404)
 
@@ -516,13 +524,13 @@ class UserService {
     }
   }
 
-  delete = async (id) => {
+  async delete (id) {
     try {
       if (!id || id.trim === '') {
         throw new CustomError("User's ID is required", 404)
       }
 
-      const response = await this.dao.delete(id)
+      const response = await this.userRepository.delete(id)
 
       if (!response) throw new CustomError('User not deleted', 404)
 
@@ -549,4 +557,4 @@ class UserService {
   }
 }
 
-export const userService = new UserService(userDao)
+export const userService = new UserService()

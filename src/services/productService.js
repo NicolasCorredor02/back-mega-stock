@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-catch */
+import RepositoryFactory from 'root/repositories/factory.js'
 import CustomError from 'root/utils/customError.js'
-import { productDao } from 'root/daos/mongodb/productDao.js'
 import { socketModule } from 'root/sockets/socket.js'
 import { deleteCloudinaryImages } from 'root/config/cloudinary.js'
 import {
@@ -9,11 +9,12 @@ import {
 } from 'root/utils/paths.js'
 
 class ProductService {
-  constructor (dao) {
-    this.dao = dao
+  constructor () {
+    // Se obtiene el repository de products
+    this.productRepository = RepositoryFactory.getProductRepository()
   }
 
-  create = async (data) => {
+  async create (data) {
     try {
       const { body, uploadFiles } = data
 
@@ -49,7 +50,8 @@ class ProductService {
         }
       }
 
-      const response = await this.dao.create(productData)
+      // const response = await this.dao.create(productData)
+      const response = await this.productRepository.create(productData)
 
       if (!response) throw new CustomError('Producto not created', 404)
 
@@ -70,83 +72,91 @@ class ProductService {
     }
   }
 
-  getAll = async (reqQuerys, project = null) => {
+  async getAll (filter = {}, options = {}) {
     try {
-      // Se define el pipeline de base
-      const pipeline = []
-
-      if (Object.keys(reqQuerys).length > 0) {
-        // Se define el mapa de querys permitidas para crear sus transformaciones ante el pipeline
-        const paramMapping = {
-          search: {
-            type: 'text',
-            field: ['title', 'description']
-          },
-          category: {
-            type: 'exact',
-            field: 'category'
-          }
-        }
-
-        // Objeto para guardar las coincidencias de match
-        const matchConditions = {}
-
-        Object.keys(paramMapping).forEach((param) => {
-          const paramConfig = paramMapping[param]
-
-          if (paramConfig) {
-            const value = paramConfig.field
-
-            // Manejo de busqueda por texto para filtro de productos
-            if (paramConfig.type === 'text' && reqQuerys.search) {
-              const searchTerms = reqQuerys.search
-                .split('-')
-                .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-              const orMatches = value.map((param) => ({
-                [param]: {
-                  $regex: searchTerms.join('|'),
-                  $options: 'i'
-                }
-              }))
-              matchConditions.$or = orMatches
-            } else if (paramConfig.type === 'exact' && reqQuerys.category) {
-              matchConditions[paramConfig.field] =
-                reqQuerys.category.toLowerCase()
-            }
-          }
-        })
-
-        // Se pushean las condiciones al pipeline en caso de que se hayan encontrado por query params
-        if (Object.keys(matchConditions).length > 0) {
-          pipeline.push({ $match: matchConditions })
-          if (project) {
-            pipeline.push({ ...project })
-          }
-        }
-      }
-
-      // Construccion de los parametros para el paginate
-      const { page, limit } = reqQuerys
-
-      const paginateParams = {
-        page: parseInt(page) || 1,
-        limit: parseInt(limit) || 10,
-        ...reqQuerys
-      }
-
-      const pipelineValue = pipeline.length > 0 ? pipeline : [{ $match: {} }]
-
-      return await this.dao.getAll(pipelineValue, paginateParams)
+      return await this.productRepository.getAll(filter, options)
     } catch (error) {
-      throw new Error(error)
+      throw new CustomError('Error al obtener datos', 500)
     }
   }
 
-  getById = async (id) => {
+  // getAll = async (reqQuerys, project = null) => {
+  //   try {
+  //     // Se define el pipeline de base
+  //     const pipeline = []
+
+  //     if (Object.keys(reqQuerys).length > 0) {
+  //       // Se define el mapa de querys permitidas para crear sus transformaciones ante el pipeline
+  //       const paramMapping = {
+  //         search: {
+  //           type: 'text',
+  //           field: ['title', 'description']
+  //         },
+  //         category: {
+  //           type: 'exact',
+  //           field: 'category'
+  //         }
+  //       }
+
+  //       // Objeto para guardar las coincidencias de match
+  //       const matchConditions = {}
+
+  //       Object.keys(paramMapping).forEach((param) => {
+  //         const paramConfig = paramMapping[param]
+
+  //         if (paramConfig) {
+  //           const value = paramConfig.field
+
+  //           // Manejo de busqueda por texto para filtro de productos
+  //           if (paramConfig.type === 'text' && reqQuerys.search) {
+  //             const searchTerms = reqQuerys.search
+  //               .split('-')
+  //               .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+  //             const orMatches = value.map((param) => ({
+  //               [param]: {
+  //                 $regex: searchTerms.join('|'),
+  //                 $options: 'i'
+  //               }
+  //             }))
+  //             matchConditions.$or = orMatches
+  //           } else if (paramConfig.type === 'exact' && reqQuerys.category) {
+  //             matchConditions[paramConfig.field] =
+  //               reqQuerys.category.toLowerCase()
+  //           }
+  //         }
+  //       })
+
+  //       // Se pushean las condiciones al pipeline en caso de que se hayan encontrado por query params
+  //       if (Object.keys(matchConditions).length > 0) {
+  //         pipeline.push({ $match: matchConditions })
+  //         if (project) {
+  //           pipeline.push({ ...project })
+  //         }
+  //       }
+  //     }
+
+  //     // Construccion de los parametros para el paginate
+  //     const { page, limit } = reqQuerys
+
+  //     const paginateParams = {
+  //       page: parseInt(page) || 1,
+  //       limit: parseInt(limit) || 10,
+  //       ...reqQuerys
+  //     }
+
+  //     const pipelineValue = pipeline.length > 0 ? pipeline : [{ $match: {} }]
+
+  //     return await this.dao.getAll(pipelineValue, paginateParams)
+  //   } catch (error) {
+  //     throw new Error(error)
+  //   }
+  // }
+
+  async getById (id) {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
-      const response = await this.dao.getById(id)
+      const response = await this.productRepository.getById(id)
 
       if (!response) throw new CustomError('Product not found', 404)
 
@@ -156,7 +166,7 @@ class ProductService {
     }
   }
 
-  update = async (id, data) => {
+  async update (id, data) {
     try {
       const { body, files, deleteImages } = data
 
@@ -171,7 +181,7 @@ class ProductService {
       }
 
       // Recuperar el producto que se quiere actualizar
-      const currentProduct = await this.dao.getById(id)
+      const currentProduct = await this.getById(id)
       if (!currentProduct) throw new CustomError('Product not found', 404)
 
       // Validacion sobre el codigo para que este sea unico
@@ -256,7 +266,7 @@ class ProductService {
         stock: body.stock ? parseInt(body.stock) : currentProduct.stock
       }
 
-      const response = await this.dao.update(id, updatedData)
+      const response = await this.productRepository.update(id, updatedData)
 
       if (!response) throw new CustomError('Producto not updated', 404)
 
@@ -279,18 +289,18 @@ class ProductService {
     }
   }
 
-  changeStock = async (products) => {
+  async changeStock (products) {
     const rollBackProducts = await Promise.all(
-      products.map((productOBj) => this.dao.getById(productOBj.product))
+      products.map((productOBj) => this.getById(productOBj.product))
     )
 
     try {
       for (const productObj of products) {
         const productId = productObj.product
         const productQuantity = productObj.quantity
-        const dbProduct = await this.dao.getById(productId)
+        const dbProduct = await this.getById(productId)
 
-        if ((dbProduct.stock - productQuantity) < 0) {
+        if (dbProduct.stock - productQuantity < 0) {
           throw new CustomError('Error, insufficient units in stock')
         }
       }
@@ -298,9 +308,9 @@ class ProductService {
       for (const productObj of products) {
         const productId = productObj.product
         const productQuantity = productObj.quantity
-        const dbProduct = await this.dao.getById(productId)
+        const dbProduct = await this.getById(productId)
 
-        const productStockUpdated = await this.dao.update(productId, {
+        const productStockUpdated = await this.update(productId, {
           stock: dbProduct.stock - productQuantity
         })
         if (!productStockUpdated) {
@@ -312,7 +322,7 @@ class ProductService {
     } catch (error) {
       try {
         for (const product of rollBackProducts) {
-          await this.dao.update(product.id, { stock: product.stock })
+          await this.update(product.id, { stock: product.stock })
         }
       } catch (error) {
         console.error('Error during rollback:', error)
@@ -321,13 +331,13 @@ class ProductService {
     }
   }
 
-  changeStatus = async (id) => {
+  async changeStatus (id) {
     try {
       if (!id || id.trim === '') {
         throw new CustomError("Product's ID is required", 404)
       }
 
-      const response = await this.dao.update(id, { status: false })
+      const response = await this.update(id, { status: false })
 
       if (!response) {
         throw new CustomError("Satatus's product not changed", 404)
@@ -346,13 +356,13 @@ class ProductService {
     }
   }
 
-  delete = async (id) => {
+  async delete (id) {
     try {
       if (!id || id.trim === '') {
         throw new CustomError("Product's ID is required", 404)
       }
 
-      const response = await this.dao.delete(id)
+      const response = await this.productRepository.delete(id)
 
       if (!response) throw new CustomError('Producto not deleted', 404)
 
@@ -382,4 +392,4 @@ class ProductService {
   }
 }
 
-export const productService = new ProductService(productDao)
+export const productService = new ProductService()
