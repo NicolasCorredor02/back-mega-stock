@@ -1,0 +1,54 @@
+import { prisma } from '../../../prisma/config.js'
+import PrismaBaseRepository from 'root/repositories/prisma/prismaBaseRepository.js'
+
+export default class PrismaUserRepository extends PrismaBaseRepository {
+  constructor () {
+    super('user')
+  }
+
+  async getByEmail (email) {
+    return prisma.user.findUnique({
+      where: { email },
+      include: {
+        addresses: true,
+        payment_methods: true,
+        carts: true
+      }
+    })
+  }
+
+  async addAddress (userId, addressData) {
+    return prisma.address.create({
+      data: {
+        ...addressData,
+        is_saved: true,
+        user: {
+          connect: { id: userId }
+        }
+      }
+    })
+  }
+
+  async addPaymentMethod (userId, paymentData) {
+    return prisma.paymentMethod.create({
+      data: {
+        ...paymentData,
+        is_saved: true,
+        user: {
+          connect: { id: userId }
+        }
+      }
+    })
+  }
+
+  async getById (id) {
+    return prisma.user.findUnique({
+      where: { id },
+      include: {
+        address: true,
+        payment_methods: true,
+        carts: true
+      }
+    })
+  }
+}
