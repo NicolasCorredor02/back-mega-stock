@@ -109,7 +109,7 @@ model Cart {
   guest_last_name  String?
   guest_email      String?
   guest_phone      String?
-  guest_id_number  BigInt?
+  guest_id_number  String?
 
   // Relaciones
   user   User?   @relation(fields: [userId], references: [id])
