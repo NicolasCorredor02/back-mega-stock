@@ -3,7 +3,7 @@
         <div class="bg-white w-1/4 h-max p-6 rounded-lg shadow-lg">
             <h2 class="text-2xl font-bold mb-6">Products</h2>
             <article class="flex flex-col h-125 gap-4 overflow-scroll">
-                {{#each products.docs}}
+                {{#each products}}
                     <div class="bg-white rounded-lg h-max shadow hover:shadow-lg transition-shadow duration-300">
                         <div class="aspect-[10 / 16] w-full relative flex overflow-scroll snap-x">
                             {{#each thumbnails}}
@@ -178,23 +178,23 @@
             </tr>
           </thead>
           <tbody id="productsList" class="bg-white divide-y divide-gray-200 overflow-scroll">
-            {{#each carts.docs}}
+            {{#each carts}}
               <tr id={{id}} class="hover:bg-gray-50">
                 <td class="border-r border-slate-300 px-6 py-4">{{id}}</td>
                 <td class="border-r border-slate-300 px-6 py-4">{{user_type}}</td>
-                <td class="px-6 py-4">{{user_info.first_name}}</td>
-                <td class="px-6 py-4">{{user_info.last_name}}</td>
-                <td class="px-6 py-4">{{user_info.email}}</td>
-                <td class="px-6 py-4">{{user_info.phone}}</td>
-                <td class="border-r border-slate-300 px-6 py-4">{{user_info.id_number}}</td>
-                <td class="px-6 py-4">{{address.id}}</td>
+                <td class="px-6 py-4">{{guest_first_name }}</td>
+                <td class="px-6 py-4">{{guest_last_name}}</td>
+                <td class="px-6 py-4">{{guest_email}}</td>
+                <td class="px-6 py-4">{{guest_phone}}</td>
+                <td class="border-r border-slate-300 px-6 py-4">{{guest_id_number}}</td>
+                <td class="px-6 py-4">{{addressId}}</td>
                 <td class="px-6 py-4">{{address.street}}</td>
                 <td class="px-6 py-4">{{address.city}}</td>
                 <td class="px-6 py-4">{{address.state}}</td>
                 <td class="px-6 py-4">{{address.postal_code}}</td>
                 <td class="px-6 py-4">{{address.country}}</td>
                 <td class="border-r border-slate-300 px-6 py-4">{{address.is_saved}}</td>
-                <td class="px-6 py-4">{{payment_method.id}}</td>
+                <td class="px-6 py-4">{{paymentMethodId}}</td>
                 <td class="px-6 py-4">{{payment_method.type}}</td>
                 <td class="px-6 py-4">{{payment_method.provider}}</td>
                 <td class="px-6 py-4">{{payment_method.last_four}}</td>
