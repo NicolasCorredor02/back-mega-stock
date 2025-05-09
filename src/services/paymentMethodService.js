@@ -1,13 +1,13 @@
 /* eslint-disable no-useless-catch */
+import RepositoryFactory from 'root/repositories/factory.js'
 import CustomError from 'root/utils/customError.js'
-import { paymentMethodDao } from 'root/daos/mongodb/paymentMethodDao.js'
 
 class PaymentMethodService {
-  constructor (dao) {
-    this.dao = dao
+  constructor () {
+    this.paymentMethodRepository = RepositoryFactory.getPaymentMethodRepository()
   }
 
-  create = async (data) => {
+  async create (data) {
     try {
       if (!data) throw new CustomError('PaymentMethod details are required', 404)
 
@@ -16,7 +16,7 @@ class PaymentMethodService {
         is_saved: data.is_saved || false
       }
 
-      const response = await this.dao.create(paymentMethodData)
+      const response = await this.paymentMethodRepository.create(paymentMethodData)
 
       if (!response) throw new CustomError('PaymentMethod not created', 404)
       return response
@@ -25,31 +25,19 @@ class PaymentMethodService {
     }
   }
 
-  getAll = async (reqQuerys) => {
+  async getAll (filter = {}, options = {}) {
     try {
-      const pipeline = []
-
-      // Construccion de los parametros para el paginate
-      const { page = 1, limit = 10 } = reqQuerys
-
-      const paginateParams = {
-        page: parseInt(page),
-        limit: parseInt(limit)
-      }
-
-      const pipelineValue = pipeline.length > 0 ? pipeline : [{ $match: {} }]
-
-      return await this.dao.getAll(pipelineValue, paginateParams)
+      return await this.paymentMethodRepository.getAll(filter, options)
     } catch (error) {
-      throw new Error(error)
+      throw new CustomError('Error findind data', 500)
     }
   }
 
-  getById = async (id) => {
+  async getById (id) {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
-      const response = await this.dao.getById(id)
+      const response = await this.paymentMethodRepository.getById(id)
       if (!response) throw new CustomError('PaymentMethod not found', 404)
       return response
     } catch (error) {
@@ -57,15 +45,15 @@ class PaymentMethodService {
     }
   }
 
-  update = async (id, data) => {
+  async update (id, data) {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
       if (data.id) throw new CustomError('Error, product ID can not be updated')
 
-      const currentPaymentMethod = await this.dao.getById(id)
+      const currentPaymentMethod = await this.getById(id)
       if (!currentPaymentMethod) throw new CustomError('PaymentMethod not founded', 404)
 
-      const response = await this.dao.update(id, data)
+      const response = await this.paymentMethodRepository.update(id, data)
       if (!response) throw new CustomError('PaymentMethod not founded', 404)
 
       return response
@@ -74,11 +62,11 @@ class PaymentMethodService {
     }
   }
 
-  delete = async (id) => {
+  async delete (id) {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
-      const response = await this.dao.delete(id)
+      const response = await this.paymentMethodRepository.delete(id)
       if (!response) throw new CustomError('PaymentMethod not deleted', 404)
 
       return response
@@ -88,4 +76,4 @@ class PaymentMethodService {
   }
 }
 
-export const paymentMethodService = new PaymentMethodService(paymentMethodDao)
+export const paymentMethodService = new PaymentMethodService()

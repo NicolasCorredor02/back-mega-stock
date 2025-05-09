@@ -1,13 +1,13 @@
 /* eslint-disable no-useless-catch */
+import RepositoryFactory from 'root/repositories/factory.js'
 import CustomError from 'root/utils/customError.js'
-import { addressDao } from 'root/daos/mongodb/addressDao.js'
 
 class AddressService {
-  constructor (dao) {
-    this.dao = dao
+  constructor () {
+    this.addressRepository = RepositoryFactory.getAddressRepository()
   }
 
-  create = async (data) => {
+  async create (data) {
     try {
       if (!data) throw new CustomError('Address details are required', 404)
 
@@ -16,7 +16,7 @@ class AddressService {
         is_saved: data.is_saved || false
       }
 
-      const response = await this.dao.create(addressData)
+      const response = await this.addressRepository.create(addressData)
 
       if (!response) throw new CustomError('Address not created', 404)
 
@@ -26,31 +26,19 @@ class AddressService {
     }
   }
 
-  getAll = async (reqQuerys) => {
+  async getAll (filter = {}, options = {}) {
     try {
-      const pipeline = []
-
-      // Construccion de los parametros para el paginate
-      const { page = 1, limit = 10 } = reqQuerys
-
-      const paginateParams = {
-        page: parseInt(page),
-        limit: parseInt(limit)
-      }
-
-      const pipelineValue = pipeline.length > 0 ? pipeline : [{ $match: {} }]
-
-      return await this.dao.getAll(pipelineValue, paginateParams)
+      return await this.addressRepository.getAll(filter, options)
     } catch (error) {
-      throw new Error(error)
+      throw new CustomError('Error findinf data', 500)
     }
   }
 
-  getById = async (id) => {
+  async getById (id) {
     try {
       if (!id || id.trim() === '') throw new CustomError('Id is required', 404)
 
-      const response = await this.dao.getById(id)
+      const response = await this.addressRepository.getById(id)
 
       if (!response) throw new CustomError('Address not found', 404)
 
@@ -60,15 +48,15 @@ class AddressService {
     }
   }
 
-  update = async (id, data) => {
+  async update (id, data) {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
       if (data.id) throw new CustomError('Error, product ID can not be updated')
 
-      const currentAddress = await this.dao.getById(id)
+      const currentAddress = await this.getById(id)
       if (!currentAddress) throw new CustomError('Address not founded', 404)
 
-      const response = await this.dao.update(id, data)
+      const response = await this.addressRepository.update(id, data)
       if (!response) throw new CustomError('Address not updated', 404)
 
       return response
@@ -77,11 +65,11 @@ class AddressService {
     }
   }
 
-  delete = async (id) => {
+  async delete (id) {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
-      const response = await this.dao.delete(id)
+      const response = await this.addressRepository.delete(id)
       if (!response) throw new CustomError('Address not deleted', 404)
 
       return response
@@ -91,4 +79,4 @@ class AddressService {
   }
 }
 
-export const addressService = new AddressService(addressDao)
+export const addressService = new AddressService()
