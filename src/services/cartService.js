@@ -52,14 +52,15 @@ class CartService {
       if (!updateStockProducts) { throw new CustomError('Error, updating the units in stock of the products', 404) }
 
       const cartData = {
-        ...data,
         user_type: data.user_type || 'guest',
-        user_info: {
-          ...data.user_info,
-          id_number: parseInt(data.user_info.id_number)
-        },
-        address: addressId,
-        payment_method: paymentMethodId,
+        guest_first_name: data.user_info.first_name,
+        guest_last_name: data.user_info.last_name,
+        guest_email: data.user_info.email,
+        guest_phone: data.user_info.phone,
+        guest_id_number: data.user_info.id_number,
+        addressId,
+        paymentMethodId,
+        status: data.status || 'active',
         sub_total: parseFloat(data.sub_total)
       }
 
@@ -100,104 +101,6 @@ class CartService {
       throw new CustomError('Error, finding data', 500)
     }
   }
-
-  // getAll = async (reqQuerys) => {
-  //   try {
-  //     // Se define el pipeline de base
-  //     const pipeline = [
-  //       // Etapa para vincular la dirección
-  //       {
-  //         $lookup: {
-  //           from: 'addresses', // Asume que tu colección se llama 'addresses'
-  //           localField: 'address',
-  //           foreignField: 'id',
-  //           as: 'address'
-  //         }
-  //       },
-  //       { $unwind: { path: '$address', preserveNullAndEmptyArrays: true } },
-
-  //       // Etapa para vincular el método de pago
-  //       {
-  //         $lookup: {
-  //           from: 'paymentmethods', // Asume que tu colección se llama 'paymentmethods'
-  //           localField: 'payment_method',
-  //           foreignField: 'id',
-  //           as: 'payment_method'
-  //         }
-  //       },
-  //       {
-  //         $unwind: {
-  //           path: '$payment_method',
-  //           preserveNullAndEmptyArrays: true
-  //         }
-  //       },
-
-  //       // Etapa para vincular los productos dentro del array de productos
-  //       {
-  //         $lookup: {
-  //           from: 'products',
-  //           localField: 'products.product',
-  //           foreignField: 'id',
-  //           as: 'joinedProducts'
-  //         }
-  //       },
-
-  //       // Transformar el array de productos para incluir la información completa del producto
-  //       {
-  //         $addFields: {
-  //           products: {
-  //             $map: {
-  //               input: '$products',
-  //               as: 'productItem',
-  //               in: {
-  //                 quantity: '$$productItem.quantity',
-  //                 product: {
-  //                   $arrayElemAt: [
-  //                     {
-  //                       $filter: {
-  //                         input: '$joinedProducts',
-  //                         as: 'joinedProduct',
-  //                         cond: {
-  //                           $eq: [
-  //                             '$$joinedProduct.id',
-  //                             '$$productItem.product'
-  //                           ]
-  //                         }
-  //                       }
-  //                     },
-  //                     0
-  //                   ]
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
-  //       },
-
-  //       // Eliminar el campo temporal de productos unidos
-  //       {
-  //         $project: {
-  //           joinedProducts: 0
-  //         }
-  //       }
-  //     ]
-
-  //     // Construccion de los parametros para el paginate
-  //     const { page, limit } = reqQuerys
-
-  //     const paginateParams = {
-  //       page: parseInt(page) || 1,
-  //       limit: parseInt(limit) || 10,
-  //       ...reqQuerys
-  //     }
-
-  //     const pipelineValue = pipeline.length > 0 ? pipeline : [{ $match: {} }]
-
-  //     return await this.dao.getAll(pipelineValue, paginateParams)
-  //   } catch (error) {
-  //     throw new Error(error)
-  //   }
-  // }
 
   async getById (id) {
     try {

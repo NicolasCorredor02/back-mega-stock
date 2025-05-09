@@ -25,21 +25,6 @@ class UsersController {
     }
   }
 
-  // login = async (req, res, next) => {
-  //   try {
-  //     const body = req.body
-  //     const email = body.email ? body.email : null
-  //     const password = body.password ? body.password : null
-
-  //     const response = await this.service.login(email, password)
-  //     if (!response) res.status(400).json({ message: 'Incorrect credentials' })
-
-  //     // TODO: terminar session para user
-  //   } catch (error) {
-  //     next(error)
-  //   }
-  // }
-
   async loginAdmin (req, res, next) {
     try {
       const { email, password } = req.body
