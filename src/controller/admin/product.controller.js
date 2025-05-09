@@ -8,7 +8,7 @@ class ProductsController {
   async create (req, res, next) {
     try {
       const body = req.body
-      const uploadFiles = req.files.map(file => file.path)
+      const uploadFiles = req.files ? req.files.map(file => file.path) : []
 
       // Preparacion de datos del producto para su almacenamiento
       const productData = {
