@@ -3,6 +3,7 @@ import PrismaUserRepository from 'root/repositories/prisma/prismaUserRepository.
 import PrismaCartRepository from 'root/repositories/prisma/prismaCartRepository.js'
 import PrismaAddressRepository from 'root/repositories/prisma/prismaAddressRepository.js'
 import PrismaPaymentMethodRepository from 'root/repositories/prisma/prismaPaymentMethodRepository.js'
+import 'dotenv/config'
 
 // Factory para crear repositories
 // Permite cambiar facilmente entre diferentes implementaciones de prisma
@@ -13,9 +14,9 @@ export default class RepositoryFactory {
    * @param {string} type - Tipo de repository ("se deja prisma por defecto")
    * @returns {ProductRepository} una instancia de repository de products
    */
-  static getProductRepository (type = 'prisma') {
+  static getProductRepository (type = process.env.DB_PROVIDER) {
     switch (type) {
-      case 'prisma':
+      case 'mysql':
         return new PrismaProductRepository()
       default:
         throw new Error(`Repository type not supported ${type}`)
@@ -27,9 +28,9 @@ export default class RepositoryFactory {
    * @param {string} type - Tipo de repositorio
    * @returns {UserRepository} Una instancia del respository de usuarios
    */
-  static getUserRepository (type = 'prisma') {
+  static getUserRepository (type = process.env.DB_PROVIDER) {
     switch (type) {
-      case 'prisma':
+      case 'mysql':
         return new PrismaUserRepository()
 
       default:
@@ -42,9 +43,9 @@ export default class RepositoryFactory {
    * @param {string} type
    * @returns {CartRepository}
    */
-  static getCartRepository (type = 'prisma') {
+  static getCartRepository (type = process.env.DB_PROVIDER) {
     switch (type) {
-      case 'prisma':
+      case 'mysql':
         return new PrismaCartRepository()
 
       default:
@@ -57,9 +58,9 @@ export default class RepositoryFactory {
    * @param {string} type
    * @returns {AddressRepository}
    */
-  static getAddressRepository (type = 'prisma') {
+  static getAddressRepository (type = process.env.DB_PROVIDER) {
     switch (type) {
-      case 'prisma':
+      case 'mysql':
         return new PrismaAddressRepository()
 
       default:
@@ -72,9 +73,9 @@ export default class RepositoryFactory {
    * @param {string} type
    * @returns {PaymentMethodRespository}
    */
-  static getPaymentMethodRepository (type = 'prisma') {
+  static getPaymentMethodRepository (type = process.env.DB_PROVIDER) {
     switch (type) {
-      case 'prisma':
+      case 'mysql':
         return new PrismaPaymentMethodRepository()
 
       default:
