@@ -185,15 +185,15 @@ class ProductService {
       if (!currentProduct) throw new CustomError('Product not found', 404)
 
       // Validacion sobre el codigo para que este sea unico
-      if (body.code && body.code !== currentProduct.code) {
-        const existingProduct = await this.dao.codeExist({ code: body.code })
-        if (existingProduct) {
-          throw new CustomError(
-            `The code ${body.code} is already registered`,
-            404
-          )
-        }
-      }
+      // if (body.code && body.code !== currentProduct.code) {
+      //   const existingProduct = await this.dao.codeExist({ code: body.code })
+      //   if (existingProduct) {
+      //     throw new CustomError(
+      //       `The code ${body.code} is already registered`,
+      //       404
+      //     )
+      //   }
+      // }
 
       let updatedThumbnails = [...currentProduct.thumbnails] // Inicilizacion de array con las imagenes actuales
 
