@@ -8,14 +8,14 @@ class UsersController {
 
   async register (req, res, next) {
     try {
-      const body = req.body
+      const body = { ...req.body }
       const uploadFile = req.file ? req.file.path : null
       const userData = {
         body,
         uploadFile
       }
       await this.userService.register(userData)
-      res.redirect('/api/clients/user')
+      res.redirect('/api/user')
     } catch (error) {
       next(error)
     }
@@ -61,7 +61,7 @@ class UsersController {
         httpOnly: true,
         expires: new Date(0)
       })
-      res.redirect('/api/clients/user')
+      res.redirect('/api/user')
     } catch (error) {
       next(error)
     }

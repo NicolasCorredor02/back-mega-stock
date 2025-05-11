@@ -995,7 +995,7 @@ async function handleCreateCartSubmit (event) {
     last_name: document.getElementById('lastNameClient').value,
     email: document.getElementById('emailClient').value,
     phone: document.getElementById('phoneClient').value,
-    id_number: parseInt(document.getElementById('idNumberClient').value)
+    id_number: document.getElementById('idNumberClient').value
   }
 
   const address = {
@@ -1219,6 +1219,8 @@ async function registerUserSubmit () {
       method: 'POST',
       body: formUserData
     })
+
+    console.log('response:', response)
 
     if (!response.ok) {
       const errorData = await response.json()

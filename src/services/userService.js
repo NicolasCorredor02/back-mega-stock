@@ -27,11 +27,12 @@ class UserService {
       }
 
       const userExist = await this.getByEmail(body.email)
-      if (userExist) throw new CustomError('User already exist', 400)
-      //   if (uploadFile || uploadFile !== ' ') {
-      //     await deleteCloudinaryImage(pathImagesUsers, uploadFile)
-      //     throw new CustomError('Maximum 1 image allowed', 404)
-      //   }
+      if (!userExist.ok) {
+        if (uploadFile || uploadFile !== ' ') {
+          await deleteCloudinaryImage(pathImagesUsers, uploadFile)
+        }
+        throw new CustomError('User already exist', 400)
+      }
 
       const userData = {
         ...body,
@@ -39,7 +40,7 @@ class UserService {
         image_profile: uploadFile || userUrlImageDefault
       }
 
-      const response = await this.userRepository.create(userData)
+      const response = await this.userRepository.create({ ...userData })
       if (!response) throw new CustomError('User not created', 400)
 
       try {
@@ -57,9 +58,9 @@ class UserService {
   async login (email, password) {
     try {
       const userExist = await this.getByEmail(email)
-      if (!userExist) throw new CustomError("User's credentials incorrect", 400)
+      if (!userExist) { throw new CustomError("User's credentials incorrect", 400) }
       const passValid = isValidPassword(password, userExist.password)
-      if (!passValid) throw new CustomError("User's credentials incorrect", 400)
+      if (!passValid) { throw new CustomError("User's credentials incorrect", 400) }
       return userExist
     } catch (error) {
       throw error
@@ -69,7 +70,7 @@ class UserService {
   async loginAdmin (email, password) {
     try {
       const response = await this.userRepository.loginAdmin(email, password)
-      if (!response) throw new CustomError("User's credentials not accepted", 400)
+      if (!response) { throw new CustomError("User's credentials not accepted", 400) }
       return response
     } catch (error) {
       throw error
@@ -96,7 +97,7 @@ class UserService {
 
   async getByEmail (email) {
     try {
-      if (!email || email.trim === '') throw new CustomError('Email is required', 400)
+      if (!email || email.trim === '') { throw new CustomError('Email is required', 400) }
 
       const response = await this.userRepository.getByEmail(email)
 

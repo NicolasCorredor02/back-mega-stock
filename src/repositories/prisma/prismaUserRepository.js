@@ -1,6 +1,7 @@
 import { prisma } from '../../../prisma/config.js'
 import PrismaBaseRepository from 'root/repositories/prisma/prismaBaseRepository.js'
 import 'dotenv/config'
+import CustomError from 'root/utils/customError.js'
 
 export default class PrismaUserRepository extends PrismaBaseRepository {
   constructor () {
@@ -8,14 +9,20 @@ export default class PrismaUserRepository extends PrismaBaseRepository {
   }
 
   async getByEmail (email) {
-    return prisma.user.findUnique({
-      where: { email },
-      include: {
-        addresses: true,
-        payment_methods: true,
-        carts: true
-      }
-    })
+    try {
+      const user = await prisma.user.findUnique({
+        where: { email },
+        include: {
+          addresses: true,
+          payment_methods: true,
+          carts: true
+        }
+      })
+      return user
+    } catch (error) {
+      console.error('Error geting user', error)
+      throw new CustomError('Error geting user', 500)
+    }
   }
 
   async addAddress (userId, addressData) {
@@ -46,7 +53,7 @@ export default class PrismaUserRepository extends PrismaBaseRepository {
     return prisma.user.findUnique({
       where: { id },
       include: {
-        address: true,
+        addresses: true,
         payment_methods: true,
         carts: true
       }
@@ -54,8 +61,11 @@ export default class PrismaUserRepository extends PrismaBaseRepository {
   }
 
   loginAdmin (email, password) {
-    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-      return ({ id: 'admin-id' })
+    if (
+      email === process.env.ADMIN_EMAIL &&
+      password === process.env.ADMIN_PASSWORD
+    ) {
+      return { id: 'admin-id' }
     }
     return false
   }
