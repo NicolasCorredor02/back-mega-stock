@@ -27,7 +27,7 @@ class UserService {
       }
 
       const userExist = await this.getByEmail(body.email)
-      if (!userExist.ok) {
+      if (userExist.ok) {
         if (uploadFile || uploadFile !== ' ') {
           await deleteCloudinaryImage(pathImagesUsers, uploadFile)
         }
@@ -36,7 +36,7 @@ class UserService {
 
       const userData = {
         ...body,
-        password: createHash(body.password),
+        password: createHash(body.password) || ' ',
         image_profile: uploadFile || userUrlImageDefault
       }
 
