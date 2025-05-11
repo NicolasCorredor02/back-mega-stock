@@ -82,9 +82,9 @@ model User {
   first_name    String
   last_name     String
   phone         String
-  id_number     BigInt
+  id_number     String
   security      Int     @default(0) // Intentos de inicio de sesión
-  image_profile String? // URL de la imagen
+  image_profile String // URL de la imagen
   status        Boolean @default(true)
 
   // Relaciones integradas
@@ -94,7 +94,7 @@ model User {
 
   // Datos de comercio
   total_spent     Float     @default(0)
-  last_order_date DateTime?
+  last_order_date DateTime? 
   custom_tier     String    @default("regular")
 
   @@map("users")
