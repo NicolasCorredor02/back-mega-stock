@@ -41,10 +41,12 @@ export class CartsController {
 
       const context = {
         products: await this.productService.getAll(filter, options),
-        carts: await this.cartService.getAll(filter, options)
+        carts: await this.cartService.getAllWithProducts()
       }
 
       // res.status(200).json(context)
+
+      console.log(context.carts)
 
       return res.render('cartsAdmin', context)
     } catch (error) {

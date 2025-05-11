@@ -49,7 +49,12 @@ class CartService {
 
       // Proceso para realizar la actualizacion del stock de los productos que se quieren comprar
       const updateStockProducts = await productService.changeStock(products)
-      if (!updateStockProducts) { throw new CustomError('Error, updating the units in stock of the products', 404) }
+      if (!updateStockProducts) {
+        throw new CustomError(
+          'Error, updating the units in stock of the products',
+          404
+        )
+      }
 
       const cartData = {
         user_type: data.user_type || 'guest',
@@ -61,10 +66,11 @@ class CartService {
         addressId,
         paymentMethodId,
         status: data.status || 'active',
-        sub_total: parseFloat(data.sub_total)
+        sub_total: parseFloat(data.sub_total),
+        products: data.products
       }
 
-      const response = await this.cartRepository.create(cartData)
+      const response = await this.cartRepository.createCart(cartData)
       if (!response) {
         throw new CustomError('Cart not created', 404)
       }
@@ -81,13 +87,15 @@ class CartService {
       if (addressRollBack || addressRollBack.trim() !== '') {
         // Se crea el address que llegan por data
         const response = await addressService.delete(addressRollBack)
-        if (!response) throw new CustomError('Error in catch deleting address', 404)
+        if (!response) { throw new CustomError('Error in catch deleting address', 404) }
       }
 
       if (payMethodRollBack || payMethodRollBack.trim() !== '') {
         // Se crea el payment_method que viene por data
         const response = await paymentMethodService.delete(payMethodRollBack)
-        if (!response) { throw new CustomError('Error in catch deleting payment method', 404) }
+        if (!response) {
+          throw new CustomError('Error in catch deleting payment method', 404)
+        }
       }
 
       throw error
@@ -102,11 +110,19 @@ class CartService {
     }
   }
 
+  async getAllWithProducts () {
+    try {
+      return await this.cartRepository.getAllWithProducts()
+    } catch (error) {
+      throw new CustomError('Error, finding data', 500)
+    }
+  }
+
   async getById (id) {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
 
-      const response = await this.cartRepository.getById(id)
+      const response = await this.cartRepository.getByIdWithProducts(id)
 
       if (!response) throw new CustomError('Cart not founded', 404)
 

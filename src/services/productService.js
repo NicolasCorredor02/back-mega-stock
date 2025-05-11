@@ -80,78 +80,6 @@ class ProductService {
     }
   }
 
-  // getAll = async (reqQuerys, project = null) => {
-  //   try {
-  //     // Se define el pipeline de base
-  //     const pipeline = []
-
-  //     if (Object.keys(reqQuerys).length > 0) {
-  //       // Se define el mapa de querys permitidas para crear sus transformaciones ante el pipeline
-  //       const paramMapping = {
-  //         search: {
-  //           type: 'text',
-  //           field: ['title', 'description']
-  //         },
-  //         category: {
-  //           type: 'exact',
-  //           field: 'category'
-  //         }
-  //       }
-
-  //       // Objeto para guardar las coincidencias de match
-  //       const matchConditions = {}
-
-  //       Object.keys(paramMapping).forEach((param) => {
-  //         const paramConfig = paramMapping[param]
-
-  //         if (paramConfig) {
-  //           const value = paramConfig.field
-
-  //           // Manejo de busqueda por texto para filtro de productos
-  //           if (paramConfig.type === 'text' && reqQuerys.search) {
-  //             const searchTerms = reqQuerys.search
-  //               .split('-')
-  //               .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-  //             const orMatches = value.map((param) => ({
-  //               [param]: {
-  //                 $regex: searchTerms.join('|'),
-  //                 $options: 'i'
-  //               }
-  //             }))
-  //             matchConditions.$or = orMatches
-  //           } else if (paramConfig.type === 'exact' && reqQuerys.category) {
-  //             matchConditions[paramConfig.field] =
-  //               reqQuerys.category.toLowerCase()
-  //           }
-  //         }
-  //       })
-
-  //       // Se pushean las condiciones al pipeline en caso de que se hayan encontrado por query params
-  //       if (Object.keys(matchConditions).length > 0) {
-  //         pipeline.push({ $match: matchConditions })
-  //         if (project) {
-  //           pipeline.push({ ...project })
-  //         }
-  //       }
-  //     }
-
-  //     // Construccion de los parametros para el paginate
-  //     const { page, limit } = reqQuerys
-
-  //     const paginateParams = {
-  //       page: parseInt(page) || 1,
-  //       limit: parseInt(limit) || 10,
-  //       ...reqQuerys
-  //     }
-
-  //     const pipelineValue = pipeline.length > 0 ? pipeline : [{ $match: {} }]
-
-  //     return await this.dao.getAll(pipelineValue, paginateParams)
-  //   } catch (error) {
-  //     throw new Error(error)
-  //   }
-  // }
-
   async getById (id) {
     try {
       if (!id || id.trim === '') throw new CustomError('Id is required', 404)
@@ -167,8 +95,13 @@ class ProductService {
   }
 
   async update (id, data) {
+    // Verificar que data exista antes de continuar
+    if (!data) {
+      throw new CustomError('Data object is required for update', 400)
+    }
+
     try {
-      const { body, files, deleteImages } = data
+      const { body = {}, files = [], deleteImages = null } = data
 
       // Validación del ID
       if (!id || id.trim === '') {
@@ -176,24 +109,13 @@ class ProductService {
       }
 
       // Validacion si el producto viene con id para actualizar
-      if (body.id) {
+      if (body && body.id) {
         throw new CustomError('Error, product ID can not be updated', 404)
       }
 
       // Recuperar el producto que se quiere actualizar
       const currentProduct = await this.getById(id)
       if (!currentProduct) throw new CustomError('Product not found', 404)
-
-      // Validacion sobre el codigo para que este sea unico
-      // if (body.code && body.code !== currentProduct.code) {
-      //   const existingProduct = await this.dao.codeExist({ code: body.code })
-      //   if (existingProduct) {
-      //     throw new CustomError(
-      //       `The code ${body.code} is already registered`,
-      //       404
-      //     )
-      //   }
-      // }
 
       let updatedThumbnails = [...currentProduct.thumbnails] // Inicilizacion de array con las imagenes actuales
 
@@ -280,52 +202,102 @@ class ProductService {
       return response
     } catch (error) {
       // Eliminar imagenes subidas en caso de error
-      const { files } = data
-      const uploadFiles = files.map((file) => file.path)
-      if (uploadFiles > 0) {
-        await deleteCloudinaryImages(pathImagesProducts, uploadFiles)
+      const { files = [] } = data || {}
+      if (files && Array.isArray(files) && files.length > 0) {
+        const uploadFiles = files.map((file) => file.path)
+        if (uploadFiles > 0) {
+          await deleteCloudinaryImages(pathImagesProducts, uploadFiles)
+        }
       }
       throw error
     }
   }
 
   async changeStock (products) {
+    // Verificar que products exista y sea un array
+    if (!products || !Array.isArray(products) || products.length === 0) {
+      throw new CustomError(
+        'Products array is required and cannot be empty',
+        400
+      )
+    }
+
     const rollBackProducts = await Promise.all(
-      products.map((productOBj) => this.getById(productOBj.product))
+      products.map(async (productObj) => {
+        if (!productObj || !productObj.product) {
+          throw new CustomError(
+            'Invalid product object in products array',
+            400
+          )
+        }
+        return this.getById(productObj.product)
+      })
+    )
+
+    // Filtrar cualquier producto nulo que pueda haber resultado de getById
+    const validRollBackProducts = rollBackProducts.filter(
+      (product) => product !== null && product !== undefined
     )
 
     try {
+      // Verificar stock disponible primero
       for (const productObj of products) {
+        if (!productObj || !productObj.product) {
+          throw new CustomError('Invalid product object', 400)
+        }
+
         const productId = productObj.product
-        const productQuantity = productObj.quantity
+        const productQuantity = productObj.quantity || 0
+
         const dbProduct = await this.getById(productId)
+        if (!dbProduct) {
+          throw new CustomError(`Product with id ${productId} not found`, 404)
+        }
 
         if (dbProduct.stock - productQuantity < 0) {
-          throw new CustomError('Error, insufficient units in stock')
+          throw new CustomError(
+            `Error, insufficient units in stock for product ${productId}`
+          )
         }
       }
 
+      // Actualizar el stock si todas las validaciones pasan
       for (const productObj of products) {
         const productId = productObj.product
-        const productQuantity = productObj.quantity
+        const productQuantity = productObj.quantity || 0
         const dbProduct = await this.getById(productId)
 
-        const productStockUpdated = await this.update(productId, {
-          stock: dbProduct.stock - productQuantity
-        })
+        // Solo pasar los datos necesarios al método update
+        const updateData = {
+          body: {
+            stock: dbProduct.stock - productQuantity
+          }
+        }
+
+        const productStockUpdated = await this.update(productId, updateData)
         if (!productStockUpdated) {
-          throw new CustomError("Error, updating stock's product")
+          throw new CustomError(
+            `Error, updating stock for product ${productId}`
+          )
         }
       }
 
       return true
     } catch (error) {
+      console.error('Error during stock update:', error)
       try {
-        for (const product of rollBackProducts) {
-          await this.update(product.id, { stock: product.stock })
+        // Restaurar stock solo para productos válidos
+        for (const product of validRollBackProducts) {
+          if (product && product.id) {
+            await this.update(product.id, {
+              body: {
+                stock: product.stock
+              }
+            })
+          }
         }
-      } catch (error) {
-        console.error('Error during rollback:', error)
+      } catch (rollbackError) {
+        console.error('Error during rollback:', rollbackError)
       }
       throw error
     }
