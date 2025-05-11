@@ -22,7 +22,7 @@ model Product {
   price       Float
   description String
   code        String            @unique
-  thumbnails  Json              // Array de URLs como JSON en MySQL
+  thumbnails  Json // Array de URLs como JSON en MySQL
   stock       Int
   status      Boolean           @default(true)
   category    String
@@ -56,7 +56,7 @@ model Address {
 
 model PaymentMethod {
   id          String  @id @default(uuid())
-  type        String  // card, paypal, transfer
+  type        String // card, paypal, transfer
   provider    String? // Solo para tarjetas
   card_number String? // Solo para tarjetas
   last_four   String? // Solo para tarjetas
@@ -78,14 +78,15 @@ model PaymentMethod {
 model User {
   id            String  @id @default(uuid())
   email         String  @unique
-  password      String
+  password      String?
   first_name    String
-  last_name     String
-  phone         String
+  last_name     String?
+  phone         String?
   id_number     String
   security      Int     @default(0) // Intentos de inicio de sesión
   image_profile String // URL de la imagen
   status        Boolean @default(true)
+  platform      String  @default("")
 
   // Relaciones integradas
   addresses       Address[]
@@ -94,7 +95,7 @@ model User {
 
   // Datos de comercio
   total_spent     Float     @default(0)
-  last_order_date DateTime? 
+  last_order_date DateTime?
   custom_tier     String    @default("regular")
 
   @@map("users")
