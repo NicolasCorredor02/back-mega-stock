@@ -5,7 +5,6 @@ const uuidQuerySchema = Joi.object({
     .guid({
       version: ['uuidv4']
     })
-    .required()
     .messages({
       'string.guid': 'El ID debe ser un UUID v4 válido',
       'any.required': 'El ID es requerido en los query parameters'
