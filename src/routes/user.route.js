@@ -4,15 +4,17 @@ import { uploadUserImages } from 'root/config/multer.js'
 import handleErrorUploads from 'root/middlewares/handleErrorUploads.js'
 import { isAuth, isNotAuth } from 'root/middlewares/authUsers.js'
 import { passportCall } from 'root/middlewares/passportCall.js'
+import { validatorId } from 'root/middlewares/validators/commonSchemas.js'
+import { validatorUserCreate, validatorUserUpdate } from 'root/middlewares/validators/userValidator.js'
 
 const router = Router()
 
 router.route('/')
-  .post(uploadUserImages, handleErrorUploads, userController.register.bind(userController))
+  .post(validatorUserCreate, uploadUserImages, handleErrorUploads, userController.register.bind(userController))
 
 router.route('/:uid')
-  .put(passportCall('jwt-cookies'), isAuth, uploadUserImages, handleErrorUploads, userController.update.bind(userController))
-  .delete(passportCall('jwt-cookies'), isAuth, userController.changeStatus.bind(userController))
+  .put(passportCall('jwt-cookies'), isAuth, validatorUserUpdate, uploadUserImages, handleErrorUploads, userController.update.bind(userController))
+  .delete(passportCall('jwt-cookies'), isAuth, validatorId, userController.changeStatus.bind(userController))
 
 router.route('/profile')
   .get(passportCall('jwt-cookies'), isAuth, userController.getById.bind(userController))
