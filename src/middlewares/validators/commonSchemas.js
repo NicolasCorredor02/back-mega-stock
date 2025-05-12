@@ -1,6 +1,18 @@
 import Joi from 'joi'
 
-// Esquema común para validar UUID
+const uuidQuerySchema = Joi.object({
+  id: Joi.string()
+    .guid({
+      version: ['uuidv4']
+    })
+    .required()
+    .messages({
+      'string.guid': 'El ID debe ser un UUID v4 válido',
+      'any.required': 'El ID es requerido en los query parameters'
+    })
+})
+
+// Esquema común para validar UUID usado por mas schemas
 export const idSchema = Joi.string().guid({
   version: ['uuidv4']
 }).messages({
@@ -8,6 +20,6 @@ export const idSchema = Joi.string().guid({
 })
 
 export const validatorId = (req, res, next) => {
-  const { error } = idSchema.validate(req.body, { abortEarly: false })
+  const { error } = uuidQuerySchema.validate(req.query, { abortEarly: false })
   error ? res.status(400).send(error) : next()
 }
