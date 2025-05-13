@@ -7,14 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch ./src/index.js",
-    "setup-alias": "link-module-alias",
-    "db:mysql:migrate": "dotenv -e .env -- npx prisma migrate dev --schema=./prisma/prisma-mysql/schema.prisma",
-    "db:mysql:push": "dotenv -e .env -- npx prisma db push --schema=./prisma/prisma-mysql/schema.prisma",
-    "db:mysql:studio": "dotenv -e .env -- npx prisma studio --schema=./prisma/prisma-mysql/schema.prisma",
-    "db:mysql:generate": "dotenv -e .env -- npx prisma generate --schema=./prisma/prisma-mysql/schema.prisma",
-    "db:mongodb:push": "dotenv -e .env -- npx prisma db push --schema=./prisma/prisma-mongodb/schema.prisma",
-    "db:mongodb:studio": "dotenv -e .env -- npx prisma studio --schema=./prisma/prisma-mongodb/schema.prisma",
-    "db:mongodb:generate": "dotenv -e .env -- npx prisma generate --schema=./prisma/prisma-mongodb/schema.prisma"
+    "setup-alias": "link-module-alias"
   },
   "_moduleAliases": {
     "root": "src"
@@ -54,6 +47,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
+    "nodemailer": "^7.0.3",
     "passport": "^0.7.0",
     "passport-google-oauth": "^2.0.0",
     "passport-jwt": "^4.0.1",
