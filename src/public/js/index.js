@@ -339,6 +339,14 @@ async function handleFormSubmit () {
       throw new Error(errorData.message || 'Error processing the request')
     }
 
+    Swal.fire({
+      position: 'top-end',
+      title: 'Product successfully created/updated',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1500
+    })
+
     resetForm()
   } catch (error) {
     Swal.fire({
@@ -373,6 +381,14 @@ async function handleDeletedProduct (productId) {
       const errorData = await response.json()
       throw new Error(errorData.message || 'Error processing the request')
     }
+
+    Swal.fire({
+      position: 'top-end',
+      title: 'Product successfully deleted',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1500
+    })
   } catch (error) {
     Swal.fire({
       icon: 'error',

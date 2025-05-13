@@ -1,4 +1,5 @@
 import { userService } from 'root/services/userService.js'
+import { MailController } from 'root/controller/user/mail.controller.js'
 import 'dotenv/config'
 
 class UsersController {
@@ -14,7 +15,11 @@ class UsersController {
         body,
         uploadFile
       }
-      await this.userService.register(userData)
+      const newUser = await this.userService.register(userData)
+      // Envio de correo de bienvenida
+      const mailController = new MailController(newUser)
+      await mailController.sendEmail()
+
       res.redirect('/api/user')
     } catch (error) {
       next(error)

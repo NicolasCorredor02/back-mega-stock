@@ -18,6 +18,9 @@ class ProductService {
     try {
       const { body, uploadFiles } = data
 
+      // Eliminar campo de deleteImages del body
+      delete body.deleteImages
+
       if (!body) {
         if (uploadFiles.length > 0) {
           await deleteCloudinaryImages(pathImagesProducts, uploadFiles)
@@ -188,6 +191,8 @@ class ProductService {
         stock: body.stock ? parseInt(body.stock) : currentProduct.stock
       }
 
+      delete updatedData.deleteImages
+
       const response = await this.productRepository.update(id, updatedData)
 
       if (!response) throw new CustomError('Producto not updated', 404)
@@ -334,13 +339,10 @@ class ProductService {
         throw new CustomError("Product's ID is required", 404)
       }
 
-      const response = await this.productRepository.delete(id)
-
-      if (!response) throw new CustomError('Producto not deleted', 404)
+      const productToDelete = await this.getById(id)
 
       // Se recuperan las urls de las imagenes del producto
-      const { thumbnails } = await response
-
+      const { thumbnails } = await productToDelete
       if (
         thumbnails &&
         thumbnails.length > 0 &&
@@ -349,6 +351,10 @@ class ProductService {
         // Se eliminan las imagenes que se encuentran alojadas en Cloudinary
         await deleteCloudinaryImages(pathImagesProducts, thumbnails)
       }
+
+      const response = await this.productRepository.delete(id)
+
+      if (!response) throw new CustomError('Producto not deleted', 404)
 
       try {
         const { id } = await response
